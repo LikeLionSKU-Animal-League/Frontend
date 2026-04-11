@@ -1,5 +1,5 @@
 ## 🖥️ 배포 사이트
-https://mini-game-demo-deploy.vercel.app/
+[https://mini-game-demo-deploy.vercel.app/](https://campus-animal-battle.vercel.app/)
 
 ## 🎯 Git Convention
 
