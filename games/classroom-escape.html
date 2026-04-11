@@ -444,7 +444,7 @@
 </head>
 <body>
   <div class="wrap">
-    <a class="lobby-link" href="../index.html">← 로비로 돌아가기</a>
+    <a class="lobby-link" href="../index.html?lobby=1">← 로비로 돌아가기</a>
     <div class="shell">
       <div class="topbar">
         <div class="title">
@@ -615,11 +615,30 @@
       }
     ];
 
+    const STORAGE_SCHOOL = "animalLeagueSchool";
+    const API_BASE = window.ANIMAL_LEAGUE_API || "http://localhost:3000";
+
+    function submitScoreToLeague(game, value) {
+      const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
+      if (!school) return;
+
+      const score = Math.round(Number(value));
+      if (!Number.isFinite(score)) return;
+
+      fetch(`${API_BASE}/api/scores`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ school, game, score })
+      }).catch(() => {});
+    }
+
     let currentStage = 0;
     let remainingTime = stageConfigs[0].time;
     let gameStarted = false;
     let gameEnded = false;
     let hasPass = false;
+    /** 전체 런 누적 점수 (5스테이지 클리어 시 서버 제출) */
+    let runEscapeScore = 0;
 
     let playerX = 42;
     let playerY = 655;
@@ -787,6 +806,10 @@ doorLock.textContent = "🔒";
       clearInterval(timerInterval);
       cancelAnimationFrame(loopId);
 
+      if (currentStage === 0) {
+        runEscapeScore = 0;
+      }
+
       const config = stageConfigs[currentStage];
       remainingTime = config.time;
       timeText.textContent = remainingTime;
@@ -830,43 +853,49 @@ doorLock.textContent = "🔒";
     }
 
     function completeStage() {
-  clearInterval(timerInterval);
-  cancelAnimationFrame(loopId);
+      clearInterval(timerInterval);
+      cancelAnimationFrame(loopId);
 
-  gameEnded = true;
-  gameStarted = false;
-  stateText.textContent = "성공";
+      gameEnded = true;
+      gameStarted = false;
+      stateText.textContent = "성공";
 
-  if (currentStage === 4) {
-    overlayStartBtn.style.display = "none";
-    overlayRestartBtn.style.display = "none";
-    nextStageBtn.style.display = "none";
+      runEscapeScore += Math.round(40 + Math.max(0, remainingTime) * 5);
 
-    showOverlay(
-      "🏆 전체 클리어!",
-      "1단계부터 5단계까지 모두 탈출 성공! 게임이 끝났습니다.",
-      "end"
-    );
+      if (currentStage === 4) {
+        submitScoreToLeague("classroom-escape", runEscapeScore);
+        runEscapeScore = 0;
 
-    setMessage("전체 스테이지 클리어!");
-  } else {
-    overlayStartBtn.style.display = "none";
-    overlayRestartBtn.style.display = "inline-block";
-    nextStageBtn.style.display = "inline-block";
+        overlayStartBtn.style.display = "none";
+        overlayRestartBtn.style.display = "none";
+        nextStageBtn.style.display = "none";
 
-    showOverlay(
-      `✅ 스테이지 ${currentStage + 1} 클리어!`,
-      `다음 단계를 누르면 ${currentStage + 2}단계 준비 화면으로 이동합니다.`,
-      "clear"
-    );
+        showOverlay(
+          "🏆 전체 클리어!",
+          "1단계부터 5단계까지 모두 탈출 성공! 게임이 끝났습니다.",
+          "end"
+        );
 
-    setMessage(`스테이지 ${currentStage + 1} 클리어!`);
-  }
-}
+        setMessage("전체 스테이지 클리어!");
+      } else {
+        overlayStartBtn.style.display = "none";
+        overlayRestartBtn.style.display = "inline-block";
+        nextStageBtn.style.display = "inline-block";
+
+        showOverlay(
+          `✅ 스테이지 ${currentStage + 1} 클리어!`,
+          `다음 단계를 누르면 ${currentStage + 2}단계 준비 화면으로 이동합니다.`,
+          "clear"
+        );
+
+        setMessage(`스테이지 ${currentStage + 1} 클리어!`);
+      }
+    }
 
     function failStage(title, desc) {
       clearInterval(timerInterval);
       cancelAnimationFrame(loopId);
+      runEscapeScore = 0;
       gameEnded = true;
       gameStarted = false;
       stateText.textContent = "실패";

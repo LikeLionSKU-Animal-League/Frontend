@@ -190,6 +190,97 @@
       box-shadow: 0 8px 18px rgba(0,0,0,0.08);
     }
 
+    /* School setup (intro second step) */
+    #introPhaseSchool {
+      position: relative;
+      z-index: 1;
+      padding-top: 8px;
+    }
+
+    .school-setup-hint {
+      margin: 0 0 22px;
+      color: #6c8570;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.55;
+      word-break: keep-all;
+    }
+
+    .school-field {
+      width: min(480px, 100%);
+      margin: 0 auto 22px;
+      text-align: left;
+    }
+
+    .school-field label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 15px;
+      font-weight: 900;
+      color: #4d7c55;
+    }
+
+    #schoolNameInput {
+      width: 100%;
+      padding: 16px 18px;
+      border-radius: 22px;
+      border: 3px solid #e8f4df;
+      font-size: 18px;
+      font-family: inherit;
+      font-weight: 700;
+      color: #33423a;
+      background: linear-gradient(180deg, #ffffff, #f9fff2);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    #schoolNameInput::placeholder {
+      color: #9aaa9c;
+      font-weight: 600;
+    }
+
+    #schoolNameInput:focus {
+      outline: none;
+      border-color: #9dd9a0;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7), 0 0 0 3px rgba(125, 204, 127, 0.25);
+    }
+
+    .school-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      margin-top: 6px;
+    }
+
+    #confirmSchoolBtn {
+      padding: 16px 40px;
+      border-radius: 999px;
+      font-size: 20px;
+      font-weight: 900;
+      color: white;
+      background: linear-gradient(135deg, #7dcc7f, #55ad62);
+      box-shadow: 0 12px 24px rgba(76, 161, 88, 0.28);
+    }
+
+    #backToStoryBtn {
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #5a6d5d;
+      background: transparent;
+      box-shadow: none;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    #backToStoryBtn:hover {
+      color: #3d5a44;
+      transform: none;
+      opacity: 0.92;
+    }
+
     /* Lobby */
     #lobbyScreen {
       min-height: 100vh;
@@ -721,15 +812,37 @@
       <h1 class="intro-title">🐾 Animal League</h1>
       <p class="intro-sub">대학 동물 대항전</p>
 
-      <div class="intro-animal-row">🐯 🐴 🦜 🐱 🐿️</div>
+      <div id="introPhaseStory">
+        <div class="intro-animal-row">🐯 🐴 🦜 🐱 🐿️</div>
 
-      <div id="introTextBox">
-        <div id="introText"></div>
+        <div id="introTextBox">
+          <div id="introText"></div>
+        </div>
+
+        <div class="intro-btn-row">
+          <button id="enterLobbyBtn">로비 입장</button>
+          <button type="button" id="skipStoryBtn">스토리 건너뛰기</button>
+        </div>
       </div>
 
-      <div class="intro-btn-row">
-        <button id="enterLobbyBtn">로비 입장</button>
-        <button id="skipStoryBtn">건너뛰기</button>
+      <div id="introPhaseSchool" class="hidden">
+        <p class="school-setup-hint">
+          대항전에 참가할 학교 이름을 적어 주세요. 로비와 기록에 표시됩니다.
+        </p>
+        <div class="school-field">
+          <label for="schoolNameInput">학교 이름</label>
+          <input
+            id="schoolNameInput"
+            type="text"
+            maxlength="40"
+            placeholder="예: 성균관대학교"
+            autocomplete="organization"
+          />
+        </div>
+        <div class="school-actions">
+          <button type="button" id="confirmSchoolBtn">로비 입장</button>
+          <button type="button" id="backToStoryBtn">← 스토리 다시 보기</button>
+        </div>
       </div>
     </div>
   </section>
@@ -763,18 +876,18 @@
               <h3 class="small-panel-title">🏫 내 대학 정보</h3>
 
               <div class="my-card-top">
-                <div class="my-animal">🐱</div>
+                <div class="my-animal" id="mySchoolAnimal">🐱</div>
                 <div class="my-meta">
-                  <h3>성균관대학교</h3>
-                  <p>현재 순위 4위 · 다음 진화까지 45점</p>
+                  <h3 id="mySchoolName">성균관대학교</h3>
+                  <p id="mySchoolSub">서버에 연결되면 실시간 순위가 표시됩니다.</p>
                 </div>
               </div>
 
-              <div class="info-list">
-                <div class="info-item"><strong>현재 점수</strong> · 865점</div>
-                <div class="info-item"><strong>현재 동물</strong> · 고양이 🐱</div>
-                <div class="info-item"><strong>다음 목표</strong> · 3위 앵무새 🦜</div>
-                <div class="info-item"><strong>오늘 플레이 수</strong> · 5회</div>
+              <div class="info-list" id="mySchoolInfoList">
+                <div class="info-item"><strong>누적 점수</strong> · —</div>
+                <div class="info-item"><strong>대표 동물</strong> · —</div>
+                <div class="info-item"><strong>플레이 횟수</strong> · —</div>
+                <div class="info-item"><strong>안내</strong> · 백엔드 실행 후 게임 플레이 시 반영</div>
               </div>
             </div>
 
@@ -875,7 +988,7 @@
       "이렇게 동물들의 대학 대항전이 시작된다."
     ];
 
-    const rankingData = [
+    const fallbackRankingData = [
       { university: "고려대학교", score: 980, animal: "🐯" },
       { university: "연세대학교", score: 940, animal: "🐴" },
       { university: "서울대학교", score: 910, animal: "🦜" },
@@ -908,6 +1021,8 @@
       { university: "광운대학교", score: 553, animal: "🐴" }
     ];
 
+    let rankingData = fallbackRankingData.map((r) => ({ ...r }));
+
     const animalTitle = {
       "🐯": "호랑이",
       "🐴": "말",
@@ -933,12 +1048,24 @@
       { emoji: "🐴", text: "지금은 달릴 시간! 한 번에 순위를 끌어올려봐!" }
     ];
 
+    const STORAGE_SCHOOL = "animalLeagueSchool";
+    const API_BASE = window.ANIMAL_LEAGUE_API || "http://localhost:3000";
+
     const introScreen = document.getElementById("introScreen");
     const lobbyScreen = document.getElementById("lobbyScreen");
+    const introPhaseStory = document.getElementById("introPhaseStory");
+    const introPhaseSchool = document.getElementById("introPhaseSchool");
     const introText = document.getElementById("introText");
     const enterLobbyBtn = document.getElementById("enterLobbyBtn");
     const skipStoryBtn = document.getElementById("skipStoryBtn");
+    const schoolNameInput = document.getElementById("schoolNameInput");
+    const confirmSchoolBtn = document.getElementById("confirmSchoolBtn");
+    const backToStoryBtn = document.getElementById("backToStoryBtn");
     const storyReplayBtn = document.getElementById("storyReplayBtn");
+    const mySchoolName = document.getElementById("mySchoolName");
+    const mySchoolSub = document.getElementById("mySchoolSub");
+    const mySchoolAnimal = document.getElementById("mySchoolAnimal");
+    const mySchoolInfoList = document.getElementById("mySchoolInfoList");
 
     const top3Container = document.getElementById("top3Container");
     const rankingTableBody = document.getElementById("rankingTableBody");
@@ -954,6 +1081,9 @@
 
     function renderTop3() {
       const top3 = rankingData.slice(0, 3);
+      while (top3.length < 3) {
+        top3.push({ university: "—", score: 0, animal: "🌱" });
+      }
       const arranged = [top3[1], top3[0], top3[2]];
       const arrangedClasses = ["second", "first", "third"];
       const arrangedMedals = ["🥈", "🥇", "🥉"];
@@ -986,13 +1116,96 @@
       cheerText.textContent = pick.text;
     }
 
+    function setMySchoolPanelDemo() {
+      mySchoolAnimal.textContent = "🐱";
+      mySchoolSub.textContent = "서버에 연결되면 실시간 순위가 표시됩니다.";
+      mySchoolInfoList.innerHTML = `
+        <div class="info-item"><strong>누적 점수</strong> · —</div>
+        <div class="info-item"><strong>대표 동물</strong> · —</div>
+        <div class="info-item"><strong>플레이 횟수</strong> · —</div>
+        <div class="info-item"><strong>안내</strong> · 백엔드 실행 후 게임 플레이 시 반영</div>
+      `;
+    }
+
+    async function refreshRankingsFromApi() {
+      const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
+      try {
+        const url = school
+          ? `${API_BASE}/api/rankings?limit=30&school=${encodeURIComponent(school)}`
+          : `${API_BASE}/api/rankings?limit=30`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("rankings failed");
+
+        const data = await res.json();
+        const rows = (data.rankings || []).map((r) => ({
+          university: r.university,
+          score: r.score,
+          animal: r.animal
+        }));
+
+        rankingData = rows.length ? rows : fallbackRankingData.map((r) => ({ ...r }));
+
+        renderTop3();
+        renderFullRanking();
+
+        if (data.mySchool) {
+          const m = data.mySchool;
+          mySchoolAnimal.textContent = m.animal || "🦝";
+          mySchoolSub.textContent = `현재 ${m.rank}위 · 누적 ${m.score}점`;
+          const an = m.animalName || animalTitle[m.animal] || "대표 동물";
+          mySchoolInfoList.innerHTML = `
+            <div class="info-item"><strong>누적 점수</strong> · ${m.score}점</div>
+            <div class="info-item"><strong>대표 동물</strong> · ${an} ${m.animal || ""}</div>
+            <div class="info-item"><strong>플레이 횟수</strong> · ${m.playCount ?? 0}회</div>
+            <div class="info-item"><strong>안내</strong> · 게임 점수가 학교 이름으로 합산됩니다</div>
+          `;
+        } else if (school) {
+          mySchoolAnimal.textContent = "🦝";
+          mySchoolSub.textContent = "아직 이 학교의 기록이 없어요. 게임을 플레이해 보세요!";
+          mySchoolInfoList.innerHTML = `
+            <div class="info-item"><strong>누적 점수</strong> · 0점</div>
+            <div class="info-item"><strong>대표 동물</strong> · 너구리 🦝</div>
+            <div class="info-item"><strong>플레이 횟수</strong> · 0회</div>
+            <div class="info-item"><strong>안내</strong> · 첫 플레이 후 랭킹에 올라갑니다</div>
+          `;
+        } else {
+          setMySchoolPanelDemo();
+        }
+      } catch {
+        rankingData = fallbackRankingData.map((r) => ({ ...r }));
+        renderTop3();
+        renderFullRanking();
+        mySchoolSub.textContent =
+          "랭킹 서버(" + API_BASE + ")에 연결할 수 없어 데모 랭킹을 보여요.";
+        setMySchoolPanelDemo();
+      }
+    }
+
     function startStory() {
       clearTimeout(storyTimer);
+      introPhaseSchool.classList.add("hidden");
+      introPhaseStory.classList.remove("hidden");
+      enterLobbyBtn.textContent = "로비 입장";
       storyIndex = 0;
       introText.textContent = "";
       enterLobbyBtn.style.display = "none";
       skipStoryBtn.style.display = "inline-block";
       showNextStory();
+    }
+
+    function openSchoolPhase() {
+      clearTimeout(storyTimer);
+      introPhaseStory.classList.add("hidden");
+      introPhaseSchool.classList.remove("hidden");
+      schoolNameInput.value = localStorage.getItem(STORAGE_SCHOOL) || "";
+      requestAnimationFrame(() => schoolNameInput.focus());
+    }
+
+    function applySchoolToLobby() {
+      const name = localStorage.getItem(STORAGE_SCHOOL);
+      if (name) {
+        mySchoolName.textContent = name;
+      }
     }
 
     function showNextStory() {
@@ -1001,6 +1214,7 @@
         storyIndex++;
         storyTimer = setTimeout(showNextStory, 2200);
       } else {
+        enterLobbyBtn.textContent = "학교 입력하기";
         enterLobbyBtn.style.display = "inline-block";
         skipStoryBtn.style.display = "none";
       }
@@ -1008,9 +1222,23 @@
 
     function showLobby() {
       clearTimeout(storyTimer);
+      introPhaseSchool.classList.add("hidden");
       introScreen.classList.add("hidden");
       lobbyScreen.classList.remove("hidden");
+      applySchoolToLobby();
       renderRandomCheer();
+      refreshRankingsFromApi();
+    }
+
+    function confirmSchoolAndEnter() {
+      const name = schoolNameInput.value.trim();
+      if (!name) {
+        alert("학교 이름을 입력해 주세요.");
+        schoolNameInput.focus();
+        return;
+      }
+      localStorage.setItem(STORAGE_SCHOOL, name);
+      showLobby();
     }
 
     function showIntroAgain() {
@@ -1020,6 +1248,7 @@
     }
 
     fullRankingBtn.addEventListener("click", () => {
+      refreshRankingsFromApi();
       rankingModal.style.display = "flex";
     });
 
@@ -1033,14 +1262,59 @@
       }
     });
 
-    enterLobbyBtn.addEventListener("click", showLobby);
-    skipStoryBtn.addEventListener("click", showLobby);
+    enterLobbyBtn.addEventListener("click", openSchoolPhase);
+    skipStoryBtn.addEventListener("click", openSchoolPhase);
+    confirmSchoolBtn.addEventListener("click", confirmSchoolAndEnter);
+    schoolNameInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") confirmSchoolAndEnter();
+    });
+    backToStoryBtn.addEventListener("click", () => {
+      introPhaseSchool.classList.add("hidden");
+      introPhaseStory.classList.remove("hidden");
+      startStory();
+    });
     storyReplayBtn.addEventListener("click", showIntroAgain);
 
-    renderTop3();
-    renderFullRanking();
-    renderRandomCheer();
-    startStory();
+    function wantsLobbyFromQuery() {
+      const p = new URLSearchParams(window.location.search);
+      const v = (p.get("lobby") || "").toLowerCase();
+      return v === "1" || v === "true" || v === "yes";
+    }
+
+    function stripLobbyQuery() {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("lobby");
+        const next = url.pathname + url.search + url.hash;
+        window.history.replaceState({}, "", next || url.pathname);
+      } catch {
+        /* file:// 등 일부 환경 */
+      }
+    }
+
+    function bootstrap() {
+      renderTop3();
+      renderFullRanking();
+      renderRandomCheer();
+
+      if (wantsLobbyFromQuery()) {
+        stripLobbyQuery();
+        clearTimeout(storyTimer);
+        const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
+        if (school) {
+          showLobby();
+        } else {
+          introScreen.classList.remove("hidden");
+          lobbyScreen.classList.add("hidden");
+          openSchoolPhase();
+        }
+        return;
+      }
+
+      startStory();
+    }
+
+    bootstrap();
   </script>
 </body>
 </html>

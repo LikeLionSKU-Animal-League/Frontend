@@ -425,7 +425,7 @@
 </head>
 <body>
   <div class="wrap">
-    <a class="lobby-link" href="../index.html">← 로비로 돌아가기</a>
+    <a class="lobby-link" href="../index.html?lobby=1">← 로비로 돌아가기</a>
     <div class="game-card">
       <div class="cloud cloud1">☁️</div>
       <div class="cloud cloud2">☁️</div>
@@ -486,6 +486,23 @@
   </div>
 
   <script>
+    const STORAGE_SCHOOL = "animalLeagueSchool";
+    const API_BASE = window.ANIMAL_LEAGUE_API || "http://localhost:3000";
+
+    function submitScoreToLeague(game, value) {
+      const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
+      if (!school) return;
+
+      const score = Math.round(Number(value));
+      if (!Number.isFinite(score)) return;
+
+      fetch(`${API_BASE}/api/scores`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ school, game, score })
+      }).catch(() => {});
+    }
+
     const grades = [
       { g: "A+", score: 10, type: "good", animal: "🐯" },
       { g: "A", score: 8, type: "good", animal: "🦁" },
@@ -692,6 +709,7 @@
       }
 
       resultEl.textContent = `최종 점수 ${score}점 · ${message}`;
+      submitScoreToLeague("grade-hunt", score);
     }
   </script>
 </body>
