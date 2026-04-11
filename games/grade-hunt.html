@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>동물의 왕국 : 학점 사냥</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Trebuchet MS", "맑은 고딕", sans-serif;
+      background:
+        linear-gradient(180deg, #bfe9ff 0%, #dff7d8 45%, #fdf4d8 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #3d413d;
+      overflow-x: hidden;
+    }
+
+    .wrap {
+      width: 960px;
+      max-width: 95vw;
+      padding: 22px;
+    }
+
+    .game-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 34px;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 4px solid #eef8e7;
+      box-shadow: 0 18px 40px rgba(92, 132, 97, 0.18);
+    }
+
+    .cloud, .leaf, .flower {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0.65;
+      z-index: 0;
+    }
+
+    .cloud {
+      font-size: 42px;
+      opacity: 0.45;
+    }
+
+    .leaf {
+      font-size: 24px;
+      opacity: 0.28;
+    }
+
+    .flower {
+      font-size: 22px;
+      opacity: 0.35;
+    }
+
+    .cloud1 { top: 12px; left: 24px; }
+    .cloud2 { top: 30px; right: 90px; }
+    .leaf1 { top: 92px; left: 14px; transform: rotate(-12deg); }
+    .leaf2 { top: 80px; right: 24px; transform: rotate(16deg); }
+    .leaf3 { bottom: 32px; left: 120px; transform: rotate(-8deg); }
+    .leaf4 { bottom: 22px; right: 145px; transform: rotate(10deg); }
+    .flower1 { bottom: 24px; left: 42px; }
+    .flower2 { bottom: 18px; right: 44px; }
+
+    .top-area {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .title-box h1 {
+      margin: 0;
+      font-size: 34px;
+      color: #4f7b55;
+      letter-spacing: -1px;
+    }
+
+    .title-box p {
+      margin: 8px 0 0;
+      font-size: 15px;
+      color: #738476;
+    }
+
+    .start-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 14px 24px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      color: #4f4a2b;
+      background: linear-gradient(135deg, #ffe59a, #ffd57a);
+      box-shadow: 0 10px 22px rgba(235, 188, 70, 0.28);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 26px rgba(235, 188, 70, 0.35);
+    }
+
+    .start-btn:active {
+      transform: scale(0.97);
+    }
+
+    .info-panel {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .info-item {
+      background: linear-gradient(180deg, #ffffff, #f7fff3);
+      border: 2px solid #e6f4df;
+      border-radius: 22px;
+      padding: 14px 16px;
+      text-align: center;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7);
+    }
+
+    .info-item .label {
+      font-size: 13px;
+      color: #8aa18d;
+      margin-bottom: 6px;
+    }
+
+    .info-item .value {
+      font-size: 28px;
+      font-weight: 900;
+      color: #43664a;
+    }
+
+    #gameArea {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 500px;
+      overflow: hidden;
+      border-radius: 30px;
+      border: 4px solid #8ec18f;
+      background:
+        radial-gradient(circle at 20% 15%, rgba(255,255,255,0.55), transparent 20%),
+        radial-gradient(circle at 80% 20%, rgba(255,250,220,0.45), transparent 18%),
+        linear-gradient(180deg, #ccf0ff 0%, #dff8d6 48%, #9dd48f 100%);
+    }
+
+    .sun {
+      position: absolute;
+      top: 28px;
+      right: 40px;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff7bb 20%, #ffe27d 70%);
+      box-shadow: 0 0 24px rgba(255, 224, 111, 0.4);
+      z-index: 0;
+    }
+
+    .hill {
+      position: absolute;
+      border-radius: 50%;
+      z-index: 0;
+    }
+
+    .hill1 {
+      width: 320px;
+      height: 140px;
+      left: -30px;
+      bottom: 36px;
+      background: #9ed48d;
+    }
+
+    .hill2 {
+      width: 360px;
+      height: 155px;
+      left: 220px;
+      bottom: 24px;
+      background: #8fca7d;
+    }
+
+    .hill3 {
+      width: 310px;
+      height: 135px;
+      right: -20px;
+      bottom: 42px;
+      background: #a5da92;
+    }
+
+    .ground {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 82px;
+      background: linear-gradient(180deg, #7dc36f 0%, #5b9d56 100%);
+      z-index: 0;
+      border-top: 4px solid rgba(75, 128, 69, 0.35);
+    }
+
+    .tree {
+      position: absolute;
+      z-index: 0;
+    }
+
+    .tree .trunk {
+      width: 20px;
+      height: 68px;
+      background: #9b6c43;
+      border-radius: 10px;
+      margin: 0 auto;
+    }
+
+    .tree .top {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: #67b66d;
+      margin: 0 auto -10px;
+      box-shadow:
+        -24px 8px 0 0 #7ec97d,
+        24px 8px 0 0 #7bc37a;
+    }
+
+    .tree1 { left: 48px; bottom: 68px; }
+    .tree2 { right: 72px; bottom: 72px; transform: scale(0.95); }
+
+    .grade {
+      position: absolute;
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      user-select: none;
+      cursor: pointer;
+      z-index: 2;
+      border: 3px solid rgba(255,255,255,0.95);
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
+      animation: popIn 0.24s ease, floaty 1.6s ease-in-out infinite alternate;
+      transition: transform 0.12s ease;
+      backdrop-filter: blur(2px);
+    }
+
+    .grade:hover {
+      transform: scale(1.08);
+    }
+
+    .grade:active {
+      transform: scale(0.95);
+    }
+
+    .animal {
+      font-size: 26px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .grade-text {
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .grade.good {
+      background: linear-gradient(135deg, #dff8cc, #f5ffe9);
+      color: #3e7d43;
+    }
+
+    .grade.mid {
+      background: linear-gradient(135deg, #e8f2ff, #f7fbff);
+      color: #446a95;
+    }
+
+    .grade.low {
+      background: linear-gradient(135deg, #fff2cb, #fff9e9);
+      color: #8c6f28;
+    }
+
+    .grade.bad {
+      background: linear-gradient(135deg, #ffe7d1, #fff4ea);
+      color: #956334;
+    }
+
+    .grade.worst {
+      background: linear-gradient(135deg, #f5e7c9, #fff7e7);
+      color: #8b6c35;
+      box-shadow: 0 10px 18px rgba(120, 96, 50, 0.12);
+    }
+
+    .hit-effect {
+      position: absolute;
+      z-index: 5;
+      pointer-events: none;
+      font-size: 19px;
+      font-weight: 900;
+      animation: riseFade 0.7s ease forwards;
+    }
+
+    .result-card {
+      position: relative;
+      z-index: 1;
+      margin-top: 18px;
+      min-height: 84px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, #ffffff, #f8fff4);
+      border: 2px solid #e4f1df;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 16px;
+      color: #5a6f5f;
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .guide {
+      position: relative;
+      z-index: 1;
+      margin-top: 12px;
+      text-align: center;
+      color: #7b9180;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(0.45);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes floaty {
+      from {
+        translate: 0 0;
+      }
+      to {
+        translate: 0 -6px;
+      }
+    }
+
+    @keyframes riseFade {
+      0% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-26px);
+      }
+    }
+
+    .lobby-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #4f7b55;
+      background: #e8f5e9;
+      border: 2px solid #c8e6c9;
+      text-decoration: none;
+      margin-bottom: 14px;
+    }
+
+    .lobby-link:hover {
+      background: #dcf2de;
+    }
+
+    @media (max-width: 700px) {
+      .title-box h1 {
+        font-size: 28px;
+      }
+
+      .info-panel {
+        grid-template-columns: 1fr;
+      }
+
+      #gameArea {
+        height: 420px;
+      }
+
+      .grade {
+        width: 72px;
+        height: 72px;
+      }
+
+      .animal {
+        font-size: 23px;
+      }
+
+      .grade-text {
+        font-size: 16px;
+      }
+
+      .result-card {
+        font-size: 17px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="lobby-link" href="../index.html">← 로비로 돌아가기</a>
+    <div class="game-card">
+      <div class="cloud cloud1">☁️</div>
+      <div class="cloud cloud2">☁️</div>
+      <div class="leaf leaf1">🍃</div>
+      <div class="leaf leaf2">🌿</div>
+      <div class="leaf leaf3">🍃</div>
+      <div class="leaf leaf4">🌿</div>
+      <div class="flower flower1">🌼</div>
+      <div class="flower flower2">🌼</div>
+
+      <div class="top-area">
+        <div class="title-box">
+          <h1>🐾 동물의 왕국 : 학점 사냥</h1>
+          <p>짧은 시간 안에 높은 학점을 많이 잡고, 함정 학점은 피하세요!</p>
+        </div>
+        <button class="start-btn" onclick="startGame()">게임 시작</button>
+      </div>
+
+      <div class="info-panel">
+        <div class="info-item">
+          <div class="label">점수</div>
+          <div class="value" id="score">0</div>
+        </div>
+        <div class="info-item">
+          <div class="label">콤보</div>
+          <div class="value" id="combo">0</div>
+        </div>
+        <div class="info-item">
+          <div class="label">남은 시간</div>
+          <div class="value" id="time">15</div>
+        </div>
+      </div>
+
+      <div id="gameArea">
+        <div class="sun"></div>
+        <div class="tree tree1">
+          <div class="top"></div>
+          <div class="trunk"></div>
+        </div>
+        <div class="tree tree2">
+          <div class="top"></div>
+          <div class="trunk"></div>
+        </div>
+        <div class="hill hill1"></div>
+        <div class="hill hill2"></div>
+        <div class="hill hill3"></div>
+        <div class="ground"></div>
+      </div>
+
+      <div class="result-card" id="result">
+        시작 버튼을 누르면 귀여운 동물 학점들이 숲속에 나타나요!
+      </div>
+
+      <div class="guide">
+        A+ / A는 고득점 · B 계열은 무난 · D와 F는 감점이에요!
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const grades = [
+      { g: "A+", score: 10, type: "good", animal: "🐯" },
+      { g: "A", score: 8, type: "good", animal: "🦁" },
+      { g: "B+", score: 6, type: "mid", animal: "🐴" },
+      { g: "B", score: 5, type: "mid", animal: "🐱" },
+      { g: "C+", score: 3, type: "low", animal: "🦜" },
+      { g: "C", score: 2, type: "low", animal: "🐿️" },
+      { g: "D", score: -2, type: "bad", animal: "🐢" },
+      { g: "F", score: -10, type: "worst", animal: "🦝" }
+    ];
+
+    let score = 0;
+    let combo = 0;
+    let time = 15;
+    let gameInterval = null;
+    let spawnInterval = null;
+    let hardModeInterval = null;
+    let isPlaying = false;
+
+    const scoreEl = document.getElementById("score");
+    const comboEl = document.getElementById("combo");
+    const timeEl = document.getElementById("time");
+    const resultEl = document.getElementById("result");
+    const gameArea = document.getElementById("gameArea");
+
+    function resetUI() {
+      scoreEl.textContent = score;
+      comboEl.textContent = combo;
+      timeEl.textContent = time;
+    }
+
+    function restoreBackgroundObjects() {
+      gameArea.innerHTML = `
+        <div class="sun"></div>
+        <div class="tree tree1">
+          <div class="top"></div>
+          <div class="trunk"></div>
+        </div>
+        <div class="tree tree2">
+          <div class="top"></div>
+          <div class="trunk"></div>
+        </div>
+        <div class="hill hill1"></div>
+        <div class="hill hill2"></div>
+        <div class="hill hill3"></div>
+        <div class="ground"></div>
+      `;
+    }
+
+    function clearGameArea() {
+      gameArea.innerHTML = "";
+    }
+
+    function getNonOverlappingPosition(size, areaWidth, areaHeight) {
+      const existingGrades = Array.from(gameArea.querySelectorAll(".grade"));
+      const maxTries = 50;
+      const minDistance = 82;
+
+      for (let i = 0; i < maxTries; i++) {
+        const x = Math.random() * (areaWidth - size);
+        const y = Math.random() * (areaHeight - size - 70);
+
+        let overlapped = false;
+
+        for (const grade of existingGrades) {
+          const gx = parseFloat(grade.style.left);
+          const gy = parseFloat(grade.style.top);
+
+          const dx = x - gx;
+          const dy = y - gy;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < minDistance) {
+            overlapped = true;
+            break;
+          }
+        }
+
+        if (!overlapped) {
+          return { x, y };
+        }
+      }
+
+      return null;
+    }
+
+    function startGame() {
+      clearInterval(gameInterval);
+      clearInterval(spawnInterval);
+      clearTimeout(hardModeInterval);
+
+      score = 0;
+      combo = 0;
+      time = 15;
+      isPlaying = true;
+
+      restoreBackgroundObjects();
+      resetUI();
+      resultEl.textContent = "게임 시작! 좋은 학점을 빠르게 잡아보세요!";
+
+      spawnInterval = setInterval(spawnGrade, 700);
+
+      hardModeInterval = setTimeout(() => {
+        clearInterval(spawnInterval);
+        spawnInterval = setInterval(spawnGrade, 500);
+      }, 7000);
+
+      gameInterval = setInterval(() => {
+        time--;
+        timeEl.textContent = time;
+
+        if (time <= 0) {
+          endGame();
+        }
+      }, 1000);
+    }
+
+    function spawnGrade() {
+      if (!isPlaying) return;
+
+      const item = grades[Math.floor(Math.random() * grades.length)];
+      const bubble = document.createElement("div");
+      bubble.className = `grade ${item.type}`;
+      bubble.innerHTML = `
+        <div class="animal">${item.animal}</div>
+        <div class="grade-text">${item.g}</div>
+      `;
+
+      const areaWidth = gameArea.clientWidth;
+      const areaHeight = gameArea.clientHeight;
+      const size = 82;
+
+      const pos = getNonOverlappingPosition(size, areaWidth, areaHeight);
+      if (!pos) return;
+
+      const x = pos.x;
+      const y = pos.y;
+
+      bubble.style.left = `${x}px`;
+      bubble.style.top = `${y}px`;
+
+      bubble.onclick = () => {
+        if (!isPlaying) return;
+
+        score += item.score;
+
+        if (item.score > 0) {
+          combo++;
+          if (combo >= 3) {
+            score += 5;
+            showEffect(x + 15, y, "콤보 +5!", "#418554");
+          } else {
+            showEffect(x + 24, y, `+${item.score}`, "#418554");
+          }
+        } else {
+          combo = 0;
+          showEffect(x + 24, y, `${item.score}`, "#b35a60");
+        }
+
+        scoreEl.textContent = score;
+        comboEl.textContent = combo;
+        bubble.remove();
+      };
+
+      gameArea.appendChild(bubble);
+
+      setTimeout(() => {
+        bubble.remove();
+      }, 2200);
+    }
+
+    function showEffect(x, y, text, color) {
+      const fx = document.createElement("div");
+      fx.className = "hit-effect";
+      fx.textContent = text;
+      fx.style.left = `${x}px`;
+      fx.style.top = `${y}px`;
+      fx.style.color = color;
+      gameArea.appendChild(fx);
+
+      setTimeout(() => fx.remove(), 700);
+    }
+
+    function endGame() {
+      clearInterval(gameInterval);
+      clearInterval(spawnInterval);
+      clearTimeout(hardModeInterval);
+
+      isPlaying = false;
+      clearGameArea();
+
+      let message = "";
+
+      if (score >= 90) {
+        message = "완벽한 학점 사냥! 엄청난 실력이에요.";
+      } else if (score >= 70) {
+        message = "훌륭한 성과예요! 상위권 점수입니다.";
+      } else if (score >= 50) {
+        message = "좋은 기록이에요! 조금만 더 빨라지면 돼요.";
+      } else if (score >= 30) {
+        message = "나쁘지 않아요. 다음 판엔 더 집중해봐요.";
+      } else {
+        message = "이번에는 아쉬웠어요. 다시 도전해보세요!";
+      }
+
+      resultEl.textContent = `최종 점수 ${score}점 · ${message}`;
+    }
+  </script>
+</body>
+</html>

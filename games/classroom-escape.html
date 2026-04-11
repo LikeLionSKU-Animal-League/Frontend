@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>교수님 몰래 강의실 탈출</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Arial", "맑은 고딕", sans-serif;
+      background: linear-gradient(180deg, #d8ebff 0%, #f7fbff 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #263746;
+    }
+
+    .wrap {
+      width: 1180px;
+      max-width: 96vw;
+      padding: 18px;
+    }
+
+    .shell {
+      background: rgba(255,255,255,0.97);
+      border: 3px solid #dde9f5;
+      border-radius: 28px;
+      padding: 18px;
+      box-shadow: 0 18px 42px rgba(62, 95, 130, 0.16);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: 32px;
+      color: #304e6f;
+    }
+
+    .title p {
+      margin: 6px 0 0;
+      font-size: 14px;
+      color: #698198;
+    }
+
+    .status {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .status-box {
+      min-width: 120px;
+      padding: 10px 14px;
+      text-align: center;
+      border-radius: 16px;
+      background: #f7fbff;
+      border: 2px solid #e0ebf6;
+    }
+
+    .status-label {
+      font-size: 12px;
+      color: #7a90a4;
+      margin-bottom: 4px;
+    }
+
+    .status-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #2e4b69;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .lobby-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #304e6f;
+      background: #e8f2fc;
+      border: 2px solid #cfe3f5;
+      text-decoration: none;
+      margin-bottom: 10px;
+    }
+
+    .lobby-link:hover {
+      background: #dceaf9;
+    }
+
+    #restartBtn {
+      background: linear-gradient(135deg, #ffe18a, #ffcd67);
+      color: #664a10;
+      box-shadow: 0 10px 22px rgba(216, 170, 58, 0.22);
+    }
+
+    #message {
+      flex: 1;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      border-radius: 16px;
+      background: #f7fbff;
+      border: 2px solid #e1ebf5;
+      color: #60788d;
+      font-weight: 700;
+    }
+
+    #game {
+      position: relative;
+      width: 100%;
+      height: 720px;
+      overflow: hidden;
+      border-radius: 24px;
+      border: 4px solid #8faec8;
+      background: #d8b587;
+    }
+
+    .wall {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 220px;
+      background: linear-gradient(180deg, #eef6ff 0%, #f9fcff 100%);
+      z-index: 0;
+    }
+
+    .floor {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 500px;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          #ddb98b 0 48px,
+          #d4af82 48px 50px
+        );
+      z-index: 0;
+    }
+
+    .board {
+      position: absolute;
+      left: 350px;
+      top: 34px;
+      width: 470px;
+      height: 120px;
+      background: linear-gradient(180deg, #2d8054 0%, #246846 100%);
+      border: 10px solid #9b6a3f;
+      border-radius: 12px;
+      z-index: 1;
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.08);
+    }
+
+    .board::after {
+      content: "오늘의 수업 : 끝까지 집중하세요";
+      position: absolute;
+      left: 24px;
+      top: 38px;
+      color: rgba(255,255,255,0.9);
+      font-size: 25px;
+      font-weight: 700;
+    }
+
+    .window {
+      position: absolute;
+      top: 36px;
+      width: 160px;
+      height: 110px;
+      background: linear-gradient(180deg, #c7ebff 0%, #ebf9ff 100%);
+      border: 8px solid #d5dfe8;
+      border-radius: 12px;
+      z-index: 1;
+    }
+
+    .window.left { left: 60px; }
+    .window.right { right: 60px; }
+
+    .window::before,
+    .window::after {
+      content: "";
+      position: absolute;
+      background: rgba(255,255,255,0.72);
+    }
+
+    .window::before {
+      width: 4px;
+      height: 100%;
+      left: 50%;
+      top: 0;
+      transform: translateX(-50%);
+    }
+
+    .window::after {
+      width: 100%;
+      height: 4px;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .teacher-desk {
+      position: absolute;
+      left: 445px;
+      top: 178px;
+      width: 280px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #a9784a 0%, #8d5f37 100%);
+      z-index: 1;
+      box-shadow: inset 0 -4px 0 rgba(0,0,0,0.08);
+    }
+
+    .door {
+      position: absolute;
+      right: 18px;
+      bottom: 190px;
+      width: 92px;
+      height: 170px;
+      border-radius: 16px 16px 0 0;
+      background: linear-gradient(180deg, #85552f 0%, #6d3f20 100%);
+      border: 5px solid #5e361c;
+      z-index: 1;
+    }
+
+    .door::after {
+      content: "";
+      position: absolute;
+      right: 16px;
+      top: 80px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #f4d36a;
+    }
+
+    .door-lock {
+      position: absolute;
+      right: 120px;
+      bottom: 238px;
+      z-index: 2;
+      font-size: 28px;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
+    }
+
+    #passItem {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff0a8 20%, #ffd45f 70%);
+      border: 3px solid white;
+      z-index: 7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      box-shadow: 0 10px 16px rgba(226, 180, 60, 0.28);
+    }
+
+    #passItem::after { content: "🪪"; }
+
+    .desk {
+      position: absolute;
+      width: 64px;
+      height: 32px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #c98c58 0%, #b07343 100%);
+      border: 3px solid #8d5c34;
+      z-index: 2;
+      box-shadow: inset 0 -4px 0 rgba(0,0,0,0.08);
+    }
+
+    .desk::before,
+    .desk::after {
+      content: "";
+      position: absolute;
+      bottom: -9px;
+      width: 6px;
+      height: 12px;
+      background: #6e4a2a;
+      border-radius: 3px;
+    }
+
+    .desk::before { left: 12px; }
+    .desk::after { right: 12px; }
+
+    #player {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #76c8ff 0%, #4599df 100%);
+      border: 3px solid white;
+      z-index: 10;
+      box-shadow: 0 8px 14px rgba(33, 87, 147, 0.24);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 17px;
+    }
+
+    #player::after { content: "🎓"; }
+
+    .professor {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
+      z-index: 9;
+      pointer-events: none;
+      filter: drop-shadow(0 6px 8px rgba(0,0,0,0.16));
+    }
+
+    .prof-shadow {
+      position: absolute;
+      width: 54px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.15);
+      z-index: 4;
+      pointer-events: none;
+      filter: blur(2px);
+    }
+
+    .vision {
+      position: absolute;
+      z-index: 5;
+      pointer-events: none;
+      filter: blur(1px);
+      transform-origin: center center;
+      background: linear-gradient(90deg, rgba(255, 72, 72, 0.30), rgba(255, 72, 72, 0.04));
+      clip-path: polygon(0 50%, 100% 0, 100% 100%);
+    }
+
+    .legend {
+      position: absolute;
+      left: 18px;
+      bottom: 16px;
+      z-index: 12;
+      padding: 11px 13px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.8);
+      border: 2px solid rgba(142, 169, 197, 0.36);
+      font-size: 13px;
+      color: #506478;
+      line-height: 1.6;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(17, 24, 33, 0.44);
+      backdrop-filter: blur(3px);
+      z-index: 30;
+    }
+
+    .overlay-card {
+      width: min(560px, 92%);
+      padding: 28px 24px;
+      border-radius: 26px;
+      background: white;
+      border: 3px solid #e8f0f6;
+      box-shadow: 0 22px 36px rgba(0,0,0,0.18);
+      text-align: center;
+    }
+
+    .overlay-card h2 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      color: #304b68;
+    }
+
+    .overlay-card p {
+      margin: 0 0 18px;
+      font-size: 17px;
+      color: #6a8095;
+      line-height: 1.7;
+    }
+
+    .overlay-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    #nextStageBtn {
+      display: none;
+      background: linear-gradient(135deg, #8fe28f, #5cbf69);
+      color: white;
+      box-shadow: 0 10px 22px rgba(84, 176, 98, 0.24);
+    }
+
+    #overlayStartBtn {
+      background: linear-gradient(135deg, #71c3ff, #4a9fe3);
+      color: white;
+      box-shadow: 0 10px 22px rgba(60, 148, 225, 0.24);
+    }
+
+    #overlayRestartBtn {
+      background: linear-gradient(135deg, #ffe08a, #ffcd67);
+      color: #64490f;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="lobby-link" href="../index.html">← 로비로 돌아가기</a>
+    <div class="shell">
+      <div class="topbar">
+        <div class="title">
+          <h1>🏫 교수님 몰래 강의실 탈출</h1>
+          <p>학생증을 먼저 챙기고 문으로 탈출하세요. 단계가 올라갈수록 교수님 동선이 더 복잡해집니다.</p>
+        </div>
+
+        <div class="status">
+          <div class="status-box">
+            <div class="status-label">단계</div>
+            <div class="status-value" id="stageText">1 / 5</div>
+          </div>
+          <div class="status-box">
+            <div class="status-label">남은 시간</div>
+            <div class="status-value" id="timeText">35</div>
+          </div>
+          <div class="status-box">
+            <div class="status-label">상태</div>
+            <div class="status-value" id="stateText">대기</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="restartBtn">현재 단계 다시</button>
+        <div id="message">오버레이의 시작 버튼으로 진행하세요. 학생증을 챙긴 뒤 문으로 탈출하면 됩니다.</div>
+      </div>
+
+      <div id="game">
+        <div class="wall"></div>
+        <div class="floor"></div>
+        <div class="window left"></div>
+        <div class="window right"></div>
+        <div class="board"></div>
+        <div class="teacher-desk"></div>
+
+        <div class="door" id="exitDoor"></div>
+        <div class="door-lock" id="doorLock">🔒</div>
+        <div id="passItem"></div>
+
+        <div id="deskLayer"></div>
+        <div id="profLayer"></div>
+
+        <div id="player"></div>
+
+        <div class="legend">
+          이동: ← ↑ ↓ →<br>
+          미션: 학생증 획득 후 탈출<br>
+          교수 시야 = 즉시 게임 오버
+        </div>
+
+        <div class="overlay" id="overlay">
+          <div class="overlay-card">
+            <h2 id="overlayTitle">게임 준비</h2>
+            <p id="overlayDesc">버튼을 누르면 1단계가 시작됩니다.</p>
+            <div class="overlay-actions">
+              <button id="overlayStartBtn">시작</button>
+              <button id="overlayRestartBtn">다시 준비</button>
+              <button id="nextStageBtn">다음 단계</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const GAME_WIDTH = 1140;
+    const GAME_HEIGHT = 720;
+    const PLAYER_SIZE = 32;
+    const PLAYER_SPEED = 5.0;
+    const PASS_SIZE = 40;
+
+    const player = document.getElementById("player");
+    const deskLayer = document.getElementById("deskLayer");
+    const profLayer = document.getElementById("profLayer");
+    const passItem = document.getElementById("passItem");
+    const exitDoor = document.getElementById("exitDoor");
+    const doorLock = document.getElementById("doorLock");
+
+    const stageText = document.getElementById("stageText");
+    const timeText = document.getElementById("timeText");
+    const stateText = document.getElementById("stateText");
+    const message = document.getElementById("message");
+
+    const overlay = document.getElementById("overlay");
+    const overlayTitle = document.getElementById("overlayTitle");
+    const overlayDesc = document.getElementById("overlayDesc");
+    const nextStageBtn = document.getElementById("nextStageBtn");
+    const overlayStartBtn = document.getElementById("overlayStartBtn");
+    const overlayRestartBtn = document.getElementById("overlayRestartBtn");
+
+    const restartBtn = document.getElementById("restartBtn");
+
+    function makeDeskGrid(colsByRow, rowYs) {
+      const desks = [];
+      rowYs.forEach((y, rowIndex) => {
+        colsByRow[rowIndex].forEach((x) => desks.push({ x, y }));
+      });
+      return desks;
+    }
+
+    const wideDeskLayout = makeDeskGrid(
+      [
+        [110, 280, 450, 620, 790, 960],
+        [195, 365, 535, 705, 875],
+        [110, 280, 450, 620, 790, 960]
+      ],
+      [305, 435, 565]
+    );
+
+    const stageConfigs = [
+      {
+        time: 35,
+        pass: { x: 955, y: 575 },
+        desks: wideDeskLayout,
+        professor: {
+          x: 160, y: 150, speed: 2.0, vision: 165, visionWidth: 86,
+          waypoints: [{x:160,y:150},{x:950,y:150}]
+        }
+      },
+      {
+        time: 31,
+        pass: { x: 180, y: 575 },
+        desks: wideDeskLayout,
+        professor: {
+          x: 160, y: 150, speed: 2.4, vision: 175, visionWidth: 90,
+          waypoints: [{x:160,y:150},{x:950,y:150},{x:950,y:270},{x:160,y:270}]
+        }
+      },
+      {
+        time: 28,
+        pass: { x: 955, y: 315 },
+        desks: wideDeskLayout,
+        professor: {
+          x: 160, y: 150, speed: 2.7, vision: 185, visionWidth: 94,
+          waypoints: [
+            {x:160,y:150},{x:950,y:150},{x:950,y:310},
+            {x:780,y:610},{x:250,y:610},{x:160,y:360}
+          ]
+        }
+      },
+      {
+        time: 25,
+        pass: { x: 535, y: 435 },
+        desks: wideDeskLayout,
+        professor: {
+          x: 160, y: 150, speed: 3.0, vision: 195, visionWidth: 98,
+          waypoints: [
+            {x:160,y:150},{x:950,y:150},{x:950,y:330},
+            {x:1020,y:610},{x:730,y:610},{x:410,y:330},
+            {x:160,y:610},{x:160,y:260}
+          ]
+        }
+      },
+      {
+        time: 22,
+        pass: { x: 955, y: 575 },
+        desks: wideDeskLayout,
+        professor: {
+          x: 160, y: 150, speed: 3.4, vision: 210, visionWidth: 105,
+          waypoints: [
+            {x:160,y:150},{x:950,y:150},{x:1000,y:320},
+            {x:1030,y:610},{x:760,y:610},{x:535,y:435},
+            {x:250,y:610},{x:110,y:420},{x:160,y:260}
+          ]
+        }
+      }
+    ];
+
+    let currentStage = 0;
+    let remainingTime = stageConfigs[0].time;
+    let gameStarted = false;
+    let gameEnded = false;
+    let hasPass = false;
+
+    let playerX = 42;
+    let playerY = 655;
+
+    let desks = [];
+    let professor = null;
+
+    let timerInterval = null;
+    let loopId = null;
+
+    const keys = {
+      ArrowUp: false,
+      ArrowDown: false,
+      ArrowLeft: false,
+      ArrowRight: false
+    };
+
+    function setMessage(text) {
+      message.textContent = text;
+    }
+
+    function showOverlay(title, desc, mode = "start") {
+      overlayTitle.textContent = title;
+      overlayDesc.textContent = desc;
+      overlay.style.display = "flex";
+
+      if (mode === "clear") {
+        overlayStartBtn.style.display = "none";
+        nextStageBtn.style.display = "inline-block";
+      } else {
+        overlayStartBtn.style.display = "inline-block";
+        nextStageBtn.style.display = "none";
+      }
+    }
+
+    function hideOverlay() {
+      overlay.style.display = "none";
+    }
+
+    function getRect(x, y, w, h) {
+      return { left: x, top: y, right: x + w, bottom: y + h };
+    }
+
+    function rectsIntersect(a, b) {
+      return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+    }
+
+    function setPlayerPosition(x, y) {
+      playerX = x;
+      playerY = y;
+      player.style.left = `${playerX}px`;
+      player.style.top = `${playerY}px`;
+    }
+
+    function clearStageObjects() {
+      deskLayer.innerHTML = "";
+      profLayer.innerHTML = "";
+      desks = [];
+      professor = null;
+    }
+
+    function buildStage(stageIndex) {
+      clearStageObjects();
+
+      const config = stageConfigs[stageIndex];
+      stageText.textContent = `${stageIndex + 1} / 5`;
+      remainingTime = config.time;
+      timeText.textContent = remainingTime;
+      stateText.textContent = "대기";
+
+      config.desks.forEach((d) => {
+        const el = document.createElement("div");
+        el.className = "desk";
+        el.style.left = `${d.x}px`;
+        el.style.top = `${d.y}px`;
+        deskLayer.appendChild(el);
+
+        desks.push({
+          x: d.x,
+          y: d.y,
+          w: 64,
+          h: 44
+        });
+      });
+
+      const cone = document.createElement("div");
+      cone.className = "vision";
+
+      const shadow = document.createElement("div");
+      shadow.className = "prof-shadow";
+
+      const img = document.createElement("img");
+      img.className = "professor";
+      img.src = "../assets/professor.svg";
+      img.alt = "교수님";
+
+      profLayer.appendChild(cone);
+      profLayer.appendChild(shadow);
+      profLayer.appendChild(img);
+
+      professor = {
+        ...JSON.parse(JSON.stringify(config.professor)),
+        el: img,
+        cone,
+        shadow,
+        currentWaypoint: 1,
+        directionX: 1,
+        directionY: 0,
+        angleDeg: 0
+      };
+
+      hasPass = false;
+
+const safePass = findSafePassPosition();
+
+passItem.style.left = `${safePass.x}px`;
+passItem.style.top = `${safePass.y}px`;
+
+passItem.style.display = "flex";
+
+doorLock.textContent = "🔒";
+
+      setPlayerPosition(42, 655);
+      updateProfessorVisual();
+    }
+
+    function updateProfessorVisual() {
+      if (!professor) return;
+
+      professor.el.style.left = `${professor.x}px`;
+      professor.el.style.top = `${professor.y}px`;
+
+      professor.shadow.style.left = `${professor.x + 8}px`;
+      professor.shadow.style.top = `${professor.y + 56}px`;
+
+      professor.el.style.transform = `rotate(${professor.angleDeg}deg)`;
+
+      professor.cone.style.width = `${professor.vision}px`;
+      professor.cone.style.height = `${professor.visionWidth}px`;
+
+      const centerX = professor.x + 35;
+      const centerY = professor.y + 35;
+
+      professor.cone.style.left = `${centerX - 8}px`;
+      professor.cone.style.top = `${centerY - professor.visionWidth / 2}px`;
+      professor.cone.style.transform = `rotate(${professor.angleDeg}deg)`;
+    }
+
+    function prepareStage() {
+      clearInterval(timerInterval);
+      cancelAnimationFrame(loopId);
+      gameStarted = false;
+      gameEnded = false;
+
+      buildStage(currentStage);
+      showOverlay(
+        `스테이지 ${currentStage + 1}`,
+        `준비가 되면 시작 버튼을 눌러 진행하세요. 학생증을 챙기고 탈출해야 합니다.`,
+        "start"
+      );
+      setMessage("책상 간격을 넓혀서 사이로 지나가기 쉽게 조정했어요.");
+    }
+
+    function startStage() {
+      clearInterval(timerInterval);
+      cancelAnimationFrame(loopId);
+
+      const config = stageConfigs[currentStage];
+      remainingTime = config.time;
+      timeText.textContent = remainingTime;
+      stateText.textContent = "진행 중";
+      gameStarted = true;
+      gameEnded = false;
+      hasPass = false;
+      passItem.style.display = "flex";
+      doorLock.textContent = "🔒";
+      setPlayerPosition(42, 655);
+
+      professor.x = config.professor.x;
+      professor.y = config.professor.y;
+      professor.currentWaypoint = 1;
+      professor.directionX = 1;
+      professor.directionY = 0;
+      professor.angleDeg = 0;
+      updateProfessorVisual();
+
+      hideOverlay();
+      setMessage(`스테이지 ${currentStage + 1} 시작! 학생증부터 챙기세요.`);
+
+      timerInterval = setInterval(() => {
+        if (gameEnded) return;
+        remainingTime--;
+        timeText.textContent = remainingTime;
+
+        if (remainingTime <= 0) {
+          failStage("⏰ 시간 초과!", "제한 시간 안에 강의실을 빠져나가지 못했어요.");
+        }
+      }, 1000);
+
+      loop();
+    }
+
+    function goToNextStage() {
+      if (currentStage < 4) {
+        currentStage++;
+        prepareStage();
+      }
+    }
+
+    function completeStage() {
+  clearInterval(timerInterval);
+  cancelAnimationFrame(loopId);
+
+  gameEnded = true;
+  gameStarted = false;
+  stateText.textContent = "성공";
+
+  if (currentStage === 4) {
+    overlayStartBtn.style.display = "none";
+    overlayRestartBtn.style.display = "none";
+    nextStageBtn.style.display = "none";
+
+    showOverlay(
+      "🏆 전체 클리어!",
+      "1단계부터 5단계까지 모두 탈출 성공! 게임이 끝났습니다.",
+      "end"
+    );
+
+    setMessage("전체 스테이지 클리어!");
+  } else {
+    overlayStartBtn.style.display = "none";
+    overlayRestartBtn.style.display = "inline-block";
+    nextStageBtn.style.display = "inline-block";
+
+    showOverlay(
+      `✅ 스테이지 ${currentStage + 1} 클리어!`,
+      `다음 단계를 누르면 ${currentStage + 2}단계 준비 화면으로 이동합니다.`,
+      "clear"
+    );
+
+    setMessage(`스테이지 ${currentStage + 1} 클리어!`);
+  }
+}
+
+    function failStage(title, desc) {
+      clearInterval(timerInterval);
+      cancelAnimationFrame(loopId);
+      gameEnded = true;
+      gameStarted = false;
+      stateText.textContent = "실패";
+      showOverlay(title, desc, "start");
+      setMessage("게임 오버");
+    }
+
+    function movePlayer() {
+      let dx = 0;
+      let dy = 0;
+
+      if (keys.ArrowUp) dy -= PLAYER_SPEED;
+      if (keys.ArrowDown) dy += PLAYER_SPEED;
+      if (keys.ArrowLeft) dx -= PLAYER_SPEED;
+      if (keys.ArrowRight) dx += PLAYER_SPEED;
+
+      if (dx === 0 && dy === 0) return;
+
+      let nextX = Math.max(0, Math.min(GAME_WIDTH - PLAYER_SIZE, playerX + dx));
+      let nextY = Math.max(0, Math.min(GAME_HEIGHT - PLAYER_SIZE, playerY + dy));
+
+      const xRect = getRect(nextX, playerY, PLAYER_SIZE, PLAYER_SIZE);
+      if (!collidesWithDesks(xRect)) {
+        playerX = nextX;
+      }
+
+      const yRect = getRect(playerX, nextY, PLAYER_SIZE, PLAYER_SIZE);
+      if (!collidesWithDesks(yRect)) {
+        playerY = nextY;
+      }
+
+      setPlayerPosition(playerX, playerY);
+    }
+
+    function collidesWithDesks(rect) {
+      return desks.some((d) => rectsIntersect(rect, getRect(d.x, d.y, d.w, d.h)));
+    }
+
+    function rectOverlapsDesk(rect) {
+  return desks.some((d) => rectsIntersect(rect, getRect(d.x, d.y, d.w, d.h)));
+}
+
+function findSafePassPosition() {
+
+  const maxTries = 200;
+
+  for (let i = 0; i < maxTries; i++) {
+
+    const x = 80 + Math.random() * (GAME_WIDTH - 220);
+    const y = 260 + Math.random() * (GAME_HEIGHT - 360);
+
+    const passRect = getRect(x, y, PASS_SIZE, PASS_SIZE);
+
+    const doorRect = getRect(
+      exitDoor.offsetLeft - 40,
+      exitDoor.offsetTop - 40,
+      exitDoor.offsetWidth + 80,
+      exitDoor.offsetHeight + 80
+    );
+
+    const profRect = getRect(
+      professor.x - 50,
+      professor.y - 50,
+      170,
+      170
+    );
+
+    if (rectOverlapsDesk(passRect)) continue;
+    if (rectsIntersect(passRect, doorRect)) continue;
+    if (rectsIntersect(passRect, profRect)) continue;
+
+    return { x, y };
+  }
+
+  return { x: 180, y: 260 };
+}
+
+    function moveProfessor() {
+      const target = professor.waypoints[professor.currentWaypoint];
+      const dx = target.x - professor.x;
+      const dy = target.y - professor.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < professor.speed + 1) {
+        professor.x = target.x;
+        professor.y = target.y;
+        professor.currentWaypoint = (professor.currentWaypoint + 1) % professor.waypoints.length;
+      } else {
+        const nx = dx / distance;
+        const ny = dy / distance;
+
+        professor.x += nx * professor.speed;
+        professor.y += ny * professor.speed;
+        professor.directionX = nx;
+        professor.directionY = ny;
+        professor.angleDeg = Math.atan2(ny, nx) * (180 / Math.PI);
+      }
+
+      updateProfessorVisual();
+    }
+
+    function isPlayerInVision() {
+      const playerCenterX = playerX + PLAYER_SIZE / 2;
+      const playerCenterY = playerY + PLAYER_SIZE / 2;
+      const profCenterX = professor.x + 35;
+      const profCenterY = professor.y + 35;
+
+      const dx = playerCenterX - profCenterX;
+      const dy = playerCenterY - profCenterY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance > professor.vision) return false;
+
+      const facingAngle = Math.atan2(professor.directionY, professor.directionX);
+      const targetAngle = Math.atan2(dy, dx);
+
+      let diff = Math.abs(facingAngle - targetAngle);
+      if (diff > Math.PI) diff = (Math.PI * 2) - diff;
+
+      const halfFov = Math.atan2(professor.visionWidth / 2, professor.vision);
+      return diff <= halfFov;
+    }
+
+    function checkCaught() {
+      if (isPlayerInVision()) {
+        failStage("🚨 교수님에게 들켰어요!", "교수님은 이제 모든 방향으로 움직입니다. 동선을 잘 보고 다시 도전해보세요.");
+        return true;
+      }
+      return false;
+    }
+
+    function checkPassPickup() {
+      if (hasPass) return;
+
+      const playerRect = getRect(playerX, playerY, PLAYER_SIZE, PLAYER_SIZE);
+      const passRect = getRect(
+        parseFloat(passItem.style.left),
+        parseFloat(passItem.style.top),
+        PASS_SIZE,
+        PASS_SIZE
+      );
+
+      if (rectsIntersect(playerRect, passRect)) {
+        hasPass = true;
+        passItem.style.display = "none";
+        doorLock.textContent = "🔓";
+        setMessage("학생증 획득! 이제 문으로 탈출할 수 있어요.");
+      }
+    }
+
+    function checkExit() {
+      if (!hasPass) return false;
+
+      const playerRect = getRect(playerX, playerY, PLAYER_SIZE, PLAYER_SIZE);
+      const doorRect = getRect(
+        exitDoor.offsetLeft,
+        exitDoor.offsetTop,
+        exitDoor.offsetWidth,
+        exitDoor.offsetHeight
+      );
+
+      return rectsIntersect(playerRect, doorRect);
+    }
+
+    function loop() {
+      if (gameEnded) return;
+
+      movePlayer();
+      moveProfessor();
+      checkPassPickup();
+
+      if (checkCaught()) return;
+
+      if (checkExit()) {
+        completeStage();
+        return;
+      }
+
+      loopId = requestAnimationFrame(loop);
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key in keys) {
+        keys[e.key] = true;
+        e.preventDefault();
+      }
+    });
+
+    document.addEventListener("keyup", (e) => {
+      if (e.key in keys) {
+        keys[e.key] = false;
+        e.preventDefault();
+      }
+    });
+
+    restartBtn.addEventListener("click", prepareStage);
+    overlayRestartBtn.addEventListener("click", prepareStage);
+    overlayStartBtn.addEventListener("click", startStage);
+    nextStageBtn.addEventListener("click", goToNextStage);
+
+    buildStage(currentStage);
+    showOverlay(
+      "게임 준비",
+      "오버레이의 시작 버튼을 눌러 1단계를 시작하세요. 학생증을 챙기고 교수님을 피해 탈출하면 됩니다.",
+      "start"
+    );
+  </script>
+</body>
+</html>
