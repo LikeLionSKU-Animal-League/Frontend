@@ -1049,7 +1049,11 @@
     ];
 
     const STORAGE_SCHOOL = "animalLeagueSchool";
-    const API_BASE = window.ANIMAL_LEAGUE_API || "http://localhost:3000";
+    const API_BASE =
+      window.ANIMAL_LEAGUE_API ||
+      (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+        ? "http://localhost:3000"
+        : "https://backend-jso9.onrender.com");
 
     const introScreen = document.getElementById("introScreen");
     const lobbyScreen = document.getElementById("lobbyScreen");
