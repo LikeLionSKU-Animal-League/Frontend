@@ -571,7 +571,7 @@
     const KAKAO_JS_APP_KEY = "fa75c82718597e9124f913d174cd92a2";
 
     const SHARE_SITE_ORIGIN = "https://campus-animal-battle.vercel.app";
-    const SHARE_IMAGE_URL = `${SHARE_SITE_ORIGIN}/og-image.png`;
+    const SHARE_FEED_IMAGE_URL = `${SHARE_SITE_ORIGIN}/game-preview.png`;
 
     function buildShareLobbyUrl() {
       const school = getLeagueSchool();
@@ -595,14 +595,8 @@
       kakaoShareWrap.classList.add("hidden");
     }
 
-    function mountKakaoDefaultShareButton(score) {
+    function mountKakaoDefaultShareButton() {
       if (!kakaoShareWrap) return;
-
-      const s = Math.round(Number(score));
-      if (!Number.isFinite(s)) {
-        clearKakaoShareMount();
-        return;
-      }
 
       kakaoShareWrap.classList.remove("hidden");
       kakaoShareWrap.innerHTML =
@@ -624,9 +618,9 @@
         container: "#kakaotalk-sharing-btn",
         objectType: "feed",
         content: {
-          title: "캠퍼스 애니멀 배틀 결과!",
-          description: `내 점수는 ${s}점이야! 나보다 더 높은 점수를 얻을 수 있어?`,
-          imageUrl: SHARE_IMAGE_URL,
+          title: "캠퍼스 애니멀 배틀 🐾",
+          description: "귀여운 동물들과 함께하는 랭킹전, 도전해볼래?",
+          imageUrl: SHARE_FEED_IMAGE_URL,
           link: {
             mobileWebUrl: shareLobbyUrl,
             webUrl: shareLobbyUrl
@@ -634,7 +628,7 @@
         },
         buttons: [
           {
-            title: "나도 도전하기",
+            title: "게임 시작하기",
             link: {
               mobileWebUrl: shareLobbyUrl,
               webUrl: shareLobbyUrl
@@ -815,7 +809,7 @@
         overlayStartBtn.style.display = "none";
         overlayRestartBtn.style.display = "inline-block";
         nextStageBtn.style.display = "none";
-        mountKakaoDefaultShareButton(lastClassroomEscapeTotalScore);
+        mountKakaoDefaultShareButton();
       } else {
         overlayStartBtn.style.display = "inline-block";
         overlayRestartBtn.style.display = "inline-block";

@@ -587,7 +587,7 @@
 
     /** 공유 링크·썸네일에 쓰는 사이트 기준 URL (로컬 테스트 시에는 origin 사용) */
     const SHARE_SITE_ORIGIN = "https://campus-animal-battle.vercel.app";
-    const SHARE_IMAGE_URL = `${SHARE_SITE_ORIGIN}/og-image.png`;
+    const SHARE_FEED_IMAGE_URL = `${SHARE_SITE_ORIGIN}/game-preview.png`;
 
     /** 인트로 생략 → 로비(또는 학교 입력)로 바로 진입. index.html `wantsLobbyFromQuery`와 동일 쿼리 규약 */
     function buildShareLobbyUrl() {
@@ -612,18 +612,11 @@
 
     /**
      * 카카오 공식 가이드의 createDefaultButton 패턴.
-     * 매 게임마다 점수가 달라지므로 컨테이너를 비운 뒤 앵커를 다시 만들고 바인딩합니다.
-     * @param {number} score
+     * 매 판마다 버튼을 새로 붙이기 위해 컨테이너를 비운 뒤 앵커를 다시 만들고 바인딩합니다.
      */
-    function mountKakaoDefaultShareButton(score) {
+    function mountKakaoDefaultShareButton() {
       const wrap = document.getElementById("kakaoShareWrap");
       if (!wrap) return;
-
-      const s = Math.round(Number(score));
-      if (!Number.isFinite(s)) {
-        clearKakaoShareMount();
-        return;
-      }
 
       wrap.classList.remove("hidden");
       wrap.innerHTML =
@@ -645,9 +638,9 @@
         container: "#kakaotalk-sharing-btn",
         objectType: "feed",
         content: {
-          title: "캠퍼스 애니멀 배틀 결과!",
-          description: `내 점수는 ${s}점이야! 나보다 더 높은 점수를 얻을 수 있어?`,
-          imageUrl: SHARE_IMAGE_URL,
+          title: "캠퍼스 애니멀 배틀 🐾",
+          description: "귀여운 동물들과 함께하는 랭킹전, 도전해볼래?",
+          imageUrl: SHARE_FEED_IMAGE_URL,
           link: {
             mobileWebUrl: shareLobbyUrl,
             webUrl: shareLobbyUrl
@@ -655,7 +648,7 @@
         },
         buttons: [
           {
-            title: "나도 도전하기",
+            title: "게임 시작하기",
             link: {
               mobileWebUrl: shareLobbyUrl,
               webUrl: shareLobbyUrl
@@ -872,7 +865,7 @@
       }
 
       resultEl.textContent = `최종 점수 ${score}점 · ${message}`;
-      mountKakaoDefaultShareButton(score);
+      mountKakaoDefaultShareButton();
       submitScoreToLeague("grade-hunt", score);
     }
   </script>
