@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>사자의 길 건너기</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Arial", "맑은 고딕", sans-serif;
+      background: linear-gradient(180deg, #d8ebff 0%, #f7fbff 100%);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      color: #263746;
+      padding: 24px 12px 40px;
+    }
+
+    .wrap {
+      width: min(560px, 96vw);
+    }
+
+    .shell {
+      background: rgba(255,255,255,0.97);
+      border: 3px solid #dde9f5;
+      border-radius: 28px;
+      padding: 18px;
+      box-shadow: 0 18px 42px rgba(62, 95, 130, 0.16);
+    }
+
+    .lobby-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #304e6f;
+      background: #e8f2fc;
+      border: 2px solid #cfe3f5;
+      text-decoration: none;
+      margin-bottom: 12px;
+    }
+    .lobby-link:hover { background: #dceaf9; }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: 26px;
+      color: #304e6f;
+    }
+
+    .title p {
+      margin: 6px 0 0;
+      font-size: 13px;
+      color: #698198;
+    }
+
+    .status {
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .status-box {
+      min-width: 78px;
+      padding: 8px 12px;
+      text-align: center;
+      border-radius: 16px;
+      background: #f7fbff;
+      border: 2px solid #e0ebf6;
+    }
+
+    .status-label {
+      font-size: 11px;
+      color: #7a90a4;
+      margin-bottom: 3px;
+    }
+
+    .status-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #2e4b69;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 11px 18px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    button:hover { transform: translateY(-1px); }
+
+    #restartBtn {
+      background: linear-gradient(135deg, #ffe18a, #ffcd67);
+      color: #664a10;
+      box-shadow: 0 8px 18px rgba(216, 170, 58, 0.22);
+      white-space: nowrap;
+    }
+
+    #message {
+      flex: 1;
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      border-radius: 16px;
+      background: #f7fbff;
+      border: 2px solid #e1ebf5;
+      color: #60788d;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    #game {
+      position: relative;
+      border-radius: 18px;
+      border: 3px solid #8faec8;
+      overflow: hidden;
+      line-height: 0;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .legend {
+      margin-top: 10px;
+      padding: 8px 14px;
+      border-radius: 14px;
+      background: #f7fbff;
+      border: 2px solid #e1ebf5;
+      font-size: 12px;
+      color: #60788d;
+      font-weight: 700;
+    }
+
+    /* 오버레이 */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(17, 24, 33, 0.44);
+      backdrop-filter: blur(3px);
+      z-index: 30;
+    }
+
+    .overlay-card {
+      width: min(340px, 88%);
+      padding: 26px 22px;
+      border-radius: 24px;
+      background: white;
+      border: 3px solid #e8f0f6;
+      box-shadow: 0 20px 36px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    .overlay-card h2 {
+      margin: 0 0 10px;
+      font-size: 28px;
+      color: #304b68;
+    }
+
+    .overlay-card p {
+      margin: 0 0 18px;
+      font-size: 15px;
+      color: #6a8095;
+      line-height: 1.7;
+    }
+
+    .overlay-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    #overlayStartBtn {
+      background: linear-gradient(135deg, #71c3ff, #4a9fe3);
+      color: white;
+      box-shadow: 0 10px 22px rgba(60, 148, 225, 0.24);
+    }
+
+    #overlayRestartBtn {
+      background: linear-gradient(135deg, #ffe08a, #ffcd67);
+      color: #64490f;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="lobby-link" href="../index.html?lobby=1">← 로비로 돌아가기</a>
+
+    <div class="shell">
+      <div class="topbar">
+        <div class="title">
+          <h1>🦁 사자의 길 건너기</h1>
+          <p>차를 피하고 통나무를 타고 강을 건너 목적지에 도달하세요!</p>
+        </div>
+        <div class="status">
+          <div class="status-box">
+            <div class="status-label">점수</div>
+            <div class="status-value" id="score">0</div>
+          </div>
+          <div class="status-box">
+            <div class="status-label">목숨</div>
+            <div class="status-value" id="lives">3</div>
+          </div>
+          <div class="status-box">
+            <div class="status-label">난이도</div>
+            <div class="status-value" id="diffText" style="font-size:14px;padding-top:4px;">쉬움</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="restartBtn">현재 판 다시</button>
+        <div id="message">오버레이의 시작 버튼으로 진행하세요.</div>
+      </div>
+
+      <div id="game">
+        <canvas id="gameCanvas" width="480" height="560"></canvas>
+
+        <div class="overlay" id="overlay">
+          <div class="overlay-card">
+            <h2 id="overlayTitle">게임 준비</h2>
+            <p id="overlayDesc">차를 피하고, 통나무 위에서 강을 건너 맨 위 줄에 도달하면 점수를 얻습니다.</p>
+            <div class="overlay-actions">
+              <button id="overlayStartBtn">시작</button>
+              <button id="overlayRestartBtn">다시 시작</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="legend">이동: ← ↑ ↓ → 또는 W A S D &nbsp;|&nbsp; 통나무 위에서는 함께 흘러갑니다</div>
+    </div>
+  </div>
+
+<script>
+const canvas  = document.getElementById('gameCanvas');
+const ctx     = canvas.getContext('2d');
+const scoreEl = document.getElementById('score');
+const livesEl = document.getElementById('lives');
+const msgEl   = document.getElementById('message');
+
+const overlay        = document.getElementById('overlay');
+const overlayTitle   = document.getElementById('overlayTitle');
+const overlayDesc    = document.getElementById('overlayDesc');
+const overlayStartBtn   = document.getElementById('overlayStartBtn');
+const overlayRestartBtn = document.getElementById('overlayRestartBtn');
+
+document.getElementById('restartBtn').addEventListener('click', prepareGame);
+
+// ─── 상수 ────────────────────────────────────────────────
+const COLS = 10;
+const ROWS = 14;
+const TILE = 40;
+const OX   = 40; // left offset
+
+const ROAD_ROWS  = [2, 3, 4, 6, 7, 8];
+const WATER_ROWS = [10, 11, 12];
+const GOAL_ROW   = 0;
+const START_ROW  = 13;
+
+const LANE_COLOR = { road: '#555', grass: '#4a7c3f', water: '#1e6bb8', goal: '#8bc34a' };
+
+// ─── 오디오 ──────────────────────────────────────────────
+const S = {};
+const SDIR = '../assets/sounds/';
+[
+  ['step_grass', 'footstep_grass_000.mp3'],
+  ['step_wood',  'footstep_wood_000.mp3'],
+  ['step_road',  'footstep_concrete_002.mp3'],
+  ['hit',        'impactPunch_heavy_000.mp3'],
+  ['splash',     'impactSoft_heavy_000.mp3'],
+  ['goal',       'jingles_PIZZI13.mp3'],
+  ['score_up',   'powerUp2.mp3'],
+  ['gameover',   'lowDown.mp3'],
+].forEach(([k, f]) => {
+  const a = new Audio(SDIR + f);
+  a.preload = 'auto';
+  S[k] = a;
+});
+
+function play(key, vol = 0.5) {
+  const src = S[key];
+  if (!src) return;
+  try { const c = src.cloneNode(); c.volume = vol; c.play().catch(() => {}); } catch (_) {}
+}
+
+function stepSound(row) {
+  if (WATER_ROWS.includes(row)) return 'step_wood';
+  if (ROAD_ROWS.includes(row))  return 'step_road';
+  return 'step_grass';
+}
+
+// ─── 이펙트 ──────────────────────────────────────────────
+let particles = [];
+let shake = { x: 0, y: 0, dur: 0 };
+let flash = { a: 0, color: '#fff' };
+
+function addParticles(wx, wy, n, color) {
+  for (let i = 0; i < n; i++) {
+    const ang = Math.random() * Math.PI * 2;
+    const spd = 1.5 + Math.random() * 4;
+    particles.push({
+      x: wx, y: wy,
+      vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd - 1,
+      r: 3 + Math.random() * 5, life: 1,
+      decay: 0.025 + Math.random() * 0.03, color,
+    });
+  }
+}
+
+// ─── 게임 상태 ───────────────────────────────────────────
+let player, cars, logs, score, lives, gameStarted, gameOver, dying, animFrameId;
+
+function prepareGame() {
+  cancelAnimationFrame(animFrameId);
+  player = { px: 5 * TILE, row: START_ROW, sx: 1, sy: 1, sqTimer: 0, sqTX: 1, sqTY: 1 };
+  cars = []; logs = []; particles = [];
+  shake = { x: 0, y: 0, dur: 0 };
+  flash = { a: 0, color: '#fff' };
+  score = 0; lives = 3;
+  gameStarted = false; gameOver = false; dying = false;
+  updateUI();
+  spawnObjects();
+  showOverlay('게임 준비', '차를 피하고 통나무를 타서 맨 위 줄에 도달하면 점수를 얻습니다.', 'start');
+  drawStatic();
+}
+
+function startGame() {
+  hideOverlay();
+  gameStarted = true;
+  msgEl.textContent = '방향키 또는 WASD로 이동하세요!';
+  cancelAnimationFrame(animFrameId);
+  loop();
+}
+
+function showOverlay(title, desc, mode) {
+  overlayTitle.textContent = title;
+  overlayDesc.textContent  = desc;
+  overlay.style.display    = 'flex';
+  overlayStartBtn.style.display   = mode === 'over' ? 'none' : 'inline-block';
+  overlayRestartBtn.style.display = 'inline-block';
+}
+
+function hideOverlay() {
+  overlay.style.display = 'none';
+}
+
+function drawStatic() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let r = 0; r < ROWS; r++) {
+    ctx.fillStyle = getTileColor(r);
+    ctx.fillRect(0, r * TILE, canvas.width, TILE);
+  }
+}
+
+// ─── 난이도 설정 ─────────────────────────────────────────
+function getDifficulty() {
+  if (score >= 7) return 3;
+  if (score >= 5) return 2;
+  if (score >= 3) return 1;
+  return 0;
+}
+
+const DIFF = [
+  { carCount: [2, 0], carSpd: [0.025, 0.020], logCount: 2, logSpd: [0.015, 0.010], logW: 3.0 },
+  { carCount: [2, 1], carSpd: [0.035, 0.025], logCount: 2, logSpd: [0.020, 0.015], logW: 2.5 },
+  { carCount: [3, 1], carSpd: [0.050, 0.030], logCount: 2, logSpd: [0.028, 0.018], logW: 2.2 },
+  { carCount: [3, 2], carSpd: [0.070, 0.035], logCount: 3, logSpd: [0.038, 0.020], logW: 1.9 },
+];
+
+function spawnObjects() {
+  const d = DIFF[getDifficulty()];
+  const CAR_EMOJIS = ['🚗','🚙','🚕','🚌','🚎','🏎️','🚓','🚑','🚒'];
+
+  ROAD_ROWS.forEach((row, i) => {
+    const dir   = i % 2 === 0 ? 1 : -1;
+    const spd   = (d.carSpd[0] + Math.random() * d.carSpd[1]) * TILE;
+    const count = d.carCount[0] + Math.floor(Math.random() * (d.carCount[1] + 1));
+    for (let c = 0; c < count; c++) {
+      cars.push({
+        row, dir, speed: spd,
+        x: (c * COLS / count) * TILE,
+        w: TILE * 1.5,
+        emoji: CAR_EMOJIS[Math.floor(Math.random() * CAR_EMOJIS.length)],
+      });
+    }
+  });
+
+  WATER_ROWS.forEach((row, i) => {
+    const dir = i % 2 === 0 ? 1 : -1;
+    const spd = (d.logSpd[0] + Math.random() * d.logSpd[1]) * TILE;
+    for (let c = 0; c < d.logCount; c++) {
+      logs.push({ row, dir, speed: spd, x: (c * COLS / d.logCount) * TILE, w: TILE * d.logW });
+    }
+  });
+}
+
+// ─── 루프 ────────────────────────────────────────────────
+let lastTime = 0;
+function loop(ts = 0) {
+  const dt = Math.min((ts - lastTime) / 1000, 0.1);
+  lastTime = ts;
+  update(dt);
+  draw();
+  if (!gameOver) animFrameId = requestAnimationFrame(loop);
+}
+
+function update(dt) {
+  const maxX = COLS * TILE;
+
+  cars.forEach(car => {
+    car.x += car.dir * car.speed * dt * 60;
+    if (car.x > maxX)      car.x = -car.w;
+    if (car.x + car.w < 0) car.x = maxX;
+  });
+
+  logs.forEach(log => {
+    const prevX = log.x;
+    log.x += log.dir * log.speed * dt * 60;
+    if (log.x > maxX)      log.x = -log.w;
+    if (log.x + log.w < 0) log.x = maxX;
+
+    if (!dying && WATER_ROWS.includes(player.row) && log.row === player.row) {
+      const pcx = player.px + TILE / 2;
+      if (pcx >= prevX && pcx <= prevX + log.w) {
+        const delta = log.x - prevX;
+        if (Math.abs(delta) < TILE * 3) player.px += delta;
+      }
+    }
+  });
+
+  if (player.sqTimer > 0) {
+    player.sqTimer -= dt;
+    const t = Math.max(0, player.sqTimer / 0.15);
+    player.sx = 1 + (player.sqTX - 1) * t;
+    player.sy = 1 + (player.sqTY - 1) * t;
+  } else { player.sx = 1; player.sy = 1; }
+
+  particles = particles.filter(p => p.life > 0);
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy; p.vy += 0.18;
+    p.life -= p.decay; p.r *= 0.96;
+  });
+
+  if (shake.dur > 0) {
+    shake.dur -= dt;
+    const m = shake.dur * 14;
+    shake.x = (Math.random() - 0.5) * m;
+    shake.y = (Math.random() - 0.5) * m;
+  } else { shake.x = 0; shake.y = 0; }
+
+  if (flash.a > 0) flash.a -= dt * 3.5;
+
+  if (!dying) checkCollision();
+}
+
+function checkCollision() {
+  const pcx = player.px + TILE / 2;
+  const pr  = player.row;
+
+  if (player.px < -TILE * 0.6 || player.px > COLS * TILE + TILE * 0.1) {
+    die('splash'); return;
+  }
+  if (WATER_ROWS.includes(pr)) {
+    const onLog = logs.some(l => l.row === pr && pcx >= l.x && pcx <= l.x + l.w);
+    if (!onLog) die('splash');
+  }
+  if (ROAD_ROWS.includes(pr)) {
+    if (cars.some(c => c.row === pr && pcx >= c.x && pcx <= c.x + c.w)) die('hit');
+  }
+}
+
+function die(type) {
+  if (dying) return;
+  dying = true;
+  lives--;
+  updateUI();
+
+  const wx = OX + player.px + TILE / 2;
+  const wy = player.row * TILE + TILE / 2;
+
+  if (type === 'hit') {
+    play('hit', 0.7);
+    addParticles(wx, wy, 22, '#ff6040');
+    shake.dur = 0.4; flash.color = '#ff2020'; flash.a = 0.5;
+    msgEl.textContent = '앗, 차에 치였어요!';
+  } else {
+    play('splash', 0.7);
+    addParticles(wx, wy, 18, '#80cfff');
+    addParticles(wx, wy, 8, '#ffffff');
+    shake.dur = 0.3; flash.color = '#4499ff'; flash.a = 0.35;
+    msgEl.textContent = '풍덩! 물에 빠졌어요!';
+  }
+
+  if (lives <= 0) {
+    setTimeout(() => {
+      play('gameover', 0.8);
+      gameOver = true;
+      showOverlay('게임 오버', `최종 점수: ${score}점. 다시 도전해 보세요!`, 'over');
+      msgEl.textContent = '게임 오버!';
+    }, 700);
+  } else {
+    setTimeout(() => {
+      if (!gameOver) {
+        player.px = 5 * TILE; player.row = START_ROW;
+        dying = false;
+        msgEl.textContent = '방향키 또는 WASD로 이동하세요!';
+      }
+    }, 900);
+  }
+}
+
+function squash(dr) {
+  if (dr !== 0) { player.sqTX = 0.65; player.sqTY = 1.4; }
+  else          { player.sqTX = 1.4;  player.sqTY = 0.65; }
+  player.sx = player.sqTX; player.sy = player.sqTY;
+  player.sqTimer = 0.15;
+}
+
+// ─── 그리기 ──────────────────────────────────────────────
+function draw() {
+  ctx.save();
+  ctx.translate(shake.x, shake.y);
+  ctx.clearRect(-10, -10, canvas.width + 20, canvas.height + 20);
+
+  for (let r = 0; r < ROWS; r++) {
+    ctx.fillStyle = getTileColor(r);
+    ctx.fillRect(0, r * TILE, canvas.width, TILE);
+    if (ROAD_ROWS.includes(r)) {
+      ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+      ctx.setLineDash([10, 10]);
+      ctx.beginPath();
+      ctx.moveTo(0, r * TILE + TILE / 2);
+      ctx.lineTo(canvas.width, r * TILE + TILE / 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    if (WATER_ROWS.includes(r)) {
+      ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+      ctx.lineWidth = 1.5;
+      for (let wx = 4; wx < canvas.width; wx += 30) {
+        ctx.beginPath();
+        ctx.arc(wx + (Date.now() / 600 % 30), r * TILE + TILE * 0.35, 7, Math.PI, 0);
+        ctx.stroke();
+      }
+    }
+  }
+
+  logs.forEach(log => {
+    ctx.save();
+    ctx.font = '28px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const cy = log.row * TILE + TILE / 2;
+    const seg = Math.ceil(log.w / TILE);
+    for (let i = 0; i < seg; i++) {
+      ctx.fillText('🪵', OX + log.x + i * TILE + TILE / 2, cy);
+    }
+    ctx.restore();
+  });
+
+  cars.forEach(car => {
+    const cx = OX + car.x + car.w / 2;
+    const cy = car.row * TILE + TILE / 2;
+    ctx.save();
+    ctx.font = '30px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    if (car.dir < 0) {
+      ctx.translate(cx, cy);
+      ctx.scale(-1, 1);
+      ctx.fillText(car.emoji, 0, 0);
+    } else {
+      ctx.fillText(car.emoji, cx, cy);
+    }
+    ctx.restore();
+  });
+
+  particles.forEach(p => {
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, Math.max(0.1, p.r), 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  });
+
+  drawPlayer(OX + player.px, player.row * TILE, TILE, player.sx, player.sy);
+
+  if (flash.a > 0) {
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, flash.a);
+    ctx.fillStyle = flash.color;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.restore();
+  }
+
+  ctx.restore();
+}
+
+function getTileColor(r) {
+  if (r === GOAL_ROW)         return LANE_COLOR.goal;
+  if (ROAD_ROWS.includes(r))  return LANE_COLOR.road;
+  if (WATER_ROWS.includes(r)) return LANE_COLOR.water;
+  return LANE_COLOR.grass;
+}
+
+function drawPlayer(x, y, size, sx = 1, sy = 1) {
+  const cx = x + size / 2, cy = y + size / 2;
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.scale(sx, sy);
+  ctx.font = '32px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('🦁', 0, 0);
+  ctx.restore();
+}
+
+// ─── 입력 ────────────────────────────────────────────────
+const keys = {};
+document.addEventListener('keydown', e => {
+  if (keys[e.key]) return;
+  keys[e.key] = true;
+  if (!gameStarted || gameOver || dying) return;
+
+  let dc = 0, dr = 0;
+  if (e.key === 'ArrowLeft'  || e.key === 'a') dc = -1;
+  if (e.key === 'ArrowRight' || e.key === 'd') dc =  1;
+  if (e.key === 'ArrowUp'    || e.key === 'w') dr = -1;
+  if (e.key === 'ArrowDown'  || e.key === 's') dr =  1;
+  if (!dc && !dr) return;
+  e.preventDefault();
+
+  const npx = player.px + dc * TILE;
+  const nr  = player.row + dr;
+  if (npx < 0 || npx >= COLS * TILE) return;
+  if (nr < GOAL_ROW || nr > START_ROW) return;
+
+  player.px = npx; player.row = nr;
+  squash(dr);
+  play(stepSound(nr), 0.4);
+
+  if (nr === GOAL_ROW) {
+    score++;
+    updateUI();
+    play('goal', 0.8);
+    play('score_up', 0.5);
+    addParticles(OX + player.px + TILE / 2, TILE / 2, 35, '#ffe060');
+    addParticles(OX + player.px + TILE / 2, TILE / 2, 15, '#ffffff');
+    flash.color = '#ffffaa'; flash.a = 0.45;
+    msgEl.textContent = '건넜다! 계속 도전해봐요!';
+    setTimeout(() => {
+      if (!gameOver) {
+        player.px = 5 * TILE; player.row = START_ROW;
+        cars = []; logs = [];
+        spawnObjects();
+        if (!gameOver && gameStarted) msgEl.textContent = '방향키 또는 WASD로 이동하세요!';
+      }
+    }, 800);
+  }
+});
+document.addEventListener('keyup', e => { keys[e.key] = false; });
+
+overlayStartBtn.addEventListener('click', startGame);
+overlayRestartBtn.addEventListener('click', () => { prepareGame(); });
+
+const DIFF_LABELS = ['쉬움', '보통', '어려움', '매우 어려움'];
+const DIFF_COLORS = ['#2e7d32', '#1565c0', '#e65100', '#b71c1c'];
+const diffEl = document.getElementById('diffText');
+
+function updateUI() {
+  scoreEl.textContent = score;
+  livesEl.textContent = lives;
+  const d = getDifficulty();
+  diffEl.textContent  = DIFF_LABELS[d];
+  diffEl.style.color  = DIFF_COLORS[d];
+}
+
+prepareGame();
+</script>
+</body>
+</html>
