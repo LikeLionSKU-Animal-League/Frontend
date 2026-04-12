@@ -587,8 +587,14 @@
 
     /** 공유 링크·썸네일에 쓰는 사이트 기준 URL (로컬 테스트 시에는 origin 사용) */
     const SHARE_SITE_ORIGIN = "https://campus-animal-battle.vercel.app";
-    const SHARE_GAME_URL = `${SHARE_SITE_ORIGIN}/`;
     const SHARE_IMAGE_URL = `${SHARE_SITE_ORIGIN}/og-image.png`;
+
+    /** 인트로 생략 → 로비(또는 학교 입력)로 바로 진입. index.html `wantsLobbyFromQuery`와 동일 쿼리 규약 */
+    function buildShareLobbyUrl() {
+      const school = getLeagueSchool();
+      const base = `${SHARE_SITE_ORIGIN}/?lobby=true`;
+      return school ? `${base}&school=${encodeURIComponent(school)}` : base;
+    }
 
     (function initKakaoSdk() {
       if (!window.Kakao || !KAKAO_JS_APP_KEY) return;
@@ -626,6 +632,7 @@
         "</a>";
 
       const anchor = document.getElementById("kakaotalk-sharing-btn");
+      const shareLobbyUrl = buildShareLobbyUrl();
       if (!window.Kakao || !Kakao.isInitialized()) {
         anchor.addEventListener("click", function (e) {
           e.preventDefault();
@@ -642,16 +649,16 @@
           description: `내 점수는 ${s}점이야! 나보다 더 높은 점수를 얻을 수 있어?`,
           imageUrl: SHARE_IMAGE_URL,
           link: {
-            mobileWebUrl: SHARE_GAME_URL,
-            webUrl: SHARE_GAME_URL
+            mobileWebUrl: shareLobbyUrl,
+            webUrl: shareLobbyUrl
           }
         },
         buttons: [
           {
             title: "나도 도전하기",
             link: {
-              mobileWebUrl: SHARE_GAME_URL,
-              webUrl: SHARE_GAME_URL
+              mobileWebUrl: shareLobbyUrl,
+              webUrl: shareLobbyUrl
             }
           }
         ]

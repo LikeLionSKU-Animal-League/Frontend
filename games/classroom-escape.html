@@ -571,8 +571,13 @@
     const KAKAO_JS_APP_KEY = "fa75c82718597e9124f913d174cd92a2";
 
     const SHARE_SITE_ORIGIN = "https://campus-animal-battle.vercel.app";
-    const SHARE_GAME_URL = `${SHARE_SITE_ORIGIN}/`;
     const SHARE_IMAGE_URL = `${SHARE_SITE_ORIGIN}/og-image.png`;
+
+    function buildShareLobbyUrl() {
+      const school = getLeagueSchool();
+      const base = `${SHARE_SITE_ORIGIN}/?lobby=true`;
+      return school ? `${base}&school=${encodeURIComponent(school)}` : base;
+    }
 
     (function initKakaoSdk() {
       if (!window.Kakao || !KAKAO_JS_APP_KEY) return;
@@ -606,6 +611,7 @@
         "</a>";
 
       const anchor = document.getElementById("kakaotalk-sharing-btn");
+      const shareLobbyUrl = buildShareLobbyUrl();
       if (!window.Kakao || !Kakao.isInitialized()) {
         anchor.addEventListener("click", function (e) {
           e.preventDefault();
@@ -622,16 +628,16 @@
           description: `내 점수는 ${s}점이야! 나보다 더 높은 점수를 얻을 수 있어?`,
           imageUrl: SHARE_IMAGE_URL,
           link: {
-            mobileWebUrl: SHARE_GAME_URL,
-            webUrl: SHARE_GAME_URL
+            mobileWebUrl: shareLobbyUrl,
+            webUrl: shareLobbyUrl
           }
         },
         buttons: [
           {
             title: "나도 도전하기",
             link: {
-              mobileWebUrl: SHARE_GAME_URL,
-              webUrl: SHARE_GAME_URL
+              mobileWebUrl: shareLobbyUrl,
+              webUrl: shareLobbyUrl
             }
           }
         ]
