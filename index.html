@@ -435,6 +435,41 @@ cl<!DOCTYPE html>
       z-index: 1;
     }
 
+    .rankings-loading,
+    .rankings-empty {
+      grid-column: 1 / -1;
+      min-height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 28px 16px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(249, 255, 244, 0.9));
+      border: 3px dashed #cfe9c4;
+      position: relative;
+      z-index: 1;
+    }
+
+    .rankings-loading p,
+    .rankings-empty p {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 800;
+      color: #5a6d5d;
+      line-height: 1.55;
+      word-break: keep-all;
+    }
+
+    .ranking-table-loading td {
+      text-align: center;
+      padding: 36px 16px !important;
+      font-weight: 800;
+      color: #5a6d5d;
+      font-size: 15px;
+      border: none !important;
+    }
+
     .rank-card {
       border-radius: 24px;
       padding: 16px 12px;
@@ -919,7 +954,7 @@ cl<!DOCTYPE html>
                 날아다니는 학점 버블 중 높은 학점을 빠르게 잡아 점수를 획득하는 순발력 게임.
                 F를 잘못 누르면 감점됩니다.
               </p>
-              <a class="play-btn" href="games/grade-hunt.html">플레이</a>
+              <a class="play-btn" id="playGradeHunt" href="games/grade-hunt.html">플레이</a>
             </div>
 
             <div class="game-card">
@@ -929,7 +964,7 @@ cl<!DOCTYPE html>
                 교수님의 시야를 피해 학생증을 챙기고 출구까지 도달해야 하는 스텔스 미니게임.
                 단계가 올라갈수록 더 어려워집니다.
               </p>
-              <a class="play-btn" href="games/classroom-escape.html">플레이</a>
+              <a class="play-btn" id="playClassroomEscape" href="games/classroom-escape.html">플레이</a>
             </div>
 
             <div class="game-card">
@@ -988,40 +1023,7 @@ cl<!DOCTYPE html>
       "이렇게 동물들의 대학 대항전이 시작된다."
     ];
 
-    const fallbackRankingData = [
-      { university: "고려대학교", score: 980, animal: "🐯" },
-      { university: "연세대학교", score: 940, animal: "🐴" },
-      { university: "서울대학교", score: 910, animal: "🦜" },
-      { university: "성균관대학교", score: 865, animal: "🐱" },
-      { university: "한양대학교", score: 840, animal: "🐿️" },
-      { university: "중앙대학교", score: 812, animal: "🐰" },
-      { university: "경희대학교", score: 798, animal: "🦊" },
-      { university: "이화여자대학교", score: 780, animal: "🐻" },
-      { university: "서강대학교", score: 762, animal: "🦌" },
-      { university: "건국대학교", score: 745, animal: "🐼" },
-      { university: "동국대학교", score: 731, animal: "🦉" },
-      { university: "홍익대학교", score: 716, animal: "🐨" },
-      { university: "국민대학교", score: 702, animal: "🐹" },
-      { university: "숙명여자대학교", score: 695, animal: "🦝" },
-      { university: "숭실대학교", score: 684, animal: "🐯" },
-      { university: "세종대학교", score: 672, animal: "🐴" },
-      { university: "단국대학교", score: 665, animal: "🦜" },
-      { university: "아주대학교", score: 650, animal: "🐱" },
-      { university: "인하대학교", score: 642, animal: "🐿️" },
-      { university: "부산대학교", score: 630, animal: "🐰" },
-      { university: "전남대학교", score: 621, animal: "🦊" },
-      { university: "전북대학교", score: 614, animal: "🐻" },
-      { university: "충남대학교", score: 606, animal: "🦌" },
-      { university: "충북대학교", score: 598, animal: "🐼" },
-      { university: "강원대학교", score: 590, animal: "🦉" },
-      { university: "제주대학교", score: 582, animal: "🐨" },
-      { university: "경북대학교", score: 575, animal: "🐹" },
-      { university: "한국외국어대학교", score: 568, animal: "🦝" },
-      { university: "서울시립대학교", score: 560, animal: "🐯" },
-      { university: "광운대학교", score: 553, animal: "🐴" }
-    ];
-
-    let rankingData = fallbackRankingData.map((r) => ({ ...r }));
+    let rankingData = [];
 
     const animalTitle = {
       "🐯": "호랑이",
@@ -1053,7 +1055,7 @@ cl<!DOCTYPE html>
       window.ANIMAL_LEAGUE_API ||
       (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
         ? "http://localhost:3000"
-        : "https://backend-jso9.onrender.com");
+        : "https://backend-m5wz.onrender.com");
 
     const introScreen = document.getElementById("introScreen");
     const lobbyScreen = document.getElementById("lobbyScreen");
@@ -1083,7 +1085,37 @@ cl<!DOCTYPE html>
     let storyIndex = 0;
     let storyTimer = null;
 
+    function renderRankingsLoading() {
+      const msg = "데이터를 불러드리는중입니다.";
+      top3Container.innerHTML = `
+        <div class="rankings-loading">
+          <p>${msg}</p>
+        </div>
+      `;
+      rankingTableBody.innerHTML = `
+        <tr class="ranking-table-loading">
+          <td colspan="4">${msg}</td>
+        </tr>
+      `;
+      mySchoolSub.textContent = msg;
+      mySchoolInfoList.innerHTML = `
+        <div class="info-item"><strong>누적 점수</strong> · …</div>
+        <div class="info-item"><strong>대표 동물</strong> · …</div>
+        <div class="info-item"><strong>플레이 횟수</strong> · …</div>
+        <div class="info-item"><strong>안내</strong> · 잠시만 기다려 주세요</div>
+      `;
+    }
+
     function renderTop3() {
+      if (rankingData.length === 0) {
+        top3Container.innerHTML = `
+          <div class="rankings-empty">
+            <p>아직 랭킹 기록이 없습니다.<br /><span style="font-size:14px;font-weight:700;color:#79907e;">게임을 플레이하면 여기에 표시됩니다.</span></p>
+          </div>
+        `;
+        return;
+      }
+
       const top3 = rankingData.slice(0, 3);
       while (top3.length < 3) {
         top3.push({ university: "—", score: 0, animal: "🌱" });
@@ -1104,6 +1136,15 @@ cl<!DOCTYPE html>
     }
 
     function renderFullRanking() {
+      if (rankingData.length === 0) {
+        rankingTableBody.innerHTML = `
+          <tr class="ranking-table-loading">
+            <td colspan="4">등록된 랭킹이 없습니다.</td>
+          </tr>
+        `;
+        return;
+      }
+
       rankingTableBody.innerHTML = rankingData.map((item, index) => `
         <tr>
           <td><span class="rank-badge">${index + 1}</span></td>
@@ -1132,6 +1173,7 @@ cl<!DOCTYPE html>
     }
 
     async function refreshRankingsFromApi() {
+      renderRankingsLoading();
       const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
       try {
         const url = school
@@ -1147,7 +1189,7 @@ cl<!DOCTYPE html>
           animal: r.animal
         }));
 
-        rankingData = rows.length ? rows : fallbackRankingData.map((r) => ({ ...r }));
+        rankingData = rows;
 
         renderTop3();
         renderFullRanking();
@@ -1176,12 +1218,8 @@ cl<!DOCTYPE html>
           setMySchoolPanelDemo();
         }
       } catch {
-        rankingData = fallbackRankingData.map((r) => ({ ...r }));
-        renderTop3();
-        renderFullRanking();
-        mySchoolSub.textContent =
-          "랭킹 서버(" + API_BASE + ")에 연결할 수 없어 데모 랭킹을 보여요.";
-        setMySchoolPanelDemo();
+        rankingData = [];
+        renderRankingsLoading();
       }
     }
 
@@ -1228,8 +1266,10 @@ cl<!DOCTYPE html>
       clearTimeout(storyTimer);
       introPhaseSchool.classList.add("hidden");
       introScreen.classList.add("hidden");
+      renderRankingsLoading();
       lobbyScreen.classList.remove("hidden");
       applySchoolToLobby();
+      updateGamePlayLinks();
       renderRandomCheer();
       refreshRankingsFromApi();
     }
@@ -1289,6 +1329,7 @@ cl<!DOCTYPE html>
       try {
         const url = new URL(window.location.href);
         url.searchParams.delete("lobby");
+        url.searchParams.delete("school");
         const next = url.pathname + url.search + url.hash;
         window.history.replaceState({}, "", next || url.pathname);
       } catch {
@@ -1296,12 +1337,36 @@ cl<!DOCTYPE html>
       }
     }
 
+    function schoolFromUrlQuery() {
+      try {
+        return (new URLSearchParams(window.location.search).get("school") || "").trim();
+      } catch {
+        return "";
+      }
+    }
+
+    function updateGamePlayLinks() {
+      const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
+      const q = school ? `?school=${encodeURIComponent(school)}` : "";
+      const gh = document.getElementById("playGradeHunt");
+      const ce = document.getElementById("playClassroomEscape");
+      if (gh) gh.setAttribute("href", "games/grade-hunt.html" + q);
+      if (ce) ce.setAttribute("href", "games/classroom-escape.html" + q);
+    }
+
     function bootstrap() {
-      renderTop3();
-      renderFullRanking();
+      renderRankingsLoading();
       renderRandomCheer();
 
       if (wantsLobbyFromQuery()) {
+        const fromUrl = schoolFromUrlQuery();
+        if (fromUrl) {
+          try {
+            localStorage.setItem(STORAGE_SCHOOL, fromUrl);
+          } catch {
+            /* 저장 불가 환경 */
+          }
+        }
         stripLobbyQuery();
         clearTimeout(storyTimer);
         const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();

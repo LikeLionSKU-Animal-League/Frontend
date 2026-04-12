@@ -425,7 +425,7 @@
 </head>
 <body>
   <div class="wrap">
-    <a class="lobby-link" href="../index.html?lobby=1">← 로비로 돌아가기</a>
+    <a class="lobby-link" id="lobbyBackLink" href="../index.html?lobby=1">← 로비로 돌아가기</a>
     <div class="game-card">
       <div class="cloud cloud1">☁️</div>
       <div class="cloud cloud2">☁️</div>
@@ -493,8 +493,38 @@
         ? "http://localhost:3000"
         : "https://backend-jso9.onrender.com");
 
+    /** file:// 등에서 로비와 출처가 달라 localStorage가 비는 경우 → URL ?school= 로 전달 */
+    function getLeagueSchool() {
+      try {
+        const q = (new URLSearchParams(window.location.search).get("school") || "").trim();
+        if (q) {
+          try {
+            localStorage.setItem(STORAGE_SCHOOL, q);
+          } catch {
+            /* ignore */
+          }
+          return q;
+        }
+      } catch {
+        /* ignore */
+      }
+      return (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
+    }
+
+    function setLobbyBackLink() {
+      const a = document.getElementById("lobbyBackLink");
+      if (!a) return;
+      const school = getLeagueSchool();
+      a.setAttribute(
+        "href",
+        school
+          ? `../index.html?lobby=1&school=${encodeURIComponent(school)}`
+          : "../index.html?lobby=1"
+      );
+    }
+
     function submitScoreToLeague(game, value) {
-      const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
+      const school = getLeagueSchool();
       if (!school) return;
 
       const score = Math.round(Number(value));
@@ -506,6 +536,8 @@
         body: JSON.stringify({ school, game, score })
       }).catch(() => {});
     }
+
+    setLobbyBackLink();
 
     const grades = [
       { g: "A+", score: 10, type: "good", animal: "🐯" },
