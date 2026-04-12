@@ -421,6 +421,42 @@
         font-size: 17px;
       }
     }
+
+    .result-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      width: 100%;
+    }
+
+    .result-inner #result {
+      margin: 0;
+    }
+
+    .kakao-share-wrap {
+      line-height: 0;
+    }
+
+    .kakao-share-wrap.hidden {
+      display: none !important;
+    }
+
+    .kakao-share-wrap #kakaotalk-sharing-btn {
+      display: inline-block;
+      border: none;
+      background: none;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .kakao-share-wrap #kakaotalk-sharing-btn img {
+      display: block;
+      width: 81px;
+      height: auto;
+      vertical-align: top;
+    }
   </style>
 </head>
 <body>
@@ -475,8 +511,11 @@
         <div class="ground"></div>
       </div>
 
-      <div class="result-card" id="result">
-        시작 버튼을 누르면 귀여운 동물 학점들이 숲속에 나타나요!
+      <div class="result-card" id="resultCard">
+        <div class="result-inner">
+          <p id="result" style="margin:0;">시작 버튼을 누르면 귀여운 동물 학점들이 숲속에 나타나요!</p>
+          <div id="kakaoShareWrap" class="kakao-share-wrap hidden" aria-live="polite"></div>
+        </div>
       </div>
 
       <div class="guide">
@@ -485,6 +524,11 @@
     </div>
   </div>
 
+  <script
+    src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.7/kakao.min.js"
+    integrity="sha384-tJkjbtDbvoxO+diRuDtwRO9JXR7pjWnfjfRn5ePUpl7e7RJCxKCwwnfqUAdXh53p"
+    crossorigin="anonymous"
+  ></script>
   <script>
     const STORAGE_SCHOOL = "animalLeagueSchool";
     const API_BASE =
@@ -538,6 +582,81 @@
     }
 
     setLobbyBackLink();
+
+    const KAKAO_JS_APP_KEY = "fa75c82718597e9124f913d174cd92a2";
+
+    /** 공유 링크·썸네일에 쓰는 사이트 기준 URL (로컬 테스트 시에는 origin 사용) */
+    const SHARE_SITE_ORIGIN = "https://campus-animal-battle.vercel.app";
+    const SHARE_GAME_URL = `${SHARE_SITE_ORIGIN}/`;
+    const SHARE_IMAGE_URL = `${SHARE_SITE_ORIGIN}/og-image.png`;
+
+    (function initKakaoSdk() {
+      if (!window.Kakao || !KAKAO_JS_APP_KEY) return;
+      if (!Kakao.isInitialized()) {
+        Kakao.init(KAKAO_JS_APP_KEY);
+      }
+    })();
+
+    function clearKakaoShareMount() {
+      const wrap = document.getElementById("kakaoShareWrap");
+      if (!wrap) return;
+      wrap.innerHTML = "";
+      wrap.classList.add("hidden");
+    }
+
+    /**
+     * 카카오 공식 가이드의 createDefaultButton 패턴.
+     * 매 게임마다 점수가 달라지므로 컨테이너를 비운 뒤 앵커를 다시 만들고 바인딩합니다.
+     * @param {number} score
+     */
+    function mountKakaoDefaultShareButton(score) {
+      const wrap = document.getElementById("kakaoShareWrap");
+      if (!wrap) return;
+
+      const s = Math.round(Number(score));
+      if (!Number.isFinite(s)) {
+        clearKakaoShareMount();
+        return;
+      }
+
+      wrap.classList.remove("hidden");
+      wrap.innerHTML =
+        '<a id="kakaotalk-sharing-btn" href="javascript:;">' +
+        '<img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png" alt="카카오톡 공유 보내기 버튼" width="81" height="81" decoding="async" />' +
+        "</a>";
+
+      const anchor = document.getElementById("kakaotalk-sharing-btn");
+      if (!window.Kakao || !Kakao.isInitialized()) {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          alert("카카오 JavaScript 키를 설정한 뒤 다시 시도해 주세요.");
+        });
+        return;
+      }
+
+      Kakao.Share.createDefaultButton({
+        container: "#kakaotalk-sharing-btn",
+        objectType: "feed",
+        content: {
+          title: "캠퍼스 애니멀 배틀 결과!",
+          description: `내 점수는 ${s}점이야! 나보다 더 높은 점수를 얻을 수 있어?`,
+          imageUrl: SHARE_IMAGE_URL,
+          link: {
+            mobileWebUrl: SHARE_GAME_URL,
+            webUrl: SHARE_GAME_URL
+          }
+        },
+        buttons: [
+          {
+            title: "나도 도전하기",
+            link: {
+              mobileWebUrl: SHARE_GAME_URL,
+              webUrl: SHARE_GAME_URL
+            }
+          }
+        ]
+      });
+    }
 
     const grades = [
       { g: "A+", score: 10, type: "good", animal: "🐯" },
@@ -638,6 +757,7 @@
       restoreBackgroundObjects();
       resetUI();
       resultEl.textContent = "게임 시작! 좋은 학점을 빠르게 잡아보세요!";
+      clearKakaoShareMount();
 
       spawnInterval = setInterval(spawnGrade, 700);
 
@@ -745,6 +865,7 @@
       }
 
       resultEl.textContent = `최종 점수 ${score}점 · ${message}`;
+      mountKakaoDefaultShareButton(score);
       submitScoreToLeague("grade-hunt", score);
     }
   </script>
