@@ -159,6 +159,45 @@
       font-weight: 700;
     }
 
+    /* 터치 D패드 */
+    .dpad {
+      display: none;
+      margin-top: 14px;
+      justify-content: center;
+      align-items: center;
+    }
+    @media (pointer: coarse) {
+      .dpad { display: flex; }
+    }
+    .dpad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 64px);
+      grid-template-rows: repeat(3, 64px);
+      gap: 6px;
+    }
+    .dpad-btn {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #e8f2fc, #d2e6f6);
+      border: 2.5px solid #b0cde8;
+      font-size: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      box-shadow: 0 4px 10px rgba(62,95,130,0.14);
+      transition: background 0.1s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .dpad-btn:active {
+      background: linear-gradient(135deg, #c5dcf0, #aecde7);
+      transform: scale(0.92);
+    }
+    .dpad-empty { visibility: hidden; }
+
     /* 오버레이 */
     .overlay {
       position: absolute;
@@ -260,6 +299,21 @@
       </div>
 
       <div class="legend">이동: ← ↑ ↓ → 또는 W A S D &nbsp;|&nbsp; 통나무 위에서는 함께 흘러갑니다</div>
+
+      <!-- 모바일 터치 D패드 -->
+      <div class="dpad">
+        <div class="dpad-grid">
+          <div class="dpad-empty"></div>
+          <button class="dpad-btn" id="btnUp">▲</button>
+          <div class="dpad-empty"></div>
+          <button class="dpad-btn" id="btnLeft">◀</button>
+          <div class="dpad-empty"></div>
+          <button class="dpad-btn" id="btnRight">▶</button>
+          <div class="dpad-empty"></div>
+          <button class="dpad-btn" id="btnDown">▼</button>
+          <div class="dpad-empty"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -649,21 +703,9 @@ function drawPlayer(x, y, size, sx = 1, sy = 1) {
   ctx.restore();
 }
 
-// ─── 입력 ────────────────────────────────────────────────
-const keys = {};
-document.addEventListener('keydown', e => {
-  if (keys[e.key]) return;
-  keys[e.key] = true;
+// ─── 이동 처리 ───────────────────────────────────────────
+function movePlayer(dc, dr) {
   if (!gameStarted || gameOver || dying) return;
-
-  let dc = 0, dr = 0;
-  if (e.key === 'ArrowLeft'  || e.key === 'a') dc = -1;
-  if (e.key === 'ArrowRight' || e.key === 'd') dc =  1;
-  if (e.key === 'ArrowUp'    || e.key === 'w') dr = -1;
-  if (e.key === 'ArrowDown'  || e.key === 's') dr =  1;
-  if (!dc && !dr) return;
-  e.preventDefault();
-
   const npx = player.px + dc * TILE;
   const nr  = player.row + dr;
   if (npx < 0 || npx >= COLS * TILE) return;
@@ -691,8 +733,56 @@ document.addEventListener('keydown', e => {
       }
     }, 800);
   }
+}
+
+// ─── 키보드 입력 ─────────────────────────────────────────
+const keys = {};
+document.addEventListener('keydown', e => {
+  if (keys[e.key]) return;
+  keys[e.key] = true;
+
+  let dc = 0, dr = 0;
+  if (e.key === 'ArrowLeft'  || e.key === 'a') dc = -1;
+  if (e.key === 'ArrowRight' || e.key === 'd') dc =  1;
+  if (e.key === 'ArrowUp'    || e.key === 'w') dr = -1;
+  if (e.key === 'ArrowDown'  || e.key === 's') dr =  1;
+  if (!dc && !dr) return;
+  e.preventDefault();
+  movePlayer(dc, dr);
 });
 document.addEventListener('keyup', e => { keys[e.key] = false; });
+
+// ─── 터치 D패드 ──────────────────────────────────────────
+function bindDpadBtn(id, dc, dr) {
+  const btn = document.getElementById(id);
+  if (!btn) return;
+  btn.addEventListener('touchstart', e => { e.preventDefault(); movePlayer(dc, dr); }, { passive: false });
+  btn.addEventListener('mousedown',  e => { e.preventDefault(); movePlayer(dc, dr); });
+}
+bindDpadBtn('btnUp',    0, -1);
+bindDpadBtn('btnDown',  0,  1);
+bindDpadBtn('btnLeft', -1,  0);
+bindDpadBtn('btnRight', 1,  0);
+
+// ─── 스와이프 감지 ───────────────────────────────────────
+let swipeStart = null;
+canvas.addEventListener('touchstart', e => {
+  const t = e.touches[0];
+  swipeStart = { x: t.clientX, y: t.clientY };
+}, { passive: true });
+canvas.addEventListener('touchend', e => {
+  if (!swipeStart) return;
+  const t = e.changedTouches[0];
+  const dx = t.clientX - swipeStart.x;
+  const dy = t.clientY - swipeStart.y;
+  swipeStart = null;
+  if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+  if (Math.abs(dx) > Math.abs(dy)) {
+    movePlayer(dx > 0 ? 1 : -1, 0);
+  } else {
+    movePlayer(0, dy > 0 ? 1 : -1);
+  }
+}, { passive: true });
 
 overlayStartBtn.addEventListener('click', startGame);
 overlayRestartBtn.addEventListener('click', () => { prepareGame(); });
