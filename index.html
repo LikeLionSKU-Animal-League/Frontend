@@ -985,7 +985,7 @@
               <p>
                 차를 피하고 통나무를 타고 강을 건너세요. 통나무 위에서는 사자도 함께 흘러갑니다.
               </p>
-              <a class="play-btn" href="games/cross_road.html">플레이</a>
+              <a class="play-btn" id="playCrossRoad" href="games/cross_road.html">플레이</a>
             </div>
 
             <div class="game-card">
@@ -1362,8 +1362,10 @@
       const q = school ? `?school=${encodeURIComponent(school)}` : "";
       const gh = document.getElementById("playGradeHunt");
       const ce = document.getElementById("playClassroomEscape");
+      const cr = document.getElementById("playCrossRoad");
       if (gh) gh.setAttribute("href", "games/grade-hunt.html" + q);
       if (ce) ce.setAttribute("href", "games/classroom-escape.html" + q);
+      if (cr) cr.setAttribute("href", "games/cross_road.html" + q);
     }
 
     function bootstrap() {

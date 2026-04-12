@@ -250,11 +250,21 @@
       background: linear-gradient(135deg, #ffe08a, #ffcd67);
       color: #64490f;
     }
+
+    #kakaoShareResultBtn {
+      background: #fee500;
+      color: #191919;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    #kakaoShareResultBtn.hidden {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <a class="lobby-link" href="../index.html?lobby=1">← 로비로 돌아가기</a>
+    <a class="lobby-link" id="lobbyBackLink" href="../index.html?lobby=1">← 로비로 돌아가기</a>
 
     <div class="shell">
       <div class="topbar">
@@ -293,6 +303,9 @@
             <div class="overlay-actions">
               <button id="overlayStartBtn">시작</button>
               <button id="overlayRestartBtn">다시 시작</button>
+              <button type="button" id="kakaoShareResultBtn" class="hidden" onclick="shareToKakao()">
+                결과 공유하기
+              </button>
             </div>
           </div>
         </div>
@@ -317,7 +330,99 @@
     </div>
   </div>
 
+  <script
+    src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js"
+    integrity="sha384-l+xbElFSnPZ2rOaPrU//2FF5B4LB8FiX5q4fXYTlfcG4PGpMkE1vcL7kNXI6Cci0"
+    crossorigin="anonymous"
+  ></script>
 <script>
+const STORAGE_SCHOOL = 'animalLeagueSchool';
+const API_BASE =
+  window.ANIMAL_LEAGUE_API ||
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3000'
+    : 'https://backend-jso9.onrender.com');
+
+function getLeagueSchool() {
+  try {
+    const q = (new URLSearchParams(window.location.search).get('school') || '').trim();
+    if (q) {
+      try {
+        localStorage.setItem(STORAGE_SCHOOL, q);
+      } catch (_) {}
+      return q;
+    }
+  } catch (_) {}
+  return (localStorage.getItem(STORAGE_SCHOOL) || '').trim();
+}
+
+function setLobbyBackLink() {
+  const a = document.getElementById('lobbyBackLink');
+  if (!a) return;
+  const school = getLeagueSchool();
+  a.setAttribute(
+    'href',
+    school ? `../index.html?lobby=1&school=${encodeURIComponent(school)}` : '../index.html?lobby=1'
+  );
+}
+
+function submitScoreToLeague(game, value) {
+  const school = getLeagueSchool();
+  if (!school) return;
+  const s = Math.round(Number(value));
+  if (!Number.isFinite(s)) return;
+  fetch(`${API_BASE}/api/scores`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ school, game, score: s }),
+  }).catch(() => {});
+}
+
+setLobbyBackLink();
+
+const KAKAO_JS_APP_KEY = 'fa75c82718597e9124f913d174cd92a2';
+const SHARE_SITE_ORIGIN = 'https://campus-animal-battle.vercel.app';
+const SHARE_FEED_IMAGE_URL = `${SHARE_SITE_ORIGIN}/assets/game-preview.png`;
+
+function buildShareLobbyUrl() {
+  const school = getLeagueSchool();
+  const base = `${SHARE_SITE_ORIGIN}/?lobby=true`;
+  return school ? `${base}&school=${encodeURIComponent(school)}` : base;
+}
+
+(function initKakaoSdk() {
+  if (!window.Kakao || !KAKAO_JS_APP_KEY) return;
+  if (!Kakao.isInitialized()) Kakao.init(KAKAO_JS_APP_KEY);
+})();
+
+function hideKakaoShareButton() {
+  const btn = document.getElementById('kakaoShareResultBtn');
+  if (btn) btn.classList.add('hidden');
+}
+
+function showKakaoShareButton() {
+  const btn = document.getElementById('kakaoShareResultBtn');
+  if (btn) btn.classList.remove('hidden');
+}
+
+function shareToKakao() {
+  if (!window.Kakao || !Kakao.isInitialized()) {
+    alert('카카오 SDK를 불러오지 못했거나 초기화되지 않았습니다.');
+    return;
+  }
+  const u = buildShareLobbyUrl();
+  Kakao.Share.sendDefault({
+    objectType: 'feed',
+    content: {
+      title: '캠퍼스 애니멀 배틀 🐾',
+      description: '우리 학교를 대표해 호랑이로 진화해보자!',
+      imageUrl: SHARE_FEED_IMAGE_URL,
+      link: { mobileWebUrl: u, webUrl: u },
+    },
+    buttons: [{ title: '게임 참여하기', link: { mobileWebUrl: u, webUrl: u } }],
+  });
+}
+
 const canvas  = document.getElementById('gameCanvas');
 const ctx     = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -424,6 +529,8 @@ function showOverlay(title, desc, mode) {
   overlay.style.display    = 'flex';
   overlayStartBtn.style.display   = mode === 'over' ? 'none' : 'inline-block';
   overlayRestartBtn.style.display = 'inline-block';
+  const kBtn = document.getElementById('kakaoShareResultBtn');
+  if (kBtn) kBtn.classList.toggle('hidden', mode !== 'over');
 }
 
 function hideOverlay() {
@@ -583,6 +690,7 @@ function die(type) {
       gameOver = true;
       showOverlay('게임 오버', `최종 점수: ${score}점. 다시 도전해 보세요!`, 'over');
       msgEl.textContent = '게임 오버!';
+      submitScoreToLeague('cross-road', score);
     }, 700);
   } else {
     setTimeout(() => {
