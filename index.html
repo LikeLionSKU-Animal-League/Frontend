@@ -2,7 +2,8 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#dff6ff" />
   <title>Animal League</title>
   <!-- Open Graph: 카카오톡 등 링크 미리보기용 -->
   <meta property="og:type" content="website" />
@@ -21,12 +22,28 @@
       box-sizing: border-box;
     }
 
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
     body {
       margin: 0;
       font-family: "Trebuchet MS", "맑은 고딕", sans-serif;
       background: linear-gradient(180deg, #dff6ff 0%, #eefbe1 45%, #fff7df 100%);
       color: #33423a;
       overflow-x: hidden;
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    button,
+    .play-btn,
+    .header-btn,
+    .close-btn {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
 
     button {
@@ -835,6 +852,187 @@
 
       #introText {
         font-size: 20px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      #introScreen {
+        padding: 16px 12px calc(20px + env(safe-area-inset-bottom));
+        align-items: flex-start;
+      }
+
+      .intro-card {
+        width: 100%;
+        max-width: 100%;
+        padding: 24px 16px 28px;
+        border-radius: 24px;
+      }
+
+      .intro-title {
+        font-size: clamp(26px, 9vw, 40px);
+        line-height: 1.15;
+      }
+
+      .intro-sub {
+        font-size: 15px;
+        margin-bottom: 20px;
+      }
+
+      .intro-animal-row {
+        font-size: clamp(26px, 8vw, 34px);
+        letter-spacing: 3px;
+        margin-bottom: 16px;
+      }
+
+      #introTextBox {
+        padding: 18px 14px;
+        min-height: 0;
+      }
+
+      #introText {
+        font-size: 16px;
+        line-height: 1.65;
+      }
+
+      .intro-btn-row {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      #enterLobbyBtn,
+      #skipStoryBtn,
+      #confirmSchoolBtn {
+        width: 100%;
+        min-height: 48px;
+        font-size: 17px;
+      }
+
+      #skipStoryBtn {
+        padding: 14px 20px;
+      }
+
+      .school-setup-hint {
+        font-size: 15px;
+      }
+
+      #schoolNameInput {
+        font-size: 16px;
+        padding: 14px 16px;
+      }
+
+      #lobbyScreen {
+        padding: 14px 12px calc(24px + env(safe-area-inset-bottom));
+      }
+
+      .lobby-wrap {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .lobby-header {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 18px 16px;
+        border-radius: 22px;
+      }
+
+      .logo-box h1 {
+        font-size: clamp(22px, 6.5vw, 32px);
+      }
+
+      .logo-box p {
+        font-size: 14px;
+      }
+
+      .header-actions {
+        width: 100%;
+      }
+
+      .header-actions .header-btn {
+        flex: 1;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .panel {
+        padding: 16px 14px;
+        border-radius: 22px;
+      }
+
+      .panel-title {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .panel-title h2 {
+        font-size: 20px;
+      }
+
+      .podium {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .rank-card.first,
+      .rank-card.second,
+      .rank-card.third {
+        min-height: 0;
+        order: initial;
+      }
+
+      .game-card h3 {
+        font-size: 20px;
+      }
+
+      .game-card p {
+        font-size: 14px;
+        margin-bottom: 14px;
+      }
+
+      .play-btn {
+        display: block;
+        width: 100%;
+        min-height: 48px;
+        line-height: 1.25;
+        padding: 14px 16px;
+        font-size: 16px;
+      }
+
+      .modal {
+        padding: 0;
+        align-items: flex-end;
+      }
+
+      .modal-content {
+        width: 100%;
+        max-width: 100%;
+        max-height: min(92dvh, 92vh);
+        border-radius: 20px 20px 0 0;
+      }
+
+      .modal-head {
+        padding: 16px 16px 10px;
+      }
+
+      .modal-head h2 {
+        font-size: 20px;
+      }
+
+      .ranking-scroll {
+        padding: 12px 12px 20px;
+      }
+
+      thead th,
+      tbody td {
+        font-size: 13px;
+        padding: 10px 6px;
+      }
+
+      .animal-cell {
+        font-size: 22px;
       }
     }
   </style>

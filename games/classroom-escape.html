@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>교수님 몰래 강의실 탈출</title>
   <style>
     * { box-sizing: border-box; }
@@ -15,13 +15,22 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      min-height: 100dvh;
       color: #263746;
+      padding: 12px calc(10px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom))
+        calc(10px + env(safe-area-inset-left));
     }
 
     .wrap {
       width: 1180px;
-      max-width: 96vw;
+      max-width: 100%;
       padding: 18px;
+    }
+
+    button,
+    .lobby-link {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
 
     .shell {
@@ -139,14 +148,27 @@
       font-weight: 700;
     }
 
-    #game {
-      position: relative;
+    .game-viewport {
       width: 100%;
-      height: 720px;
+      max-width: 1140px;
+      margin: 0 auto;
       overflow: hidden;
       border-radius: 24px;
       border: 4px solid #8faec8;
+      position: relative;
       background: #d8b587;
+      line-height: 0;
+    }
+
+    #game {
+      position: relative;
+      width: 1140px;
+      height: 720px;
+      overflow: hidden;
+      border-radius: 0;
+      border: none;
+      background: #d8b587;
+      transform-origin: top left;
     }
 
     .wall {
@@ -450,6 +472,55 @@
     #kakaoShareResultBtn.hidden {
       display: none !important;
     }
+
+    @media (max-width: 900px) {
+      body {
+        align-items: flex-start;
+      }
+
+      .wrap {
+        padding: 10px 8px;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .title h1 {
+        font-size: clamp(20px, 5vw, 28px);
+      }
+
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      #restartBtn {
+        min-height: 48px;
+      }
+
+      #message {
+        font-size: 13px;
+        min-height: auto;
+        padding: 10px 12px;
+      }
+
+      .overlay-card {
+        width: min(360px, 92vw);
+        max-height: min(85dvh, 85vh);
+        overflow-y: auto;
+        padding: 22px 16px;
+      }
+
+      .overlay-card h2 {
+        font-size: 24px;
+      }
+
+      .overlay-actions button {
+        min-height: 46px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -483,6 +554,7 @@
         <div id="message">오버레이의 시작 버튼으로 진행하세요. 학생증을 챙긴 뒤 문으로 탈출하면 됩니다.</div>
       </div>
 
+      <div id="gameViewport" class="game-viewport">
       <div id="game">
         <div class="wall"></div>
         <div class="floor"></div>
@@ -521,6 +593,7 @@
           </div>
         </div>
       </div>
+      </div>
     </div>
   </div>
 
@@ -532,6 +605,29 @@
   <script>
     const GAME_WIDTH = 1140;
     const GAME_HEIGHT = 720;
+
+    function updateGameViewportScale() {
+      const vp = document.getElementById("gameViewport");
+      const gameEl = document.getElementById("game");
+      if (!vp || !gameEl) return;
+      const w = vp.clientWidth;
+      if (w <= 0) return;
+      const scale = Math.min(1, w / GAME_WIDTH);
+      gameEl.style.width = `${GAME_WIDTH}px`;
+      gameEl.style.height = `${GAME_HEIGHT}px`;
+      gameEl.style.transformOrigin = "top left";
+      gameEl.style.transform = `scale(${scale})`;
+      vp.style.height = `${GAME_HEIGHT * scale}px`;
+    }
+
+    window.addEventListener(
+      "resize",
+      () => window.requestAnimationFrame(updateGameViewportScale),
+      { passive: true }
+    );
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", updateGameViewportScale);
+    }
     const PLAYER_SIZE = 32;
     const PLAYER_SPEED = 5.0;
     const PASS_SIZE = 40;
@@ -916,6 +1012,7 @@ doorLock.textContent = "🔒";
       gameEnded = false;
 
       buildStage(currentStage);
+      requestAnimationFrame(updateGameViewportScale);
       showOverlay(
         `스테이지 ${currentStage + 1}`,
         `준비가 되면 시작 버튼을 눌러 진행하세요. 학생증을 챙기고 탈출해야 합니다.`,
@@ -1216,6 +1313,10 @@ function findSafePassPosition() {
     nextStageBtn.addEventListener("click", goToNextStage);
 
     buildStage(currentStage);
+    requestAnimationFrame(() => {
+      updateGameViewportScale();
+      requestAnimationFrame(updateGameViewportScale);
+    });
     showOverlay(
       "게임 준비",
       "오버레이의 시작 버튼을 눌러 1단계를 시작하세요. 학생증을 챙기고 교수님을 피해 탈출하면 됩니다.",

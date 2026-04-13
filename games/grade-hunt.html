@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>동물의 왕국 : 학점 사냥</title>
   <style>
     * {
@@ -15,17 +15,28 @@
       background:
         linear-gradient(180deg, #bfe9ff 0%, #dff7d8 45%, #fdf4d8 100%);
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       justify-content: center;
       align-items: center;
       color: #3d413d;
       overflow-x: hidden;
+      padding: 12px calc(12px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom))
+        calc(12px + env(safe-area-inset-left));
     }
 
     .wrap {
       width: 960px;
-      max-width: 95vw;
+      max-width: 100%;
       padding: 22px;
+    }
+
+    button,
+    .lobby-link,
+    .start-btn,
+    .kakao-share-result-btn {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
 
     .game-card {
@@ -392,16 +403,40 @@
     }
 
     @media (max-width: 700px) {
+      .wrap {
+        padding: 14px 10px;
+      }
+
+      .top-area {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .start-btn {
+        width: 100%;
+        min-height: 48px;
+        font-size: 17px;
+      }
+
       .title-box h1 {
-        font-size: 28px;
+        font-size: clamp(22px, 5.5vw, 28px);
+      }
+
+      .title-box p {
+        font-size: 14px;
       }
 
       .info-panel {
         grid-template-columns: 1fr;
       }
 
+      .info-item .value {
+        font-size: 24px;
+      }
+
       #gameArea {
-        height: 420px;
+        height: min(52vh, 440px);
+        min-height: 320px;
       }
 
       .grade {
@@ -418,7 +453,14 @@
       }
 
       .result-card {
-        font-size: 17px;
+        font-size: 16px;
+        padding: 14px 12px;
+      }
+
+      .kakao-share-result-btn {
+        width: 100%;
+        min-height: 48px;
+        font-size: 16px;
       }
     }
 
