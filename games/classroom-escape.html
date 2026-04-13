@@ -219,6 +219,7 @@
     }
 
     .game-viewport {
+      /* 너비·높이는 updateGameViewportScale에서 스케일에 맞게 지정(가로 여백 띠 방지) */
       width: 100%;
       max-width: 1140px;
       margin: 0 auto;
@@ -228,6 +229,8 @@
       position: relative;
       background: #d8b587;
       line-height: 0;
+      /* 전역 border-box여도 여기서는 콘텐츠 너비 = 스케일된 게임 픽셀과 일치시키기 위해 */
+      box-sizing: content-box;
     }
 
     #game {
@@ -889,26 +892,52 @@
     const GAME_WIDTH = 1140;
     const GAME_HEIGHT = 720;
 
+    function contentBoxInnerWidth(el) {
+      if (!el) return 0;
+      const r = el.getBoundingClientRect();
+      const cs = getComputedStyle(el);
+      const pl = parseFloat(cs.paddingLeft) || 0;
+      const pr = parseFloat(cs.paddingRight) || 0;
+      const bl = parseFloat(cs.borderLeftWidth) || 0;
+      const br = parseFloat(cs.borderRightWidth) || 0;
+      return Math.max(0, r.width - pl - pr - bl - br);
+    }
+
     function updateGameViewportScale() {
       const vp = document.getElementById("gameViewport");
       const gameEl = document.getElementById("game");
       if (!vp || !gameEl) return;
-      const w = vp.clientWidth;
+
+      const layout = vp.parentElement;
+      const w = layout ? contentBoxInnerWidth(layout) : vp.clientWidth;
       if (w <= 0) return;
+
       const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
       const top = vp.getBoundingClientRect().top;
       const narrow = window.matchMedia("(max-width: 932px)").matches;
       const landscape = window.matchMedia("(orientation: landscape)").matches;
       const pad = landscape && narrow ? 5 : 12;
       const availH = Math.max(200, vh - top - pad);
-      const scaleByW = w / GAME_WIDTH;
-      const scaleByH = availH / GAME_HEIGHT;
+      /* .game-viewport 좌우 테두리 4px × 2 — content-box일 때 바깥 점유 폭 */
+      const vpBorderXY = 8;
+      const scaleByW = Math.max(0, w - vpBorderXY) / GAME_WIDTH;
+      const scaleByH = Math.max(0, availH - vpBorderXY) / GAME_HEIGHT;
       const scale = Math.min(1, scaleByW, scaleByH);
+
+      const scaledW = GAME_WIDTH * scale;
+      const scaledH = GAME_HEIGHT * scale;
+
       gameEl.style.width = `${GAME_WIDTH}px`;
       gameEl.style.height = `${GAME_HEIGHT}px`;
       gameEl.style.transformOrigin = "top left";
       gameEl.style.transform = `scale(${scale})`;
-      vp.style.height = `${GAME_HEIGHT * scale}px`;
+
+      /* 높이 기준으로 줄었을 때 오른쪽 빈 베이지 띠가 생기지 않도록 뷰포트를 실제 스케일 크기에 맞춤 */
+      vp.style.width = `${scaledW}px`;
+      vp.style.height = `${scaledH}px`;
+      vp.style.maxWidth = "100%";
+      vp.style.marginLeft = "auto";
+      vp.style.marginRight = "auto";
     }
 
     window.addEventListener(
