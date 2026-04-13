@@ -511,6 +511,7 @@
         <div class="scores">
           <span>점수 <strong id="scoreEl">0</strong></span>
           <span>콤보 <strong id="comboEl">0</strong></span>
+          <span>목숨 <strong id="lifeEl">❤️❤️❤️</strong></span>
         </div>
         <button type="button" class="start-btn" id="startBtn">게임 시작</button>
       </div>
@@ -562,16 +563,17 @@
     <div class="overlay-card">
       <h2>교수님 퇴장 정렬</h2>
       <p>
-        위에서 내려오는 얼굴을 시간 안에 많이 분류하세요.<br />
+        제한 시간 15초 동안 얼굴을 최대한 많이 분류하세요.<br />
         <strong>교수</strong>는 왼쪽, <strong>학생</strong>은 오른쪽으로 넘깁니다.<br />
-        터치 또는 키보드(A/←, D/→)로 플레이 가능합니다.
+        오답 시 목숨이 1개 줄며, 목숨 0이면 즉시 종료됩니다.
       </p>
       <button type="button" id="overlayStart">게임 시작</button>
     </div>
   </div>
 
   <script>
-    const GAME_DURATION_SEC = 45;
+    const GAME_DURATION_SEC = 15;
+    const MAX_LIVES = 3;
     const SLOT_COUNT = 5;
     const SLOT_SPACING = 78;
     const TOP_SPAWN_Y = -86;
@@ -581,6 +583,7 @@
     const queueLayer = document.getElementById("queueLayer");
     const scoreEl = document.getElementById("scoreEl");
     const comboEl = document.getElementById("comboEl");
+    const lifeEl = document.getElementById("lifeEl");
     const timeBar = document.getElementById("timeBar");
     const startBtn = document.getElementById("startBtn");
     const leftCheek = document.getElementById("leftCheek");
@@ -593,9 +596,15 @@
     let queue = [];
     let score = 0;
     let combo = 0;
+    let lives = MAX_LIVES;
     let playing = false;
     let timeLeft = GAME_DURATION_SEC;
     let timerId = null;
+
+    function livesToHearts(n) {
+      const clamped = Math.max(0, Math.min(MAX_LIVES, n));
+      return "❤️".repeat(clamped) || "🖤";
+    }
 
     function randRole() {
       return Math.random() < 0.55 ? "professor" : "student";
@@ -712,7 +721,7 @@
 
       if (correct) {
         combo += 1;
-        const gain = 10 + Math.min(combo - 1, 20) * 2;
+        const gain = 1;
         score += gain;
         scoreEl.textContent = String(score);
         comboEl.textContent = String(combo);
@@ -756,8 +765,8 @@
       } else {
         combo = 0;
         comboEl.textContent = "0";
-        score = Math.max(0, score - 4);
-        scoreEl.textContent = String(score);
+        lives = Math.max(0, lives - 1);
+        lifeEl.textContent = livesToHearts(lives);
         if (frontEl) {
           frontEl.classList.remove("shake");
           void frontEl.offsetWidth;
@@ -765,6 +774,9 @@
         }
         const r = (frontEl && frontEl.getBoundingClientRect()) || { left: 0, top: 0, width: 0 };
         showFloatScore(r.left + r.width / 2 - 10, r.top, "미스!", "#c0392b");
+        if (lives <= 0) {
+          endGame("게임 오버!", "목숨을 모두 잃었습니다. 다시 도전해 보세요.");
+        }
       }
     }
 
@@ -786,9 +798,11 @@
       overlay.classList.remove("show");
       score = 0;
       combo = 0;
+      lives = MAX_LIVES;
       timeLeft = GAME_DURATION_SEC;
       scoreEl.textContent = "0";
       comboEl.textContent = "0";
+      lifeEl.textContent = livesToHearts(lives);
       updateTimeBar();
       initQueue();
       playing = true;
@@ -796,15 +810,15 @@
       timerId = setInterval(tickTime, 1000);
     }
 
-    function endGame() {
+    function endGame(title = "시간 종료!", desc = "다시 도전해 보세요.") {
       playing = false;
       startBtn.disabled = false;
       if (timerId) clearInterval(timerId);
       timerId = null;
 
-      overlay.querySelector("h2").textContent = "시간 종료!";
+      overlay.querySelector("h2").textContent = title;
       overlay.querySelector("p").innerHTML =
-        `최종 점수 <strong style="color:#c9a227;font-size:22px">${score}</strong>점<br />다시 도전해 보세요.`;
+        `최종 점수 <strong style="color:#c9a227;font-size:22px">${score}</strong>점<br />${desc}`;
       overlay.querySelector("button").textContent = "다시 하기";
       overlay.classList.add("show");
     }
@@ -857,6 +871,7 @@
 
     initQueue();
     updateTimeBar();
+    lifeEl.textContent = livesToHearts(MAX_LIVES);
     updateLobbyBackLink();
   </script>
 </body>
