@@ -686,38 +686,82 @@
       overflow: hidden;
     }
 
-    /* 모바일 가로 — 상단·여백 최소화로 게임 뷰 최대 */
+    /* 모바일 가로 — 게임과 같은 줄에 다시 버튼만 두어 세로를 게임에 할당 */
     @media (orientation: landscape) and (max-width: 932px) {
+      html,
+      body {
+        height: 100%;
+        max-height: 100dvh;
+        overflow: hidden;
+      }
+
       body {
         padding: max(2px, env(safe-area-inset-top)) max(3px, env(safe-area-inset-right))
           max(2px, env(safe-area-inset-bottom)) max(3px, env(safe-area-inset-left));
         align-items: stretch;
+        display: flex;
+        flex-direction: column;
       }
 
       .wrap {
         width: 100%;
         max-width: 100%;
+        max-height: 100dvh;
         padding: 2px 4px;
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
       }
 
       .shell {
+        flex: 1 1 auto;
+        min-height: 0;
         padding: 4px 6px;
         border-radius: 12px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-rows: auto minmax(0, 1fr);
+        grid-template-areas:
+          "top top"
+          "game tools";
+        gap: 4px 6px;
+        align-items: stretch;
       }
 
       .lobby-link {
-        padding: 4px 10px;
-        font-size: 11px;
-        margin-bottom: 4px;
+        display: none !important;
       }
 
       .topbar {
+        grid-area: top;
         flex-direction: row;
         flex-wrap: nowrap;
         align-items: center;
         justify-content: space-between;
         gap: 6px;
-        margin-bottom: 4px;
+        margin-bottom: 0;
+      }
+
+      #gameViewport {
+        grid-area: game;
+        min-width: 0;
+        width: 100% !important;
+        max-width: none !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        justify-self: stretch;
+      }
+
+      .controls {
+        grid-area: tools;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        margin-bottom: 0;
+        align-self: center;
+        justify-content: flex-start;
+        gap: 4px;
+        width: auto;
       }
 
       .game-viewport {
@@ -760,13 +804,6 @@
 
       .status-value {
         font-size: clamp(12px, 2.8vw, 15px);
-      }
-
-      .controls {
-        margin-bottom: 2px;
-        flex-wrap: nowrap;
-        gap: 4px;
-        align-items: center;
       }
 
       #restartBtn {
@@ -916,20 +953,38 @@
       if (!vp || !gameEl) return;
 
       const layout = vp.parentElement;
-      const w = layout ? contentBoxInnerWidth(layout) : vp.clientWidth;
-      if (w <= 0) return;
-
-      const rect = vp.getBoundingClientRect();
       const narrow = window.matchMedia("(max-width: 932px)").matches;
       const landscape = window.matchMedia("(orientation: landscape)").matches;
+      const toolsEl = layout && layout.querySelector ? layout.querySelector(".controls") : null;
+
+      const rect = vp.getBoundingClientRect();
+      const fullShellW = layout ? contentBoxInnerWidth(layout) : vp.clientWidth;
+      let w = fullShellW;
+      if (landscape && narrow && toolsEl) {
+        const tr = toolsEl.getBoundingClientRect();
+        const sideBySide = Math.abs(tr.top - rect.top) < 48;
+        if (sideBySide && tr.width > 20 && tr.width < fullShellW * 0.55) {
+          w = Math.max(120, fullShellW - tr.width - 10);
+        }
+      }
+      if (w <= 0) return;
+
       const pad = landscape && narrow ? 1 : 12;
-      let availH;
+      let availHVisual;
       if (window.visualViewport) {
         const vv = window.visualViewport;
-        availH = Math.max(200, vv.offsetTop + vv.height - rect.top - pad);
+        availHVisual = vv.offsetTop + vv.height - rect.top - pad;
       } else {
-        availH = Math.max(200, window.innerHeight - rect.top - pad);
+        availHVisual = window.innerHeight - rect.top - pad;
       }
+      let availHShell = availHVisual;
+      if (layout) {
+        const shellCS = getComputedStyle(layout);
+        const shellPadB = parseFloat(shellCS.paddingBottom) || 0;
+        availHShell = layout.clientHeight - vp.offsetTop - shellPadB - pad;
+      }
+      const availH = Math.max(200, Math.min(availHVisual, availHShell));
+
       const csVp = getComputedStyle(vp);
       const vpBorderX =
         (parseFloat(csVp.borderLeftWidth) || 0) + (parseFloat(csVp.borderRightWidth) || 0);
@@ -937,7 +992,7 @@
         (parseFloat(csVp.borderTopWidth) || 0) + (parseFloat(csVp.borderBottomWidth) || 0);
       const scaleByW = Math.max(0, w - vpBorderX) / GAME_WIDTH;
       const scaleByH = Math.max(0, availH - vpBorderY) / GAME_HEIGHT;
-      const scale = Math.min(1, scaleByW, scaleByH);
+      const scale = Math.min(scaleByW, scaleByH);
 
       const scaledW = GAME_WIDTH * scale;
       const scaledH = GAME_HEIGHT * scale;
