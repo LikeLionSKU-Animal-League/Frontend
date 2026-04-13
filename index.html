@@ -1159,7 +1159,9 @@
             <span>원하는 게임을 선택하세요</span>
           </div>
 
+          <!-- 각 카드: games/*.html 로 이동 (스크립트가 ?school= 쿼리를 href에 붙임) -->
           <div class="game-grid">
+            <!-- 미니게임 1: 학점 사냥 (grade-hunt.html) -->
             <div class="game-card">
               <div class="game-emoji">🎓🪰</div>
               <h3>학점 사냥</h3>
@@ -1170,6 +1172,7 @@
               <a class="play-btn" id="playGradeHunt" href="games/grade-hunt.html">플레이</a>
             </div>
 
+            <!-- 미니게임 2: 강의실 탈출 (classroom-escape.html) -->
             <div class="game-card">
               <div class="game-emoji">🏫🚪</div>
               <h3>강의실 탈출</h3>
@@ -1180,6 +1183,7 @@
               <a class="play-btn" id="playClassroomEscape" href="games/classroom-escape.html">플레이</a>
             </div>
 
+            <!-- 미니게임 3: 사자의 길 건너기 (cross_road.html) -->
             <div class="game-card">
               <div class="game-emoji">🦁🚗</div>
               <h3>사자의 길 건너기</h3>
@@ -1189,6 +1193,7 @@
               <a class="play-btn" id="playCrossRoad" href="games/cross_road.html">플레이</a>
             </div>
 
+            <!-- 예약 슬롯: 추후 미니게임 -->
             <div class="game-card">
               <div class="game-emoji">🌰🐿️</div>
               <h3>도토리 레이스</h3>
@@ -1563,6 +1568,7 @@
       }
     }
 
+    /** 로비에 저장된 학교가 있으면 각 미니게임 플레이 링크에 ?school= 붙임 */
     function updateGamePlayLinks() {
       const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
       const q = school ? `?school=${encodeURIComponent(school)}` : "";

@@ -1,16 +1,21 @@
 <!DOCTYPE html>
+<!-- 교수님 몰래 강의실 탈출: 단일 HTML 파일(스타일·스크립트 포함) -->
 <html lang="ko">
 <head>
+  <!-- 문자 인코딩·모바일 뷰포트·노치(safe-area) 대응 -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>교수님 몰래 강의실 탈출</title>
   <style>
+    /* ---------- 전역 박스 모델·텍스트 크기 ---------- */
     * { box-sizing: border-box; }
 
+    /* iOS 등에서 글자가 임의로 커지지 않도록 */
     html {
       -webkit-text-size-adjust: 100%;
     }
 
+    /* 페이지 전체: 배경 그라데이션·중앙 정렬·최소 높이·안전 영역 패딩 */
     body {
       margin: 0;
       font-family: "Arial", "맑은 고딕", sans-serif;
@@ -25,18 +30,21 @@
         calc(10px + env(safe-area-inset-left));
     }
 
+    /* 게임을 감싸는 최대 너비 컨테이너 */
     .wrap {
       width: 1180px;
       max-width: 100%;
       padding: 18px;
     }
 
+    /* 버튼·로비 링크: 탭 하이라이트 제거·터치 반응 개선 */
     button,
     .lobby-link {
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
     }
 
+    /* 흰 카드 형태의 메인 패널 */
     .shell {
       background: rgba(255,255,255,0.97);
       border: 3px solid #dde9f5;
@@ -45,6 +53,7 @@
       box-shadow: 0 18px 42px rgba(62, 95, 130, 0.16);
     }
 
+    /* 상단: 제목 영역 + 상태(단계·시간) 한 줄 묶음 */
     .topbar {
       display: flex;
       flex-direction: column;
@@ -53,6 +62,7 @@
       margin-bottom: 10px;
     }
 
+    /* 게임 제목 */
     .title h1 {
       margin: 0;
       font-size: clamp(20px, 4.2vw, 30px);
@@ -60,6 +70,7 @@
       line-height: 1.2;
     }
 
+    /* 부제·설명 문구 */
     .title p {
       margin: 4px 0 0;
       font-size: 13px;
@@ -67,6 +78,7 @@
       line-height: 1.45;
     }
 
+    /* 단계·남은 시간·상태를 나란히 표시 */
     .status {
       display: flex;
       flex-direction: row;
@@ -75,6 +87,7 @@
       width: 100%;
     }
 
+    /* 상태 한 칸(박스) */
     .status-box {
       flex: 1 1 0;
       min-width: 0;
@@ -85,6 +98,7 @@
       border: 2px solid #e0ebf6;
     }
 
+    /* 상태 라벨(작은 글씨) */
     .status-label {
       font-size: 10px;
       color: #7a90a4;
@@ -93,6 +107,7 @@
       letter-spacing: -0.02em;
     }
 
+    /* 상태 숫자·텍스트 값 */
     .status-value {
       font-size: clamp(14px, 3.5vw, 18px);
       font-weight: 800;
@@ -101,6 +116,7 @@
       word-break: keep-all;
     }
 
+    /* 다시하기 버튼 + 안내 메시지 줄 */
     .controls {
       display: flex;
       gap: 8px;
@@ -109,6 +125,7 @@
       margin-bottom: 10px;
     }
 
+    /* 일반 버튼 기본 스타일 */
     button {
       border: none;
       border-radius: 999px;
@@ -119,10 +136,12 @@
       transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
 
+    /* 버튼 호버 시 살짝 떠오름 */
     button:hover {
       transform: translateY(-1px);
     }
 
+    /* 로비로 돌아가기 링크(버튼처럼 보이게) */
     .lobby-link {
       display: inline-flex;
       align-items: center;
@@ -137,16 +156,19 @@
       margin-bottom: 10px;
     }
 
+    /* 로비 링크 호버 배경 */
     .lobby-link:hover {
       background: #dceaf9;
     }
 
+    /* 현재 단계 다시 버튼(노란 강조) */
     #restartBtn {
       background: linear-gradient(135deg, #ffe18a, #ffcd67);
       color: #664a10;
       box-shadow: 0 10px 22px rgba(216, 170, 58, 0.22);
     }
 
+    /* 컨트롤 옆 짧은 안내 문구 영역 */
     #message {
       flex: 1;
       min-height: 40px;
@@ -162,7 +184,7 @@
       line-height: 1.4;
     }
 
-    /* 모바일 방향 패드 — 좌하단 코너에 안전 영역만큼만 띄움 */
+    /* 모바일 방향 패드: 좌하단·안전 영역만큼 띄움·기본은 숨김(미디어쿼리에서 표시) */
     .classroom-dpad {
       display: none;
       position: absolute;
@@ -177,6 +199,7 @@
       pointer-events: none;
     }
 
+    /* 방향키 3×3 그리드(가운데 빈 칸 포함) */
     .classroom-dpad-grid {
       display: grid;
       grid-template-columns: repeat(3, 26px);
@@ -191,11 +214,13 @@
       -webkit-backdrop-filter: blur(2px);
     }
 
+    /* 패드에서 자리만 차지하는 빈 셀 */
     .classroom-dpad-empty {
       visibility: hidden;
       pointer-events: none;
     }
 
+    /* 방향 버튼 한 칸 */
     .classroom-dpad-btn {
       border: none;
       width: 26px;
@@ -212,12 +237,14 @@
       touch-action: manipulation;
     }
 
+    /* 방향 버튼 눌렀을 때 */
     .classroom-dpad-btn:active {
       transform: scale(0.94);
       background: rgba(220, 228, 238, 0.58);
       border-color: rgba(255, 255, 255, 0.75);
     }
 
+    /* 게임이 그려지는 바깥 프레임(스케일된 크기·테두리) */
     .game-viewport {
       /* 너비·높이는 updateGameViewportScale에서 지정 — 논리 무대가 1140보다 넓어질 수 있음 */
       width: 100%;
@@ -233,6 +260,7 @@
       box-sizing: content-box;
     }
 
+    /* 실제 게임 논리 좌표(1140×720 기준, transform으로 축소) */
     #game {
       position: relative;
       min-width: 1140px;
@@ -245,6 +273,7 @@
       transform-origin: top left;
     }
 
+    /* 강의실 위쪽 벽 */
     .wall {
       position: absolute;
       left: 0;
@@ -255,6 +284,7 @@
       z-index: 0;
     }
 
+    /* 바닥(줄무늬) */
     .floor {
       position: absolute;
       left: 0;
@@ -270,6 +300,7 @@
       z-index: 0;
     }
 
+    /* 칠판 */
     .board {
       position: absolute;
       left: 350px;
@@ -283,6 +314,7 @@
       box-shadow: inset 0 0 0 2px rgba(255,255,255,0.08);
     }
 
+    /* 칠판 위 문구(가상 요소) */
     .board::after {
       content: "오늘의 수업 : 끝까지 집중하세요";
       position: absolute;
@@ -293,6 +325,7 @@
       font-weight: 700;
     }
 
+    /* 창문 공통 */
     .window {
       position: absolute;
       top: 36px;
@@ -304,9 +337,11 @@
       z-index: 1;
     }
 
+    /* 좌·우 창 위치 */
     .window.left { left: 60px; }
     .window.right { right: 60px; }
 
+    /* 창문 십자 창살 */
     .window::before,
     .window::after {
       content: "";
@@ -314,6 +349,7 @@
       background: rgba(255,255,255,0.72);
     }
 
+    /* 세로 창살 */
     .window::before {
       width: 4px;
       height: 100%;
@@ -322,6 +358,7 @@
       transform: translateX(-50%);
     }
 
+    /* 가로 창살 */
     .window::after {
       width: 100%;
       height: 4px;
@@ -330,6 +367,7 @@
       transform: translateY(-50%);
     }
 
+    /* 교탁 */
     .teacher-desk {
       position: absolute;
       left: 445px;
@@ -342,6 +380,7 @@
       box-shadow: inset 0 -4px 0 rgba(0,0,0,0.08);
     }
 
+    /* 출구 문 */
     .door {
       position: absolute;
       right: 18px;
@@ -354,6 +393,7 @@
       z-index: 1;
     }
 
+    /* 문 손잡이(원) */
     .door::after {
       content: "";
       position: absolute;
@@ -365,6 +405,7 @@
       background: #f4d36a;
     }
 
+    /* 자물쇠 아이콘(학생증 전) */
     .door-lock {
       position: absolute;
       right: 120px;
@@ -374,6 +415,7 @@
       filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
     }
 
+    /* 학생증 아이템(원형) */
     #passItem {
       position: absolute;
       width: 40px;
@@ -389,8 +431,10 @@
       box-shadow: 0 10px 16px rgba(226, 180, 60, 0.28);
     }
 
+    /* 학생증 이모지 */
     #passItem::after { content: "🪪"; }
 
+    /* 학생 책상 */
     .desk {
       position: absolute;
       width: 64px;
@@ -402,6 +446,7 @@
       box-shadow: inset 0 -4px 0 rgba(0,0,0,0.08);
     }
 
+    /* 책상 다리 두 개 */
     .desk::before,
     .desk::after {
       content: "";
@@ -416,6 +461,7 @@
     .desk::before { left: 12px; }
     .desk::after { right: 12px; }
 
+    /* 플레이어(학생) 원형 마커 */
     #player {
       position: absolute;
       width: 32px;
@@ -433,6 +479,7 @@
 
     #player::after { content: "🎓"; }
 
+    /* 교수 캐릭터 이미지 */
     .professor {
       position: absolute;
       width: 70px;
@@ -443,6 +490,7 @@
       filter: drop-shadow(0 6px 8px rgba(0,0,0,0.16));
     }
 
+    /* 교수 발밑 그림자 */
     .prof-shadow {
       position: absolute;
       width: 54px;
@@ -454,6 +502,7 @@
       filter: blur(2px);
     }
 
+    /* 교수 시야(부채꼴 느낌의 그라데이션) */
     .vision {
       position: absolute;
       z-index: 5;
@@ -464,6 +513,7 @@
       clip-path: polygon(0 50%, 100% 0, 100% 100%);
     }
 
+    /* 조작법 안내 박스 */
     .legend {
       position: absolute;
       left: 18px;
@@ -478,6 +528,7 @@
       line-height: 1.6;
     }
 
+    /* 시작·클리어·게임오버 시 전체 덮는 반투명 레이어 */
     .overlay {
       position: absolute;
       inset: 0;
@@ -489,6 +540,7 @@
       z-index: 30;
     }
 
+    /* 오버레이 안 흰 카드 */
     .overlay-card {
       width: min(560px, 92%);
       padding: 28px 24px;
@@ -499,12 +551,14 @@
       text-align: center;
     }
 
+    /* 오버레이 제목 */
     .overlay-card h2 {
       margin: 0 0 10px;
       font-size: 34px;
       color: #304b68;
     }
 
+    /* 오버레이 설명 문단 */
     .overlay-card p {
       margin: 0 0 18px;
       font-size: 17px;
@@ -512,6 +566,7 @@
       line-height: 1.7;
     }
 
+    /* 오버레이 버튼 묶음 */
     .overlay-actions {
       display: flex;
       gap: 10px;
@@ -519,6 +574,7 @@
       flex-wrap: wrap;
     }
 
+    /* 다음 단계 버튼(클리어 후에만 표시) */
     #nextStageBtn {
       display: none;
       background: linear-gradient(135deg, #8fe28f, #5cbf69);
@@ -526,28 +582,34 @@
       box-shadow: 0 10px 22px rgba(84, 176, 98, 0.24);
     }
 
+    /* 오버레이 시작 버튼 */
     #overlayStartBtn {
       background: linear-gradient(135deg, #71c3ff, #4a9fe3);
       color: white;
       box-shadow: 0 10px 22px rgba(60, 148, 225, 0.24);
     }
 
+    /* 오버레이 다시 준비 버튼 */
     #overlayRestartBtn {
       background: linear-gradient(135deg, #ffe08a, #ffcd67);
       color: #64490f;
     }
 
+    /* 카카오톡 공유 버튼 */
     #kakaoShareResultBtn {
       background: #fee500;
       color: #191919;
       box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
     }
 
+    /* 공유 버튼 숨김 유틸 */
     #kakaoShareResultBtn.hidden {
       display: none !important;
     }
 
+    /* ---------- 태블릿 이하: 세로 스크롤·패드 표시 등 ---------- */
     @media (max-width: 900px) {
+      /* 세로로 길게 스크롤 가능하게 */
       body {
         align-items: flex-start;
       }
@@ -560,6 +622,7 @@
         padding: 12px 10px;
       }
 
+      /* 버튼과 메시지를 세로로 쌓음 */
       .controls {
         flex-direction: column;
         align-items: stretch;
@@ -574,6 +637,7 @@
         font-size: 12px;
       }
 
+      /* 모바일에서만 방향 패드 표시 */
       .classroom-dpad {
         display: flex;
       }
@@ -594,7 +658,7 @@
       }
     }
 
-    /* 세로(모바일) — 가로 플레이 유도 */
+    /* 세로 모드일 때 가로 플레이 유도하는 전면 안내 */
     .portrait-gate {
       display: none;
       position: fixed;
@@ -610,10 +674,12 @@
       touch-action: none;
     }
 
+    /* 세로 게이트가 켜졌을 때만 보임 */
     .portrait-gate.is-open {
       display: flex;
     }
 
+    /* 세로 게이트 안 카드 */
     .portrait-gate-card {
       width: min(360px, 100%);
       padding: 28px 22px 24px;
@@ -624,10 +690,12 @@
       text-align: center;
     }
 
+    /* 기울이는 애니메이션 영역 */
     .portrait-gate-anim {
       margin-bottom: 18px;
     }
 
+    /* 휴대폰 기울이기 일러스트 */
     .portrait-gate-device {
       display: block;
       width: 52px;
@@ -639,6 +707,7 @@
       animation: ce-portrait-tilt 2.4s ease-in-out infinite;
     }
 
+    /* 기기를 옆으로 돌리라는 반복 애니메이션 */
     @keyframes ce-portrait-tilt {
       0%,
       100% {
@@ -650,6 +719,7 @@
       }
     }
 
+    /* 세로 게이트 제목 */
     .portrait-gate-title {
       margin: 0 0 10px;
       font-size: 20px;
@@ -658,6 +728,7 @@
       line-height: 1.35;
     }
 
+    /* 세로 게이트 설명 */
     .portrait-gate-desc {
       margin: 0 0 20px;
       font-size: 14px;
@@ -665,6 +736,7 @@
       color: rgba(220, 232, 248, 0.88);
     }
 
+    /* 전체 화면 유도 버튼 */
     .portrait-gate-btn {
       width: 100%;
       max-width: 280px;
@@ -679,16 +751,19 @@
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
     }
 
+    /* 전체 화면 버튼 눌렀을 때 */
     .portrait-gate-btn:active {
       transform: scale(0.98);
     }
 
+    /* 세로 게이트 열릴 때 body 스크롤 잠금 */
     body.ce-portrait-blocked {
       overflow: hidden;
     }
 
-    /* 모바일 가로 — 게임과 같은 줄에 다시 버튼만 두어 세로를 게임에 할당 */
+    /* 모바일 가로: 그리드로 게임 영역 + 옆 도구줄 배치 */
     @media (orientation: landscape) and (max-width: 932px) {
+      /* 한 화면에 맞추고 바깥 스크롤 제거 */
       html,
       body {
         height: 100%;
@@ -696,6 +771,7 @@
         overflow: hidden;
       }
 
+      /* 세이프 에리어 패딩 + 세로 플렉스(상단바 + 아래 영역) */
       body {
         padding: max(2px, env(safe-area-inset-top)) max(3px, env(safe-area-inset-right))
           max(2px, env(safe-area-inset-bottom)) max(3px, env(safe-area-inset-left));
@@ -704,6 +780,7 @@
         flex-direction: column;
       }
 
+      /* 남는 높이를 셸에 넘김 */
       .wrap {
         width: 100%;
         max-width: 100%;
@@ -715,6 +792,7 @@
         flex-direction: column;
       }
 
+      /* 상단 한 줄 + 아래는 [게임 | 컨트롤] 2열 */
       .shell {
         flex: 1 1 auto;
         min-height: 0;
@@ -730,10 +808,12 @@
         align-items: stretch;
       }
 
+      /* 가로에서는 공간 절약을 위해 로비 링크 숨김 */
       .lobby-link {
         display: none !important;
       }
 
+      /* 그리드 상단 영역: 제목 + 상태 */
       .topbar {
         grid-area: top;
         flex-direction: row;
@@ -752,6 +832,7 @@
         align-self: start;
       }
 
+      /* 오른쪽 세로 도구줄: 다시하기 등 */
       .controls {
         grid-area: tools;
         flex-direction: column;
@@ -763,6 +844,7 @@
         width: auto;
       }
 
+      /* 작은 화면에서 테두리 얇게 */
       .game-viewport {
         border-width: 2px;
         border-radius: 12px;
@@ -774,6 +856,7 @@
         border-radius: 8px;
       }
 
+      /* 제목이 길어도 상태와 한 줄에 들어가도록 */
       .title {
         flex: 1 1 auto;
         min-width: 0;
@@ -784,6 +867,7 @@
         margin: 0;
       }
 
+      /* 부제는 숨겨 공간 확보 */
       .title p {
         display: none;
       }
@@ -793,6 +877,7 @@
         max-width: 56%;
       }
 
+      /* 상태 칸 패딩 축소 */
       .status-box {
         padding: 4px 6px;
       }
@@ -805,6 +890,7 @@
         font-size: clamp(12px, 2.8vw, 15px);
       }
 
+      /* 가로 모드에서 다시 버튼만 작게 */
       #restartBtn {
         padding: 6px 10px;
         font-size: 11px;
@@ -820,6 +906,7 @@
   </style>
 </head>
 <body>
+  <!-- 세로 홀드: 터치·좁은 화면에서만 가로 플레이 안내 -->
   <div
     id="portraitGate"
     class="portrait-gate"
@@ -839,9 +926,13 @@
     </div>
   </div>
 
+  <!-- 페이지 본문 래퍼 -->
   <div class="wrap">
+    <!-- 메인 로비로 복귀(학교 쿼리는 스크립트에서 보강) -->
     <a class="lobby-link" id="lobbyBackLink" href="../index.html?lobby=1">← 로비로 돌아가기</a>
+    <!-- 카드형 메인 레이아웃 -->
     <div class="shell">
+      <!-- 제목 + 단계·시간·상태 -->
       <div class="topbar">
         <div class="title">
           <h1>🏫 교수님 몰래 강의실 탈출</h1>
@@ -864,13 +955,16 @@
         </div>
       </div>
 
+      <!-- 다시하기 + 하단 안내 메시지 -->
       <div class="controls">
         <button id="restartBtn">현재 단계 다시</button>
         <div id="message">오버레이의 시작 버튼으로 진행하세요. 학생증을 챙긴 뒤 문으로 탈출하면 됩니다.</div>
       </div>
 
+      <!-- 스케일이 적용되는 바깥 뷰포트 + 안쪽 논리 해상도 게임 영역 -->
       <div id="gameViewport" class="game-viewport">
       <div id="game">
+        <!-- 고정 배경: 벽·바닥·창·칠판·교탁 -->
         <div class="wall"></div>
         <div class="floor"></div>
         <div class="window left"></div>
@@ -878,21 +972,27 @@
         <div class="board"></div>
         <div class="teacher-desk"></div>
 
+        <!-- 탈출 목표: 문 + 잠금 표시 -->
         <div class="door" id="exitDoor"></div>
         <div class="door-lock" id="doorLock">🔒</div>
+        <!-- 학생증(스크립트가 위치 배치) -->
         <div id="passItem"></div>
 
+        <!-- 책상·교수 DOM은 스크립트로 채움 -->
         <div id="deskLayer"></div>
         <div id="profLayer"></div>
 
+        <!-- 플레이어 마커 -->
         <div id="player"></div>
 
+        <!-- 좌하단 조작·규칙 안내 -->
         <div class="legend">
           이동: ← ↑ ↓ →<br>
           미션: 학생증 획득 후 탈출<br>
           교수 시야 = 즉시 게임 오버
         </div>
 
+        <!-- 시작·클리어·종료 UI -->
         <div class="overlay" id="overlay">
           <div class="overlay-card">
             <h2 id="overlayTitle">게임 준비</h2>
@@ -909,6 +1009,7 @@
         </div>
       </div>
 
+      <!-- 모바일용 가상 방향키(미디어쿼리에서 표시) -->
       <div class="classroom-dpad" id="classroomDpad" aria-label="이동 조작">
         <div class="classroom-dpad-grid">
           <span class="classroom-dpad-empty"></span>
@@ -926,18 +1027,27 @@
     </div>
   </div>
 
+  <!-- 카카오 JavaScript SDK(공유 기능) -->
   <script
     src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js"
     integrity="sha384-l+xbElFSnPZ2rOaPrU//2FF5B4LB8FiX5q4fXYTlfcG4PGpMkE1vcL7kNXI6Cci0"
     crossorigin="anonymous"
   ></script>
   <script>
+    /* ========== 강의실 탈출 게임 스크립트 ========== */
+    /* ===== 논리 해상도·월드 폭 ===== */
     /** 스테이지·책상·교수 경로 등이 설계된 기준 폭 (이보다 좁은 논리 폭은 쓰지 않음) */
     const BASE_STAGE_WIDTH = 1140;
+    /** 게임 무대 세로 픽셀(고정) */
     const GAME_HEIGHT = 720;
     /** 뷰포트가 더 넓으면 바닥·벽이 이어지도록 논리 폭만 확장 (비율 유지 단일 scale) */
     let gameWorldWidth = BASE_STAGE_WIDTH;
 
+    /**
+     * 요소의 안쪽 가로 너비(패딩·테두리 제외)를 구합니다.
+     * @param {HTMLElement|null} el 대상 요소
+     * @returns {number} 픽셀 단위 너비
+     */
     function contentBoxInnerWidth(el) {
       if (!el) return 0;
       const r = el.getBoundingClientRect();
@@ -949,11 +1059,16 @@
       return Math.max(0, r.width - pl - pr - bl - br);
     }
 
+    /**
+     * 브라우저 창 크기에 맞춰 #gameViewport 크기와 #game의 scale을 맞춥니다.
+     * 가로가 길면 gameWorldWidth를 늘려 좌우로 무대를 넓힙니다.
+     */
     function updateGameViewportScale() {
       const vp = document.getElementById("gameViewport");
       const gameEl = document.getElementById("game");
       if (!vp || !gameEl) return;
 
+      /* .shell 레이아웃과 모바일 가로 그리드(게임 | 컨트롤)를 함께 고려 */
       const layout = vp.parentElement;
       const narrow = window.matchMedia("(max-width: 932px)").matches;
       const landscape = window.matchMedia("(orientation: landscape)").matches;
@@ -962,6 +1077,7 @@
       const rect = vp.getBoundingClientRect();
       const fullShellW = layout ? contentBoxInnerWidth(layout) : vp.clientWidth;
       let w = fullShellW;
+      /* 모바일 가로: 컨트롤이 옆에 붙어 있으면 게임에 쓸 수 있는 가로 폭만큼만 사용 */
       if (landscape && narrow && layout && toolsEl) {
         const tr = toolsEl.getBoundingClientRect();
         const lr = layout.getBoundingClientRect();
@@ -977,6 +1093,7 @@
       }
       if (w <= 0) return;
 
+      /* 남은 세로: 주소창·키보드(visualViewport)와 셸 패딩을 반영 */
       const pad = landscape && narrow ? 1 : 12;
       let availHVisual;
       if (window.visualViewport) {
@@ -993,6 +1110,7 @@
       }
       const availH = Math.max(200, Math.min(availHVisual, availHShell));
 
+      /* 뷰포트 테두리를 빼고 실제로 스케일에 쓸 내부 박스 크기 계산 */
       const csVp = getComputedStyle(vp);
       const vpBorderX =
         (parseFloat(csVp.borderLeftWidth) || 0) + (parseFloat(csVp.borderRightWidth) || 0);
@@ -1002,6 +1120,7 @@
       const innerH = Math.max(1, availH - vpBorderY);
       const slotAspect = innerW / innerH;
       const baseAspect = BASE_STAGE_WIDTH / GAME_HEIGHT;
+      /* 슬롯이 기본보다 넓으면(울트라와이드) 논리 폭만 키워 레터박스 대신 바닥 연장 */
       if (slotAspect > baseAspect + 0.0005) {
         gameWorldWidth = Math.max(
           BASE_STAGE_WIDTH,
@@ -1011,6 +1130,7 @@
         gameWorldWidth = BASE_STAGE_WIDTH;
       }
 
+      /* 가로·세로 중 작은 쪽에 맞춰 한 번에 축소(scale) */
       const scaleByW = innerW / gameWorldWidth;
       const scaleByH = innerH / GAME_HEIGHT;
       const scale = Math.min(scaleByW, scaleByH);
@@ -1029,26 +1149,34 @@
       vp.style.marginLeft = "auto";
       vp.style.marginRight = "auto";
 
+      /* 무대가 넓어지면 플레이어 X가 화면 밖으로 나가지 않도록 클램프 */
       playerX = Math.max(0, Math.min(playerX, gameWorldWidth - PLAYER_SIZE));
       if (player) {
         player.style.left = `${playerX}px`;
       }
     }
 
+    /* 창 크기가 바뀔 때마다 스케일 재계산(리사이즈는 rAF로 묶음) */
     window.addEventListener(
       "resize",
       () => window.requestAnimationFrame(updateGameViewportScale),
       { passive: true }
     );
+    /* 모바일 주소창 숨김 등으로 visualViewport 높이가 변할 때 */
     if (window.visualViewport) {
       window.visualViewport.addEventListener("resize", updateGameViewportScale);
     }
 
+    /**
+     * 터치 기기 + 세로 + 좁은 화면이면 "가로로 돌려라" 게이트를 띄웁니다.
+     * 전체 화면·화면 회전 잠금 버튼도 여기서 연결합니다.
+     */
     (function initPortraitLandscapeGate() {
       const gate = document.getElementById("portraitGate");
       const fsBtn = document.getElementById("portraitGateFullscreenBtn");
       if (!gate) return;
 
+      /** 터치 가능한 기기인지 대략 판별 */
       function isTouchDevice() {
         return (
           (typeof navigator !== "undefined" && navigator.maxTouchPoints > 0) ||
@@ -1056,12 +1184,14 @@
         );
       }
 
+      /** 세로 게이트를 켜야 하는 조건 */
       function shouldShowPortraitGate() {
         if (!isTouchDevice()) return false;
         if (window.matchMedia("(orientation: landscape)").matches) return false;
         return window.matchMedia("(max-width: 900px)").matches;
       }
 
+      /** 게이트 표시/숨김과 body 스크롤 잠금 */
       function refreshPortraitGate() {
         const open = shouldShowPortraitGate();
         gate.classList.toggle("is-open", open);
@@ -1102,10 +1232,12 @@
       refreshPortraitGate();
     })();
 
+    /* ===== 플레이어·아이템 상수 ===== */
     const PLAYER_SIZE = 32;
     const PLAYER_SPEED = 5.0;
     const PASS_SIZE = 40;
 
+    /* ===== 자주 쓰는 DOM 참조 ===== */
     const player = document.getElementById("player");
     const deskLayer = document.getElementById("deskLayer");
     const profLayer = document.getElementById("profLayer");
@@ -1127,17 +1259,20 @@
 
     const restartBtn = document.getElementById("restartBtn");
 
+    /* 카카오 SDK 앱 키(공유 피드용) */
     const KAKAO_JS_APP_KEY = "fa75c82718597e9124f913d174cd92a2";
 
     const SHARE_SITE_ORIGIN = "https://campus-animal-battle.vercel.app";
     const SHARE_FEED_IMAGE_URL = `${SHARE_SITE_ORIGIN}/assets/game-preview.png`;
 
+    /** 공유 링크에 학교 쿼리가 있으면 붙인 로비 URL 생성 */
     function buildShareLobbyUrl() {
       const school = getLeagueSchool();
       const base = `${SHARE_SITE_ORIGIN}/?lobby=true`;
       return school ? `${base}&school=${encodeURIComponent(school)}` : base;
     }
 
+    /** 카카오 SDK 한 번만 초기화 */
     (function initKakaoSdk() {
       if (!window.Kakao || !KAKAO_JS_APP_KEY) return;
       if (!Kakao.isInitialized()) {
@@ -1148,22 +1283,26 @@
     /** 전체 클리어 시 공유용 최종 점수 */
     let lastClassroomEscapeTotalScore = 0;
 
+    /** 결과 공유 버튼 숨김 */
     function hideKakaoShareButton() {
       const btn = document.getElementById("kakaoShareResultBtn");
       if (btn) btn.classList.add("hidden");
     }
 
+    /** 결과 공유 버튼 표시 */
     function showKakaoShareButton() {
       const btn = document.getElementById("kakaoShareResultBtn");
       if (btn) btn.classList.remove("hidden");
     }
 
+    /** 카카오톡 기본 피드 공유(로비 링크) */
     function shareToKakao() {
       if (!window.Kakao || !Kakao.isInitialized()) {
         alert("카카오 SDK를 불러오지 못했거나 초기화되지 않았습니다.");
         return;
       }
       const u = buildShareLobbyUrl();
+      /* 피드 타입: 제목·설명·썸네일·링크·버튼 */
       Kakao.Share.sendDefault({
         objectType: "feed",
         content: {
@@ -1187,6 +1326,11 @@
       });
     }
 
+    /**
+     * 행마다 다른 열 개수를 받아 책상 좌표 배열을 만듭니다.
+     * @param {number[][]} colsByRow 각 행의 책상 x 좌표 목록
+     * @param {number[]} rowYs 각 행의 y 좌표
+     */
     function makeDeskGrid(colsByRow, rowYs) {
       const desks = [];
       rowYs.forEach((y, rowIndex) => {
@@ -1195,6 +1339,7 @@
       return desks;
     }
 
+    /* 3열 패턴의 넓은 강의실 책상 배치 */
     const wideDeskLayout = makeDeskGrid(
       [
         [110, 280, 450, 620, 790, 960],
@@ -1204,6 +1349,7 @@
       [305, 435, 565]
     );
 
+    /* 5단계: 제한 시간·학생증 위치·교수 웨이포인트·시야 크기 */
     const stageConfigs = [
       {
         time: 35,
@@ -1263,6 +1409,7 @@
       }
     ];
 
+    /* 리그(학교) 식별: 로컬스토리지 키 */
     const STORAGE_SCHOOL = "animalLeagueSchool";
     const API_BASE =
       window.ANIMAL_LEAGUE_API ||
@@ -1270,23 +1417,29 @@
         ? "http://localhost:3000"
         : "https://backend-jso9.onrender.com");
 
+    /**
+     * URL ?school= 값이 있으면 저장 후 반환, 없으면 로컬스토리지에서 읽습니다.
+     * @returns {string} 학교 식별 문자열(없으면 빈 문자열)
+     */
     function getLeagueSchool() {
       try {
+        /* 주소창 ?school= 이 최우선 */
         const q = (new URLSearchParams(window.location.search).get("school") || "").trim();
         if (q) {
           try {
             localStorage.setItem(STORAGE_SCHOOL, q);
           } catch {
-            /* ignore */
+            /* 저장 실패(비공개 모드 등)는 무시 */
           }
           return q;
         }
       } catch {
-        /* ignore */
+        /* URL 파싱 불가 시 로컬만 사용 */
       }
       return (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
     }
 
+    /** 로비 링크 href에 학교 쿼리 반영 */
     function setLobbyBackLink() {
       const a = document.getElementById("lobbyBackLink");
       if (!a) return;
@@ -1299,6 +1452,7 @@
       );
     }
 
+    /** 리그 서버에 점수 제출(학교 없으면 생략, 실패는 무시) */
     function submitScoreToLeague(game, value) {
       const school = getLeagueSchool();
       if (!school) return;
@@ -1315,6 +1469,7 @@
 
     setLobbyBackLink();
 
+    /* ===== 게임 상태 변수 ===== */
     let currentStage = 0;
     let remainingTime = stageConfigs[0].time;
     let gameStarted = false;
@@ -1323,15 +1478,18 @@
     /** 전체 런 누적 점수 (5스테이지 클리어 시 서버 제출) */
     let runEscapeScore = 0;
 
+    /* 플레이어 위치(논리 픽셀) */
     let playerX = 42;
     let playerY = 655;
 
     let desks = [];
     let professor = null;
 
+    /* 1초 타이머·게임 루프 requestAnimationFrame id */
     let timerInterval = null;
     let loopId = null;
 
+    /* 키보드(및 가상 패드가 같은 이름으로 세팅) 눌림 상태 */
     const keys = {
       ArrowUp: false,
       ArrowDown: false,
@@ -1339,6 +1497,7 @@
       ArrowRight: false
     };
 
+    /** 모바일 방향 패드 버튼을 keys 객체와 동기화 */
     function bindClassroomTouchDpad() {
       const pairs = [
         ["ceDpadUp", "ArrowUp"],
@@ -1349,6 +1508,7 @@
       for (const [id, key] of pairs) {
         const el = document.getElementById(id);
         if (!el) continue;
+        /* 터치·마우스 모두에서 방향키와 동일하게 처리 */
         const down = (e) => {
           e.preventDefault();
           keys[key] = true;
@@ -1367,10 +1527,15 @@
     }
     bindClassroomTouchDpad();
 
+    /** 상단 안내 #message 텍스트만 갱신 */
     function setMessage(text) {
       message.textContent = text;
     }
 
+    /**
+     * 전체 화면 오버레이 표시
+     * @param {"start"|"clear"|"end"} mode 시작 준비 / 스테이지 클리어 / 전체 종료
+     */
     function showOverlay(title, desc, mode = "start") {
       overlayTitle.textContent = title;
       overlayDesc.textContent = desc;
@@ -1378,34 +1543,41 @@
 
       hideKakaoShareButton();
 
+      /* 스테이지 중간 클리어: 다음 단계 버튼 노출 */
       if (mode === "clear") {
         overlayStartBtn.style.display = "none";
         overlayRestartBtn.style.display = "inline-block";
         nextStageBtn.style.display = "inline-block";
       } else if (mode === "end") {
+        /* 5단계 전부 클리어: 카카오 공유 버튼 */
         overlayStartBtn.style.display = "none";
         overlayRestartBtn.style.display = "inline-block";
         nextStageBtn.style.display = "none";
         showKakaoShareButton();
       } else {
+        /* 처음·실패 후 재도전: 시작 + 다시 준비 */
         overlayStartBtn.style.display = "inline-block";
         overlayRestartBtn.style.display = "inline-block";
         nextStageBtn.style.display = "none";
       }
     }
 
+    /** 오버레이 숨김 */
     function hideOverlay() {
       overlay.style.display = "none";
     }
 
+    /** 충돌 검사용 사각형 {left,top,right,bottom} */
     function getRect(x, y, w, h) {
       return { left: x, top: y, right: x + w, bottom: y + h };
     }
 
+    /** 두 사각형이 겹치는지 */
     function rectsIntersect(a, b) {
       return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
     }
 
+    /** 플레이어 논리 좌표와 CSS 위치를 동시에 갱신 */
     function setPlayerPosition(x, y) {
       playerX = x;
       playerY = y;
@@ -1413,6 +1585,7 @@
       player.style.top = `${playerY}px`;
     }
 
+    /** 책상 레이어·교수 레이어 비우고 배열/객체 초기화 */
     function clearStageObjects() {
       deskLayer.innerHTML = "";
       profLayer.innerHTML = "";
@@ -1420,6 +1593,10 @@
       professor = null;
     }
 
+    /**
+     * 단계 인덱스에 맞춰 책상·교수·학생증 위치를 세팅합니다(게임 시작 전 준비).
+     * @param {number} stageIndex 0~4
+     */
     function buildStage(stageIndex) {
       clearStageObjects();
 
@@ -1429,6 +1606,7 @@
       timeText.textContent = remainingTime;
       stateText.textContent = "대기";
 
+      /* 책상 DOM 생성 + 충돌용 사각형 목록 */
       config.desks.forEach((d) => {
         const el = document.createElement("div");
         el.className = "desk";
@@ -1444,6 +1622,7 @@
         });
       });
 
+      /* 시야 콘·그림자·교수 이미지 */
       const cone = document.createElement("div");
       cone.className = "vision";
 
@@ -1459,6 +1638,7 @@
       profLayer.appendChild(shadow);
       profLayer.appendChild(img);
 
+      /* 설정 복사 후 런타임 전용 필드 부착 */
       professor = {
         ...JSON.parse(JSON.stringify(config.professor)),
         el: img,
@@ -1472,19 +1652,18 @@
 
       hasPass = false;
 
-const safePass = findSafePassPosition();
-
-passItem.style.left = `${safePass.x}px`;
-passItem.style.top = `${safePass.y}px`;
-
-passItem.style.display = "flex";
-
-doorLock.textContent = "🔒";
+      /* 학생증은 책상·문·교수와 겹치지 않는 무작위 위치 */
+      const safePass = findSafePassPosition();
+      passItem.style.left = `${safePass.x}px`;
+      passItem.style.top = `${safePass.y}px`;
+      passItem.style.display = "flex";
+      doorLock.textContent = "🔒";
 
       setPlayerPosition(42, 655);
       updateProfessorVisual();
     }
 
+    /** 교수 이미지·그림자·시야 콘 위치/회전/크기를 현재 논리 좌표에 맞춤 */
     function updateProfessorVisual() {
       if (!professor) return;
 
@@ -1507,6 +1686,7 @@ doorLock.textContent = "🔒";
       professor.cone.style.transform = `rotate(${professor.angleDeg}deg)`;
     }
 
+    /** 타이머·루프 정지 후 같은 단계 준비 화면(오버레이) */
     function prepareStage() {
       clearInterval(timerInterval);
       cancelAnimationFrame(loopId);
@@ -1523,10 +1703,12 @@ doorLock.textContent = "🔒";
       setMessage("책상 간격을 넓혀서 사이로 지나가기 쉽게 조정했어요.");
     }
 
+    /** 오버레이에서 시작 눌렀을 때: 타이머·게임 루프 시작 */
     function startStage() {
       clearInterval(timerInterval);
       cancelAnimationFrame(loopId);
 
+      /* 전체 런 점수는 1단계 시작 시에만 초기화 */
       if (currentStage === 0) {
         runEscapeScore = 0;
       }
@@ -1553,6 +1735,7 @@ doorLock.textContent = "🔒";
       hideOverlay();
       setMessage(`스테이지 ${currentStage + 1} 시작! 학생증부터 챙기세요.`);
 
+      /* 1초마다 남은 시간 감소, 0이 되면 실패 처리 */
       timerInterval = setInterval(() => {
         if (gameEnded) return;
         remainingTime--;
@@ -1566,6 +1749,7 @@ doorLock.textContent = "🔒";
       loop();
     }
 
+    /** 중간 클리어 후 다음 단계 준비로 */
     function goToNextStage() {
       if (currentStage < 4) {
         currentStage++;
@@ -1573,6 +1757,7 @@ doorLock.textContent = "🔒";
       }
     }
 
+    /** 문으로 탈출 성공 시: 점수 누적·전체 클리어 여부에 따라 오버레이 */
     function completeStage() {
       clearInterval(timerInterval);
       cancelAnimationFrame(loopId);
@@ -1581,6 +1766,7 @@ doorLock.textContent = "🔒";
       gameStarted = false;
       stateText.textContent = "성공";
 
+      /* 남은 시간이 많을수록 가산 */
       runEscapeScore += Math.round(40 + Math.max(0, remainingTime) * 5);
 
       if (currentStage === 4) {
@@ -1596,6 +1782,7 @@ doorLock.textContent = "🔒";
 
         setMessage("전체 스테이지 클리어!");
       } else {
+        /* 아직 남은 단계: 다음 단계 버튼 노출은 showOverlay(clear)에서 처리 */
         overlayStartBtn.style.display = "none";
         overlayRestartBtn.style.display = "inline-block";
         nextStageBtn.style.display = "inline-block";
@@ -1610,6 +1797,7 @@ doorLock.textContent = "🔒";
       }
     }
 
+    /** 시간 초과·들킴 등 실패 공통 처리 */
     function failStage(title, desc) {
       clearInterval(timerInterval);
       cancelAnimationFrame(loopId);
@@ -1621,6 +1809,7 @@ doorLock.textContent = "🔒";
       setMessage("게임 오버");
     }
 
+    /** 방향키 입력에 따라 이동, 책상과 겹치면 해당 축만 막음 */
     function movePlayer() {
       let dx = 0;
       let dy = 0;
@@ -1632,9 +1821,11 @@ doorLock.textContent = "🔒";
 
       if (dx === 0 && dy === 0) return;
 
+      /* 월드 폭·높이 안에서만 이동 */
       let nextX = Math.max(0, Math.min(gameWorldWidth - PLAYER_SIZE, playerX + dx));
       let nextY = Math.max(0, Math.min(GAME_HEIGHT - PLAYER_SIZE, playerY + dy));
 
+      /* X축 이동 후 책상 충돌이 없을 때만 반영 */
       const xRect = getRect(nextX, playerY, PLAYER_SIZE, PLAYER_SIZE);
       if (!collidesWithDesks(xRect)) {
         playerX = nextX;
@@ -1648,55 +1839,61 @@ doorLock.textContent = "🔒";
       setPlayerPosition(playerX, playerY);
     }
 
+    /** 플레이어 사각형이 책상 하나라도와 겹치는지 */
     function collidesWithDesks(rect) {
       return desks.some((d) => rectsIntersect(rect, getRect(d.x, d.y, d.w, d.h)));
     }
 
+    /** 학생증 배치용: 사각형이 책상과 겹치는지 */
     function rectOverlapsDesk(rect) {
-  return desks.some((d) => rectsIntersect(rect, getRect(d.x, d.y, d.w, d.h)));
-}
+      return desks.some((d) => rectsIntersect(rect, getRect(d.x, d.y, d.w, d.h)));
+    }
 
-function findSafePassPosition() {
+    /**
+     * 학생증을 놓을 무작위 좌표를 여러 번 시도해 찾습니다.
+     * @returns {{x:number,y:number}} 안전한 위치(실패 시 기본값)
+     */
+    function findSafePassPosition() {
+      const maxTries = 200;
 
-  const maxTries = 200;
+      for (let i = 0; i < maxTries; i++) {
+        const x = 80 + Math.random() * (gameWorldWidth - 220);
+        const y = 260 + Math.random() * (GAME_HEIGHT - 360);
 
-  for (let i = 0; i < maxTries; i++) {
+        const passRect = getRect(x, y, PASS_SIZE, PASS_SIZE);
 
-    const x = 80 + Math.random() * (gameWorldWidth - 220);
-    const y = 260 + Math.random() * (GAME_HEIGHT - 360);
+        const doorRect = getRect(
+          exitDoor.offsetLeft - 40,
+          exitDoor.offsetTop - 40,
+          exitDoor.offsetWidth + 80,
+          exitDoor.offsetHeight + 80
+        );
 
-    const passRect = getRect(x, y, PASS_SIZE, PASS_SIZE);
+        const profRect = getRect(
+          professor.x - 50,
+          professor.y - 50,
+          170,
+          170
+        );
 
-    const doorRect = getRect(
-      exitDoor.offsetLeft - 40,
-      exitDoor.offsetTop - 40,
-      exitDoor.offsetWidth + 80,
-      exitDoor.offsetHeight + 80
-    );
+        if (rectOverlapsDesk(passRect)) continue;
+        if (rectsIntersect(passRect, doorRect)) continue;
+        if (rectsIntersect(passRect, profRect)) continue;
 
-    const profRect = getRect(
-      professor.x - 50,
-      professor.y - 50,
-      170,
-      170
-    );
+        return { x, y };
+      }
 
-    if (rectOverlapsDesk(passRect)) continue;
-    if (rectsIntersect(passRect, doorRect)) continue;
-    if (rectsIntersect(passRect, profRect)) continue;
+      return { x: 180, y: 260 };
+    }
 
-    return { x, y };
-  }
-
-  return { x: 180, y: 260 };
-}
-
+    /** 웨이포인트를 따라 교수 이동, 방향·각도 갱신 */
     function moveProfessor() {
       const target = professor.waypoints[professor.currentWaypoint];
       const dx = target.x - professor.x;
       const dy = target.y - professor.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
+      /* 목표에 거의 도달하면 스냅 후 다음 웨이포인트 */
       if (distance < professor.speed + 1) {
         professor.x = target.x;
         professor.y = target.y;
@@ -1715,6 +1912,7 @@ function findSafePassPosition() {
       updateProfessorVisual();
     }
 
+    /** 교수가 바라보는 부채꼴 시야 안에 플레이어 중심이 있는지 */
     function isPlayerInVision() {
       const playerCenterX = playerX + PLAYER_SIZE / 2;
       const playerCenterY = playerY + PLAYER_SIZE / 2;
@@ -1725,6 +1923,7 @@ function findSafePassPosition() {
       const dy = playerCenterY - profCenterY;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
+      /* 시야 깊이(반경) 밖이면 false */
       if (distance > professor.vision) return false;
 
       const facingAngle = Math.atan2(professor.directionY, professor.directionX);
@@ -1737,6 +1936,7 @@ function findSafePassPosition() {
       return diff <= halfFov;
     }
 
+    /** 시야 안이면 게임 오버 */
     function checkCaught() {
       if (isPlayerInVision()) {
         failStage("🚨 교수님에게 들켰어요!", "교수님은 이제 모든 방향으로 움직입니다. 동선을 잘 보고 다시 도전해보세요.");
@@ -1745,6 +1945,7 @@ function findSafePassPosition() {
       return false;
     }
 
+    /** 플레이어와 학생증 겹치면 획득 처리 */
     function checkPassPickup() {
       if (hasPass) return;
 
@@ -1764,6 +1965,7 @@ function findSafePassPosition() {
       }
     }
 
+    /** 학생증 보유 시 문 사각형과 플레이어 겹침 여부 */
     function checkExit() {
       if (!hasPass) return false;
 
@@ -1778,6 +1980,7 @@ function findSafePassPosition() {
       return rectsIntersect(playerRect, doorRect);
     }
 
+    /** 매 프레임: 이동·교수·학생증·들킴·탈출 검사 */
     function loop() {
       if (gameEnded) return;
 
@@ -1795,6 +1998,7 @@ function findSafePassPosition() {
       loopId = requestAnimationFrame(loop);
     }
 
+    /* 키보드 방향키 눌림 */
     document.addEventListener("keydown", (e) => {
       if (e.key in keys) {
         keys[e.key] = true;
@@ -1802,6 +2006,7 @@ function findSafePassPosition() {
       }
     });
 
+    /* 키보드 방향키 뗌 */
     document.addEventListener("keyup", (e) => {
       if (e.key in keys) {
         keys[e.key] = false;
@@ -1809,11 +2014,13 @@ function findSafePassPosition() {
       }
     });
 
+    /* UI 버튼·초기 빌드 */
     restartBtn.addEventListener("click", prepareStage);
     overlayRestartBtn.addEventListener("click", prepareStage);
     overlayStartBtn.addEventListener("click", startStage);
     nextStageBtn.addEventListener("click", goToNextStage);
 
+    /* 첫 진입: 1단계 맵만 만들고 스케일 두 번(레이아웃 안정화) */
     buildStage(currentStage);
     requestAnimationFrame(() => {
       updateGameViewportScale();

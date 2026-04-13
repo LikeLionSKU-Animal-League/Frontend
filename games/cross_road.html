@@ -1,16 +1,20 @@
 <!DOCTYPE html>
+<!-- 사자의 길 건너기: Canvas 기반 횡단보도·강·통나무 미니게임 (단일 HTML) -->
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>사자의 길 건너기</title>
   <style>
+    /* 전역 박스 모델 */
     * { box-sizing: border-box; }
 
+    /* iOS 글자 자동 확대 방지 */
     html {
       -webkit-text-size-adjust: 100%;
     }
 
+    /* 페이지 배경·상단 정렬·세이프 에리어 패딩 */
     body {
       margin: 0;
       font-family: "Arial", "맑은 고딕", sans-serif;
@@ -25,16 +29,19 @@
         calc(12px + env(safe-area-inset-left));
     }
 
+    /* 버튼·링크: 탭 하이라이트 제거 */
     button,
     .lobby-link {
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
     }
 
+    /* 본문 최대 너비 */
     .wrap {
       width: min(560px, 96vw);
     }
 
+    /* 흰 카드 메인 패널 */
     .shell {
       background: rgba(255,255,255,0.97);
       border: 3px solid #dde9f5;
@@ -58,6 +65,7 @@
     }
     .lobby-link:hover { background: #dceaf9; }
 
+    /* 제목 + 점수·목숨·난이도 */
     .topbar {
       display: flex;
       justify-content: space-between;
@@ -67,24 +75,28 @@
       margin-bottom: 14px;
     }
 
+    /* 게임 제목 */
     .title h1 {
       margin: 0;
       font-size: 26px;
       color: #304e6f;
     }
 
+    /* 한 줄 설명 */
     .title p {
       margin: 6px 0 0;
       font-size: 13px;
       color: #698198;
     }
 
+    /* 점수·목숨·난이도 박스 묶음 */
     .status {
       display: flex;
       gap: 10px;
       flex-shrink: 0;
     }
 
+    /* 상태 한 칸 */
     .status-box {
       min-width: 78px;
       padding: 8px 12px;
@@ -94,18 +106,21 @@
       border: 2px solid #e0ebf6;
     }
 
+    /* 상태 라벨(작은 글씨) */
     .status-label {
       font-size: 11px;
       color: #7a90a4;
       margin-bottom: 3px;
     }
 
+    /* 상태 숫자·텍스트 */
     .status-value {
       font-size: 22px;
       font-weight: 800;
       color: #2e4b69;
     }
 
+    /* 다시하기 + 메시지 */
     .controls {
       display: flex;
       gap: 10px;
@@ -113,6 +128,7 @@
       margin-bottom: 12px;
     }
 
+    /* 일반 버튼 */
     button {
       border: none;
       border-radius: 999px;
@@ -125,6 +141,7 @@
     }
     button:hover { transform: translateY(-1px); }
 
+    /* 현재 판 다시 */
     #restartBtn {
       background: linear-gradient(135deg, #ffe18a, #ffcd67);
       color: #664a10;
@@ -132,6 +149,7 @@
       white-space: nowrap;
     }
 
+    /* 안내 문구 영역 */
     #message {
       flex: 1;
       min-height: 42px;
@@ -146,6 +164,7 @@
       font-size: 14px;
     }
 
+    /* Canvas + 오버레이 + D패드의 부모(터치 스크롤 방지) */
     #game {
       position: relative;
       border-radius: 18px;
@@ -155,12 +174,14 @@
       touch-action: none;
     }
 
+    /* 논리 해상도는 width/height 속성, 화면에는 100% 너비로 스케일 */
     canvas {
       display: block;
       width: 100%;
       height: auto;
     }
 
+    /* 조작법 안내 */
     .legend {
       margin-top: 10px;
       padding: 8px 14px;
@@ -173,6 +194,7 @@
       line-height: 1.5;
     }
 
+    /* 아주 좁은 화면 */
     @media (max-width: 480px) {
       body {
         padding: 12px 10px calc(20px + env(safe-area-inset-bottom));
@@ -217,7 +239,7 @@
       }
     }
 
-    /* 터치 D패드 — 좌하단 코너에 안전 영역만큼만 띄움 */
+    /* 모바일 방향 패드: 좌하단·세이프 에리어 (900px 이하에서 표시) */
     .dpad {
       display: none;
       position: absolute;
@@ -230,6 +252,7 @@
       pointer-events: none;
     }
 
+    /* 3×3 그리드 */
     .dpad-grid {
       display: grid;
       grid-template-columns: repeat(3, 26px);
@@ -245,12 +268,14 @@
       -webkit-backdrop-filter: blur(2px);
     }
 
+    /* 태블릿 이하에서 패드 표시 */
     @media (max-width: 900px) {
       .dpad {
         display: flex;
       }
     }
 
+    /* 가로 모드에서 패드 셀 간격 축소 */
     @media (max-width: 900px) and (orientation: landscape) {
       .dpad-grid {
         padding: 0;
@@ -259,6 +284,7 @@
       }
     }
 
+    /* 방향 버튼 한 칸 */
     .dpad-btn {
       width: 26px;
       height: 26px;
@@ -280,18 +306,20 @@
       touch-action: manipulation;
     }
 
+    /* 패드 버튼 눌렀을 때 */
     .dpad-btn:active {
       background: rgba(220, 228, 238, 0.58);
       border-color: rgba(255, 255, 255, 0.75);
       transform: scale(0.94);
     }
 
+    /* 그리드 빈 칸(자리만 차지) */
     .dpad-empty {
       visibility: hidden;
       pointer-events: none;
     }
 
-    /* 오버레이 */
+    /* 시작·게임오버 전체 덮개 */
     .overlay {
       position: absolute;
       inset: 0;
@@ -303,6 +331,7 @@
       z-index: 30;
     }
 
+    /* 오버레이 안 흰 카드 */
     .overlay-card {
       width: min(340px, 88%);
       padding: 26px 22px;
@@ -313,12 +342,14 @@
       text-align: center;
     }
 
+    /* 오버레이 제목 */
     .overlay-card h2 {
       margin: 0 0 10px;
       font-size: 28px;
       color: #304b68;
     }
 
+    /* 오버레이 설명 */
     .overlay-card p {
       margin: 0 0 18px;
       font-size: 15px;
@@ -326,6 +357,7 @@
       line-height: 1.7;
     }
 
+    /* 오버레이 버튼 줄 */
     .overlay-actions {
       display: flex;
       gap: 10px;
@@ -333,23 +365,27 @@
       flex-wrap: wrap;
     }
 
+    /* 시작 */
     #overlayStartBtn {
       background: linear-gradient(135deg, #71c3ff, #4a9fe3);
       color: white;
       box-shadow: 0 10px 22px rgba(60, 148, 225, 0.24);
     }
 
+    /* 다시 시작(준비) */
     #overlayRestartBtn {
       background: linear-gradient(135deg, #ffe08a, #ffcd67);
       color: #64490f;
     }
 
+    /* 카카오 공유 */
     #kakaoShareResultBtn {
       background: #fee500;
       color: #191919;
       box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
     }
 
+    /* 공유 버튼 숨김 */
     #kakaoShareResultBtn.hidden {
       display: none !important;
     }
@@ -360,6 +396,7 @@
     <a class="lobby-link" id="lobbyBackLink" href="../index.html?lobby=1">← 로비로 돌아가기</a>
 
     <div class="shell">
+      <!-- 제목 + 점수·목숨·난이도 -->
       <div class="topbar">
         <div class="title">
           <h1>🦁 사자의 길 건너기</h1>
@@ -381,11 +418,13 @@
         </div>
       </div>
 
+      <!-- 다시하기 + 메시지 -->
       <div class="controls">
         <button id="restartBtn">현재 판 다시</button>
         <div id="message">오버레이의 시작 버튼으로 진행하세요.</div>
       </div>
 
+      <!-- Canvas 게임 영역 + 오버레이 + 모바일 D패드 -->
       <div id="game">
         <canvas id="gameCanvas" width="480" height="560"></canvas>
 
@@ -403,6 +442,7 @@
           </div>
         </div>
 
+        <!-- 터치용 방향키 (CSS에서 900px 이하만 표시) -->
         <div class="dpad" id="crossDpad" aria-label="이동 조작">
           <div class="dpad-grid">
             <div class="dpad-empty"></div>
@@ -422,12 +462,16 @@
     </div>
   </div>
 
+  <!-- 카카오 SDK (공유) -->
   <script
     src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js"
     integrity="sha384-l+xbElFSnPZ2rOaPrU//2FF5B4LB8FiX5q4fXYTlfcG4PGpMkE1vcL7kNXI6Cci0"
     crossorigin="anonymous"
   ></script>
 <script>
+/* ========== 사자의 길 건너기 게임 로직 ========== */
+
+/* --- 리그(학교) 식별·백엔드 URL --- */
 const STORAGE_SCHOOL = 'animalLeagueSchool';
 const API_BASE =
   window.ANIMAL_LEAGUE_API ||
@@ -435,6 +479,7 @@ const API_BASE =
     ? 'http://localhost:3000'
     : 'https://backend-jso9.onrender.com');
 
+/** URL ?school= 또는 로컬스토리지에서 학교 문자열 */
 function getLeagueSchool() {
   try {
     const q = (new URLSearchParams(window.location.search).get('school') || '').trim();
@@ -448,6 +493,7 @@ function getLeagueSchool() {
   return (localStorage.getItem(STORAGE_SCHOOL) || '').trim();
 }
 
+/** 로비로 돌아가기 링크에 학교 쿼리 반영 */
 function setLobbyBackLink() {
   const a = document.getElementById('lobbyBackLink');
   if (!a) return;
@@ -458,6 +504,7 @@ function setLobbyBackLink() {
   );
 }
 
+/** 미니게임 점수를 리그 서버에 POST (학교 없으면 생략) */
 function submitScoreToLeague(game, value) {
   const school = getLeagueSchool();
   if (!school) return;
@@ -472,10 +519,12 @@ function submitScoreToLeague(game, value) {
 
 setLobbyBackLink();
 
+/* --- 카카오 공유 --- */
 const KAKAO_JS_APP_KEY = 'fa75c82718597e9124f913d174cd92a2';
 const SHARE_SITE_ORIGIN = 'https://campus-animal-battle.vercel.app';
 const SHARE_FEED_IMAGE_URL = `${SHARE_SITE_ORIGIN}/assets/game-preview.png`;
 
+/** 공유용 로비 URL (?lobby=true, 학교 있으면 &school=) */
 function buildShareLobbyUrl() {
   const school = getLeagueSchool();
   const base = `${SHARE_SITE_ORIGIN}/?lobby=true`;
@@ -487,16 +536,19 @@ function buildShareLobbyUrl() {
   if (!Kakao.isInitialized()) Kakao.init(KAKAO_JS_APP_KEY);
 })();
 
+/** 게임오버 전까지 공유 버튼 숨김 */
 function hideKakaoShareButton() {
   const btn = document.getElementById('kakaoShareResultBtn');
   if (btn) btn.classList.add('hidden');
 }
 
+/** 게임오버 시 공유 버튼 표시 */
 function showKakaoShareButton() {
   const btn = document.getElementById('kakaoShareResultBtn');
   if (btn) btn.classList.remove('hidden');
 }
 
+/** 카카오톡 피드 공유 */
 function shareToKakao() {
   if (!window.Kakao || !Kakao.isInitialized()) {
     alert('카카오 SDK를 불러오지 못했거나 초기화되지 않았습니다.');
@@ -515,6 +567,7 @@ function shareToKakao() {
   });
 }
 
+/* --- Canvas·UI 참조 --- */
 const canvas  = document.getElementById('gameCanvas');
 const ctx     = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -529,11 +582,11 @@ const overlayRestartBtn = document.getElementById('overlayRestartBtn');
 
 document.getElementById('restartBtn').addEventListener('click', prepareGame);
 
-// ─── 상수 ────────────────────────────────────────────────
+/* --- 격자·타일·맵 행 구성 (행 번호는 위에서 0) --- */
 const COLS = 10;
 const ROWS = 14;
 const TILE = 40;
-const OX   = 40; // left offset
+const OX   = 40; // 캔버스 왼쪽 여백(도로·물 그릴 때 보정)
 
 const ROAD_ROWS  = [2, 3, 4, 6, 7, 8];
 const WATER_ROWS = [10, 11, 12];
@@ -542,7 +595,7 @@ const START_ROW  = 13;
 
 const LANE_COLOR = { road: '#555', grass: '#4a7c3f', water: '#1e6bb8', goal: '#8bc34a' };
 
-// ─── 오디오 ──────────────────────────────────────────────
+/* --- 효과음 (assets/sounds) --- */
 const S = {};
 const SDIR = '../assets/sounds/';
 [
@@ -560,23 +613,26 @@ const SDIR = '../assets/sounds/';
   S[k] = a;
 });
 
+/** 효과음 재생(겹침 재생을 위해 cloneNode) */
 function play(key, vol = 0.5) {
   const src = S[key];
   if (!src) return;
   try { const c = src.cloneNode(); c.volume = vol; c.play().catch(() => {}); } catch (_) {}
 }
 
+/** 밟은 줄 종류에 따라 발소리 종류 */
 function stepSound(row) {
   if (WATER_ROWS.includes(row)) return 'step_wood';
   if (ROAD_ROWS.includes(row))  return 'step_road';
   return 'step_grass';
 }
 
-// ─── 이펙트 ──────────────────────────────────────────────
+/* --- 파티클·화면 흔들림·플래시 --- */
 let particles = [];
 let shake = { x: 0, y: 0, dur: 0 };
 let flash = { a: 0, color: '#fff' };
 
+/** 충돌·골 등에서 파티클 추가 */
 function addParticles(wx, wy, n, color) {
   for (let i = 0; i < n; i++) {
     const ang = Math.random() * Math.PI * 2;
@@ -590,9 +646,10 @@ function addParticles(wx, wy, n, color) {
   }
 }
 
-// ─── 게임 상태 ───────────────────────────────────────────
+/* --- 런타임 상태 --- */
 let player, cars, logs, score, lives, gameStarted, gameOver, dying, animFrameId;
 
+/** 한 판 준비: 위치 초기화·차·통나무 생성·오버레이 */
 function prepareGame() {
   cancelAnimationFrame(animFrameId);
   player = { px: 5 * TILE, row: START_ROW, sx: 1, sy: 1, sqTimer: 0, sqTX: 1, sqTY: 1 };
@@ -607,6 +664,7 @@ function prepareGame() {
   drawStatic();
 }
 
+/** 오버레이 닫고 메인 루프 시작 */
 function startGame() {
   hideOverlay();
   gameStarted = true;
@@ -615,6 +673,9 @@ function startGame() {
   loop();
 }
 
+/**
+ * @param {'start'|'over'} mode 시작 화면 vs 게임오버(시작 버튼 숨김·공유 표시)
+ */
 function showOverlay(title, desc, mode) {
   overlayTitle.textContent = title;
   overlayDesc.textContent  = desc;
@@ -625,10 +686,12 @@ function showOverlay(title, desc, mode) {
   if (kBtn) kBtn.classList.toggle('hidden', mode !== 'over');
 }
 
+/** 오버레이 닫기 */
 function hideOverlay() {
   overlay.style.display = 'none';
 }
 
+/** 배경 타일 색만 한 번 그림(준비 화면) */
 function drawStatic() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (let r = 0; r < ROWS; r++) {
@@ -637,7 +700,7 @@ function drawStatic() {
   }
 }
 
-// ─── 난이도 설정 ─────────────────────────────────────────
+/** 누적 점수에 따라 0~3 단계 난이도 인덱스 */
 function getDifficulty() {
   if (score >= 7) return 3;
   if (score >= 5) return 2;
@@ -645,6 +708,7 @@ function getDifficulty() {
   return 0;
 }
 
+/* 난이도별 차·통나무 개수·속도·통나무 길이 */
 const DIFF = [
   { carCount: [2, 0], carSpd: [0.025, 0.020], logCount: 2, logSpd: [0.015, 0.010], logW: 3.0 },
   { carCount: [2, 1], carSpd: [0.035, 0.025], logCount: 2, logSpd: [0.020, 0.015], logW: 2.5 },
@@ -652,6 +716,7 @@ const DIFF = [
   { carCount: [3, 2], carSpd: [0.070, 0.035], logCount: 3, logSpd: [0.038, 0.020], logW: 1.9 },
 ];
 
+/** 도로 행에 차, 물 행에 통나무 배치 */
 function spawnObjects() {
   const d = DIFF[getDifficulty()];
   const CAR_EMOJIS = ['🚗','🚙','🚕','🚌','🚎','🏎️','🚓','🚑','🚒'];
@@ -679,7 +744,7 @@ function spawnObjects() {
   });
 }
 
-// ─── 루프 ────────────────────────────────────────────────
+/* --- 메인 루프 (requestAnimationFrame) --- */
 let lastTime = 0;
 function loop(ts = 0) {
   const dt = Math.min((ts - lastTime) / 1000, 0.1);
@@ -689,15 +754,18 @@ function loop(ts = 0) {
   if (!gameOver) animFrameId = requestAnimationFrame(loop);
 }
 
+/** 차·통나무 이동, 통나무 위 플레이어 끌려감, 이펙트·충돌 검사 */
 function update(dt) {
   const maxX = COLS * TILE;
 
+  /* 차: 끝에서 끝으로 래핑 */
   cars.forEach(car => {
     car.x += car.dir * car.speed * dt * 60;
     if (car.x > maxX)      car.x = -car.w;
     if (car.x + car.w < 0) car.x = maxX;
   });
 
+  /* 통나무 이동 + 같은 줄에 서 있으면 X 같이 이동 */
   logs.forEach(log => {
     const prevX = log.x;
     log.x += log.dir * log.speed * dt * 60;
@@ -713,6 +781,7 @@ function update(dt) {
     }
   });
 
+  /* 이동 직후 스쿼시(늘어짐) 애니메이션 타이머 */
   if (player.sqTimer > 0) {
     player.sqTimer -= dt;
     const t = Math.max(0, player.sqTimer / 0.15);
@@ -738,6 +807,7 @@ function update(dt) {
   if (!dying) checkCollision();
 }
 
+/** 물에 빠짐·차 침 검사 */
 function checkCollision() {
   const pcx = player.px + TILE / 2;
   const pr  = player.row;
@@ -754,6 +824,10 @@ function checkCollision() {
   }
 }
 
+/**
+ * 목숨 감소·이펙트·목숨 0이면 게임오버
+ * @param {'hit'|'splash'} type 차 충돌 vs 물
+ */
 function die(type) {
   if (dying) return;
   dying = true;
@@ -785,6 +859,7 @@ function die(type) {
       submitScoreToLeague('cross-road', score);
     }, 700);
   } else {
+    /* 목숨 남음: 잠시 후 시작 줄로 리스폰 */
     setTimeout(() => {
       if (!gameOver) {
         player.px = 5 * TILE; player.row = START_ROW;
@@ -795,6 +870,7 @@ function die(type) {
   }
 }
 
+/** 이동 방향에 따라 잠깐 스쿼시 스케일 */
 function squash(dr) {
   if (dr !== 0) { player.sqTX = 0.65; player.sqTY = 1.4; }
   else          { player.sqTX = 1.4;  player.sqTY = 0.65; }
@@ -802,12 +878,13 @@ function squash(dr) {
   player.sqTimer = 0.15;
 }
 
-// ─── 그리기 ──────────────────────────────────────────────
+/** 매 프레임 전체 씬 렌더 */
 function draw() {
   ctx.save();
   ctx.translate(shake.x, shake.y);
   ctx.clearRect(-10, -10, canvas.width + 20, canvas.height + 20);
 
+  /* 줄마다 배경 + 도로 중앙선 + 물결선 */
   for (let r = 0; r < ROWS; r++) {
     ctx.fillStyle = getTileColor(r);
     ctx.fillRect(0, r * TILE, canvas.width, TILE);
@@ -873,6 +950,7 @@ function draw() {
 
   drawPlayer(OX + player.px, player.row * TILE, TILE, player.sx, player.sy);
 
+  /* 전체 화면 플래시 */
   if (flash.a > 0) {
     ctx.save();
     ctx.globalAlpha = Math.max(0, flash.a);
@@ -884,6 +962,7 @@ function draw() {
   ctx.restore();
 }
 
+/** 행 인덱스별 바닥 색 */
 function getTileColor(r) {
   if (r === GOAL_ROW)         return LANE_COLOR.goal;
   if (ROAD_ROWS.includes(r))  return LANE_COLOR.road;
@@ -891,6 +970,7 @@ function getTileColor(r) {
   return LANE_COLOR.grass;
 }
 
+/** 사자 이모지(스쿼시 스케일 적용) */
 function drawPlayer(x, y, size, sx = 1, sy = 1) {
   const cx = x + size / 2, cy = y + size / 2;
   ctx.save();
@@ -903,7 +983,11 @@ function drawPlayer(x, y, size, sx = 1, sy = 1) {
   ctx.restore();
 }
 
-// ─── 이동 처리 ───────────────────────────────────────────
+/**
+ * 타일 단위 이동. 맨 위(goal) 도달 시 점수·재배치
+ * @param {number} dc 열 변화 (-1,0,1)
+ * @param {number} dr 행 변화 (-1,0,1)
+ */
 function movePlayer(dc, dr) {
   if (!gameStarted || gameOver || dying) return;
   const npx = player.px + dc * TILE;
@@ -924,6 +1008,7 @@ function movePlayer(dc, dr) {
     addParticles(OX + player.px + TILE / 2, TILE / 2, 15, '#ffffff');
     flash.color = '#ffffaa'; flash.a = 0.45;
     msgEl.textContent = '건넜다! 계속 도전해봐요!';
+    /* 골인 후 잠시 뒤 시작 줄로, 난이도는 점수에 따라 spawnObjects에서 반영 */
     setTimeout(() => {
       if (!gameOver) {
         player.px = 5 * TILE; player.row = START_ROW;
@@ -935,7 +1020,7 @@ function movePlayer(dc, dr) {
   }
 }
 
-// ─── 키보드 입력 ─────────────────────────────────────────
+/* --- 키보드: 방향키 + WASD (한 프레임 중복 방지) --- */
 const keys = {};
 document.addEventListener('keydown', e => {
   if (keys[e.key]) return;
@@ -952,7 +1037,7 @@ document.addEventListener('keydown', e => {
 });
 document.addEventListener('keyup', e => { keys[e.key] = false; });
 
-// ─── 터치 D패드 ──────────────────────────────────────────
+/** 모바일 D패드 한 방향 */
 function bindDpadBtn(id, dc, dr) {
   const btn = document.getElementById(id);
   if (!btn) return;
@@ -964,7 +1049,7 @@ bindDpadBtn('btnDown',  0,  1);
 bindDpadBtn('btnLeft', -1,  0);
 bindDpadBtn('btnRight', 1,  0);
 
-// ─── 스와이프 감지 ───────────────────────────────────────
+/* --- 캔버스 스와이프로 이동 --- */
 let swipeStart = null;
 canvas.addEventListener('touchstart', e => {
   const t = e.touches[0];
@@ -991,6 +1076,7 @@ const DIFF_LABELS = ['쉬움', '보통', '어려움', '매우 어려움'];
 const DIFF_COLORS = ['#2e7d32', '#1565c0', '#e65100', '#b71c1c'];
 const diffEl = document.getElementById('diffText');
 
+/** 점수·목숨·난이도 라벨 갱신 */
 function updateUI() {
   scoreEl.textContent = score;
   livesEl.textContent = lives;
@@ -999,6 +1085,7 @@ function updateUI() {
   diffEl.style.color  = DIFF_COLORS[d];
 }
 
+/* 첫 로드: 준비 상태로 맵만 그리기 */
 prepareGame();
 </script>
 </body>

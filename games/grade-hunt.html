@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- 학점 사냥: 제한 시간 안에 학점 버블을 탭해 점수를 모으는 미니게임 (단일 HTML) -->
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
@@ -9,6 +10,7 @@
       box-sizing: border-box;
     }
 
+    /* 전체 페이지: 그라데이션 배경·중앙 정렬·가로 스크롤 숨김 */
     body {
       margin: 0;
       font-family: "Trebuchet MS", "맑은 고딕", sans-serif;
@@ -25,6 +27,7 @@
         calc(12px + env(safe-area-inset-left));
     }
 
+    /* 최대 너비 컨테이너 */
     .wrap {
       width: 960px;
       max-width: 100%;
@@ -39,6 +42,7 @@
       touch-action: manipulation;
     }
 
+    /* 메인 흰 카드 + 숲 느낌 테두리 */
     .game-card {
       position: relative;
       overflow: hidden;
@@ -56,6 +60,7 @@
       z-index: 0;
     }
 
+    /* 배경 장식(구름·잎·꽃) — 클릭 불가 */
     .cloud {
       font-size: 42px;
       opacity: 0.45;
@@ -80,6 +85,7 @@
     .flower1 { bottom: 24px; left: 42px; }
     .flower2 { bottom: 18px; right: 44px; }
 
+    /* 상단: 제목·정보 + 시작 버튼 */
     .top-area {
       position: relative;
       z-index: 1;
@@ -91,6 +97,7 @@
       margin-bottom: 12px;
     }
 
+    /* 제목 + 점수 패널 묶음 */
     .head-group {
       flex: 1 1 260px;
       min-width: 0;
@@ -99,6 +106,7 @@
       gap: 8px;
     }
 
+    /* 제목 블록 */
     .title-box h1 {
       margin: 0;
       font-size: 34px;
@@ -112,6 +120,7 @@
       color: #738476;
     }
 
+    /* 게임 시작 (전역 startGame 호출) */
     .start-btn {
       border: none;
       border-radius: 999px;
@@ -136,6 +145,7 @@
       transform: scale(0.97);
     }
 
+    /* 점수·콤보·남은 시간 한 줄 */
     .info-panel {
       position: relative;
       z-index: 1;
@@ -146,6 +156,7 @@
       margin-bottom: 0;
     }
 
+    /* 정보 칸 하나 */
     .info-item {
       flex: 1 1 0;
       min-width: 0;
@@ -172,6 +183,7 @@
       line-height: 1.1;
     }
 
+    /* 학점 버블이 뜨는 플레이 영역 */
     #gameArea {
       position: relative;
       z-index: 1;
@@ -188,6 +200,7 @@
         linear-gradient(180deg, #ccf0ff 0%, #dff8d6 48%, #9dd48f 100%);
     }
 
+    /* 배경 태양 장식 */
     .sun {
       position: absolute;
       top: 28px;
@@ -200,6 +213,7 @@
       z-index: 0;
     }
 
+    /* 언덕(둥근 타원) 레이어 */
     .hill {
       position: absolute;
       border-radius: 50%;
@@ -230,6 +244,7 @@
       background: #a5da92;
     }
 
+    /* 맨 아래 잔디 바닥 띠 */
     .ground {
       position: absolute;
       left: 0;
@@ -241,6 +256,7 @@
       border-top: 4px solid rgba(75, 128, 69, 0.35);
     }
 
+    /* 나무(줄기+수관) */
     .tree {
       position: absolute;
       z-index: 0;
@@ -268,6 +284,7 @@
     .tree1 { left: 48px; bottom: 68px; }
     .tree2 { right: 72px; bottom: 72px; transform: scale(0.95); }
 
+    /* 탭하는 학점 버블 */
     .grade {
       position: absolute;
       width: 82px;
@@ -307,6 +324,7 @@
       line-height: 1;
     }
 
+    /* 학점 등급별 색 (CSS 클래스 = grades[].type) */
     .grade.good {
       background: linear-gradient(135deg, #dff8cc, #f5ffe9);
       color: #3e7d43;
@@ -333,6 +351,7 @@
       box-shadow: 0 10px 18px rgba(120, 96, 50, 0.12);
     }
 
+    /* +점수 / 감점 텍스트가 떠오르는 효과 */
     .hit-effect {
       position: absolute;
       z-index: 5;
@@ -342,6 +361,7 @@
       animation: riseFade 0.7s ease forwards;
     }
 
+    /* 게임 종료 후 안내 문구 카드 */
     .result-card {
       position: relative;
       z-index: 1;
@@ -361,6 +381,7 @@
       line-height: 1.5;
     }
 
+    /* 하단 규칙 안내 */
     .guide {
       position: relative;
       z-index: 1;
@@ -371,6 +392,7 @@
       line-height: 1.6;
     }
 
+    /* 버블 등장 */
     @keyframes popIn {
       from {
         transform: scale(0.45);
@@ -382,6 +404,7 @@
       }
     }
 
+    /* 버블이 위아래로 살짝 떠 있음 */
     @keyframes floaty {
       from {
         translate: 0 0;
@@ -391,6 +414,7 @@
       }
     }
 
+    /* 히트 이펙트 상승 페이드 */
     @keyframes riseFade {
       0% {
         opacity: 1;
@@ -402,6 +426,7 @@
       }
     }
 
+    /* 로비 복귀 링크 */
     .lobby-link {
       display: inline-flex;
       align-items: center;
@@ -420,6 +445,7 @@
       background: #dcf2de;
     }
 
+    /* 태블릿·폰 */
     @media (max-width: 700px) {
       .wrap {
         padding: 14px 10px;
@@ -497,6 +523,7 @@
       }
     }
 
+    /* 결과 카드 안 세로 정렬 */
     .result-inner {
       display: flex;
       flex-direction: column;
@@ -510,6 +537,7 @@
       margin: 0;
     }
 
+    /* 종료 후 카카오 공유 */
     .kakao-share-result-btn {
       border: none;
       border-radius: 999px;
@@ -537,6 +565,7 @@
   <div class="wrap">
     <a class="lobby-link" id="lobbyBackLink" href="../index.html?lobby=1">← 로비로 돌아가기</a>
     <div class="game-card">
+      <!-- 배경 장식 (이모지) -->
       <div class="cloud cloud1">☁️</div>
       <div class="cloud cloud2">☁️</div>
       <div class="leaf leaf1">🍃</div>
@@ -546,6 +575,7 @@
       <div class="flower flower1">🌼</div>
       <div class="flower flower2">🌼</div>
 
+      <!-- 제목·점수·시작 -->
       <div class="top-area">
         <div class="head-group">
           <div class="title-box">
@@ -570,6 +600,7 @@
         <button class="start-btn" onclick="startGame()">게임 시작</button>
       </div>
 
+      <!-- 플레이 영역: 배경 + 스크립트가 .grade 버블 추가 -->
       <div id="gameArea">
         <div class="sun"></div>
         <div class="tree tree1">
@@ -586,6 +617,7 @@
         <div class="ground"></div>
       </div>
 
+      <!-- 종료 메시지·공유 버튼 -->
       <div class="result-card" id="resultCard">
         <div class="result-inner">
           <p id="result" style="margin:0;">시작 버튼을 누르면 귀여운 동물 학점들이 숲속에 나타나요!</p>
@@ -600,18 +632,22 @@
         </div>
       </div>
 
+      <!-- 규칙 요약 -->
       <div class="guide">
         A+ / A는 고득점 · B 계열은 무난 · D와 F는 감점이에요!
       </div>
     </div>
   </div>
 
+  <!-- 카카오 공유 SDK -->
   <script
     src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js"
     integrity="sha384-l+xbElFSnPZ2rOaPrU//2FF5B4LB8FiX5q4fXYTlfcG4PGpMkE1vcL7kNXI6Cci0"
     crossorigin="anonymous"
   ></script>
   <script>
+    /* ========== 학점 사냥 게임 로직 ========== */
+
     const STORAGE_SCHOOL = "animalLeagueSchool";
     const API_BASE =
       window.ANIMAL_LEAGUE_API ||
@@ -619,7 +655,7 @@
         ? "http://localhost:3000"
         : "https://backend-jso9.onrender.com");
 
-    /** file:// 등에서 로비와 출처가 달라 localStorage가 비는 경우 → URL ?school= 로 전달 */
+    /** URL ?school= 우선, 없으면 로컬스토리지 (로비와 출처가 다를 때 대비) */
     function getLeagueSchool() {
       try {
         const q = (new URLSearchParams(window.location.search).get("school") || "").trim();
@@ -637,6 +673,7 @@
       return (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
     }
 
+    /** 로비 링크에 학교 쿼리 유지 */
     function setLobbyBackLink() {
       const a = document.getElementById("lobbyBackLink");
       if (!a) return;
@@ -649,6 +686,7 @@
       );
     }
 
+    /** 리그 서버에 점수 제출 (학교 미설정 시 생략) */
     function submitScoreToLeague(game, value) {
       const school = getLeagueSchool();
       if (!school) return;
@@ -665,6 +703,7 @@
 
     setLobbyBackLink();
 
+    /* --- 카카오 공유 --- */
     const KAKAO_JS_APP_KEY = "fa75c82718597e9124f913d174cd92a2";
 
     /** 공유 링크·썸네일에 쓰는 사이트 기준 URL (로컬 테스트 시에는 origin 사용) */
@@ -678,6 +717,7 @@
       return school ? `${base}&school=${encodeURIComponent(school)}` : base;
     }
 
+    /* 카카오 JS SDK 1회 초기화 */
     (function initKakaoSdk() {
       if (!window.Kakao || !KAKAO_JS_APP_KEY) return;
       if (!Kakao.isInitialized()) {
@@ -685,16 +725,19 @@
       }
     })();
 
+    /** 플레이 중에는 공유 버튼 숨김 */
     function hideKakaoShareButton() {
       const btn = document.getElementById("kakaoShareResultBtn");
       if (btn) btn.classList.add("hidden");
     }
 
+    /** 게임 종료 후 공유 버튼 표시 */
     function showKakaoShareButton() {
       const btn = document.getElementById("kakaoShareResultBtn");
       if (btn) btn.classList.remove("hidden");
     }
 
+    /** 카카오톡 피드로 로비 링크 공유 */
     function shareToKakao() {
       if (!window.Kakao || !Kakao.isInitialized()) {
         alert("카카오 SDK를 불러오지 못했거나 초기화되지 않았습니다.");
@@ -724,6 +767,7 @@
       });
     }
 
+    /* 등급별 점수·CSS 타입·동물 이모지 */
     const grades = [
       { g: "A+", score: 10, type: "good", animal: "🐯" },
       { g: "A", score: 8, type: "good", animal: "🦁" },
@@ -735,6 +779,7 @@
       { g: "F", score: -10, type: "worst", animal: "🦝" }
     ];
 
+    /* --- 런타임 상태 --- */
     let score = 0;
     let combo = 0;
     let time = 15;
@@ -749,12 +794,14 @@
     const resultEl = document.getElementById("result");
     const gameArea = document.getElementById("gameArea");
 
+    /** 점수·콤보·시간 표시만 DOM에 반영 */
     function resetUI() {
       scoreEl.textContent = score;
       comboEl.textContent = combo;
       timeEl.textContent = time;
     }
 
+    /** 게임 시작 시 배경 HTML(태양·나무·언덕·땅) 다시 채움 */
     function restoreBackgroundObjects() {
       gameArea.innerHTML = `
         <div class="sun"></div>
@@ -773,10 +820,15 @@
       `;
     }
 
+    /** 종료 시 플레이 영역 비우기 */
     function clearGameArea() {
       gameArea.innerHTML = "";
     }
 
+    /**
+     * 기존 학점 버블과 겹치지 않는 (x,y) 무작위 위치
+     * @returns {{x:number,y:number}|null} 실패 시 null
+     */
     function getNonOverlappingPosition(size, areaWidth, areaHeight) {
       const existingGrades = Array.from(gameArea.querySelectorAll(".grade"));
       const maxTries = 50;
@@ -810,6 +862,7 @@
       return null;
     }
 
+    /** 타이머·스폰 시작, 7초 후 스폰 간격 단축 */
     function startGame() {
       clearInterval(gameInterval);
       clearInterval(spawnInterval);
@@ -832,6 +885,7 @@
         spawnInterval = setInterval(spawnGrade, 500);
       }, 7000);
 
+      /* 1초마다 남은 시간 감소 */
       gameInterval = setInterval(() => {
         time--;
         timeEl.textContent = time;
@@ -842,6 +896,7 @@
       }, 1000);
     }
 
+    /** 무작위 등급 버블 하나 생성·클릭 처리·일정 시간 후 제거 */
     function spawnGrade() {
       if (!isPlaying) return;
 
@@ -871,6 +926,7 @@
 
         score += item.score;
 
+        /* 플러스 학점: 콤보 증가, 3콤보마다 보너스 */
         if (item.score > 0) {
           combo++;
           if (combo >= 3) {
@@ -880,6 +936,7 @@
             showEffect(x + 24, y, `+${item.score}`, "#418554");
           }
         } else {
+          /* 감점 학점: 콤보 리셋 */
           combo = 0;
           showEffect(x + 24, y, `${item.score}`, "#b35a60");
         }
@@ -891,11 +948,13 @@
 
       gameArea.appendChild(bubble);
 
+      /* 탭하지 않으면 자연 소멸 */
       setTimeout(() => {
         bubble.remove();
       }, 2200);
     }
 
+    /** 클릭 지점 위 떠오르는 텍스트 */
     function showEffect(x, y, text, color) {
       const fx = document.createElement("div");
       fx.className = "hit-effect";
@@ -908,6 +967,7 @@
       setTimeout(() => fx.remove(), 700);
     }
 
+    /** 시간 종료: 인터벌 정리·결과 문구·서버 제출·공유 버튼 */
     function endGame() {
       clearInterval(gameInterval);
       clearInterval(spawnInterval);
@@ -918,6 +978,7 @@
 
       let message = "";
 
+      /* 최종 점수 구간별 칭찬 문구 */
       if (score >= 90) {
         message = "완벽한 학점 사냥! 엄청난 실력이에요.";
       } else if (score >= 70) {
