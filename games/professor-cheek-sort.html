@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>교수님 퇴장 정렬 — 뺨 터치</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Trebuchet MS", "맑은 고딕", sans-serif;
+      background: linear-gradient(180deg, #87c8ff 0%, #b8e994 38%, #d4a574 38%, #c49a6c 100%);
+      color: #2c3e32;
+      overflow: hidden;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .wrap {
+      max-width: 520px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 10px 12px 12px;
+      position: relative;
+    }
+
+    .lobby-link {
+      align-self: flex-start;
+      margin: 0 0 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 2px solid #cfe6c8;
+      background: linear-gradient(180deg, #f7fff1, #ebf8de);
+      color: #4f6c53;
+      font-size: 14px;
+      font-weight: 900;
+      text-decoration: none;
+      box-shadow: 0 4px 10px rgba(79, 108, 83, 0.12);
+    }
+
+    .lobby-link:hover {
+      background: linear-gradient(180deg, #f1fce8, #e2f3d0);
+    }
+
+    .hud {
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 20px;
+      padding: 12px 14px 14px;
+      border: 3px solid #e8f4df;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .hud-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .hud-row .scores {
+      display: flex;
+      gap: 16px;
+      align-items: baseline;
+    }
+
+    .hud-row .scores span {
+      font-weight: 900;
+      font-size: 15px;
+      color: #5a6d5f;
+    }
+
+    .hud-row .scores strong {
+      color: #c9a227;
+      font-size: 22px;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .time-wrap {
+      margin-top: 4px;
+    }
+
+    .time-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: #6b7c6e;
+      margin-bottom: 4px;
+    }
+
+    .time-bar-outer {
+      height: 12px;
+      border-radius: 999px;
+      background: #e0e8e0;
+      overflow: hidden;
+      border: 2px solid #c5d4c7;
+    }
+
+    .time-bar-inner {
+      height: 100%;
+      width: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #e74c3c, #f39c12, #2ecc71);
+      transform-origin: left center;
+      transition: transform 0.12s linear;
+    }
+
+    .playfield {
+      flex: 1;
+      position: relative;
+      min-height: 200px;
+      margin: 10px 0 8px;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 4px solid #6b9b6e;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, transparent 40%),
+        linear-gradient(180deg, #7dce82 0%, #5aad6a 35%, #8b6914 35%, #a67c52 100%);
+      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .tunnel {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 88px;
+      height: 56px;
+      background: radial-gradient(ellipse at center bottom, #1a1a1a 0%, #3d3d3d 70%);
+      border-radius: 0 0 50% 50%;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .path-line {
+      position: absolute;
+      left: 50%;
+      top: 48px;
+      bottom: 0;
+      width: 4px;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.35);
+      border-radius: 2px;
+      z-index: 0;
+    }
+
+    .lane-hint {
+      position: absolute;
+      bottom: 112px;
+      font-size: 11px;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.85);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+      z-index: 1;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 5px 8px;
+      border-radius: 999px;
+    }
+
+    .lane-hint.left { left: 8px; }
+    .lane-hint.right { right: 8px; text-align: right; }
+
+    .lane-hint img {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      object-fit: cover;
+    }
+
+    .side-target {
+      position: absolute;
+      bottom: 184px;
+      z-index: 2;
+      width: 88px;
+      padding: 6px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.16);
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .side-target.left { left: 16px; }
+    .side-target.right { right: 16px; }
+
+    .side-target img {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+    }
+
+    .side-target p {
+      margin: 6px 0 0;
+      font-size: 11px;
+      font-weight: 900;
+      color: #52665a;
+      line-height: 1.2;
+    }
+
+    .prof-slot {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      border: 4px solid #fff;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+      transition: top 0.26s ease, opacity 0.15s ease;
+    }
+
+    .prof-slot.spawn-drop {
+      transition: top 0.18s ease-out;
+    }
+
+    .portrait-face {
+      width: 58px;
+      height: 58px;
+      object-fit: cover;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .prof-slot.role-professor {
+      border-color: #fff7d6;
+    }
+
+    .prof-slot.role-student {
+      border-color: #d9eeff;
+    }
+
+    .prof-badge {
+      position: absolute;
+      top: -6px;
+      right: -4px;
+      min-width: 34px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+      border: 2px solid #fff;
+      font-size: 11px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .cheeks-row {
+      flex-shrink: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 10px;
+      padding: 4px 0 0;
+    }
+
+    .cheek-btn {
+      flex: 1;
+      max-width: 160px;
+      min-height: 120px;
+      border-radius: 50% 50% 28px 28px;
+      border: 4px solid rgba(255, 255, 255, 0.9);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 12px 8px 14px;
+      font-weight: 900;
+      font-size: 13px;
+      color: #2d3436;
+      text-align: center;
+      line-height: 1.35;
+      box-shadow: 0 10px 0 rgba(0, 0, 0, 0.12), 0 14px 28px rgba(0, 0, 0, 0.18);
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cheek-btn:active,
+    .cheek-btn.pressed {
+      transform: translateY(4px) scale(0.98);
+      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .cheek-btn.left-cheek {
+      background: linear-gradient(180deg, #ffd4d4 0%, #ffb4b4 45%, #ff9a9a 100%);
+    }
+
+    .cheek-btn.right-cheek {
+      background: linear-gradient(180deg, #ffd4d4 0%, #ffb4b4 45%, #ff9a9a 100%);
+    }
+
+    .cheek-btn .cheek-emoji {
+      font-size: 36px;
+      margin-bottom: 4px;
+      filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
+    }
+
+    .cheek-btn .target-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      object-fit: cover;
+      margin-bottom: 4px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .cheek-btn .cheek-hint {
+      font-size: 11px;
+      font-weight: 800;
+      color: #636e72;
+    }
+
+    .face-center {
+      width: 72px;
+      height: 88px;
+      flex-shrink: 0;
+      align-self: flex-end;
+      margin-bottom: 4px;
+      background: linear-gradient(180deg, #ffccbc, #ffab91);
+      border-radius: 50% 50% 45% 45%;
+      border: 3px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      pointer-events: none;
+    }
+
+    .legend {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(44, 62, 50, 0.85);
+      padding: 6px 8px 0;
+      line-height: 1.5;
+    }
+
+    .controls-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .start-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 20px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(135deg, #6bcf7a, #3da85a);
+      box-shadow: 0 6px 16px rgba(61, 168, 90, 0.35);
+    }
+
+    .start-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 30, 25, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+    }
+
+    .overlay.show { display: flex; }
+
+    .overlay-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 24px 22px;
+      max-width: 360px;
+      text-align: center;
+      border: 4px solid #e8f4df;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .overlay-card h2 {
+      margin: 0 0 10px;
+      font-size: 24px;
+      color: #4a7c4f;
+    }
+
+    .overlay-card p {
+      margin: 0 0 18px;
+      color: #5a6d5f;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .overlay-card button {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 28px;
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(135deg, #7dcc7f, #4a9f5a);
+    }
+
+    .float-score {
+      position: fixed;
+      pointer-events: none;
+      font-weight: 900;
+      font-size: 20px;
+      z-index: 50;
+      animation: floatUp 0.9s ease forwards;
+    }
+
+    @keyframes floatUp {
+      from { opacity: 1; transform: translateY(0) scale(1); }
+      to { opacity: 0; transform: translateY(-48px) scale(1.1); }
+    }
+
+    .fly-left {
+      animation: flyLeft 0.35s ease forwards;
+    }
+
+    .fly-right {
+      animation: flyRight 0.35s ease forwards;
+    }
+
+    .ghost-fly-left {
+      animation: ghostFlyLeft 0.35s ease forwards;
+    }
+
+    .ghost-fly-right {
+      animation: ghostFlyRight 0.35s ease forwards;
+    }
+
+    @keyframes flyLeft {
+      to {
+        transform: translateX(-50%) translateX(-200px) scale(0.6);
+        opacity: 0;
+      }
+    }
+
+    @keyframes flyRight {
+      to {
+        transform: translateX(-50%) translateX(200px) scale(0.6);
+        opacity: 0;
+      }
+    }
+
+    @keyframes ghostFlyLeft {
+      to {
+        transform: translateX(-180px) scale(0.62);
+        opacity: 0;
+      }
+    }
+
+    @keyframes ghostFlyRight {
+      to {
+        transform: translateX(180px) scale(0.62);
+        opacity: 0;
+      }
+    }
+
+    .shake {
+      animation: shake 0.28s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(-50%) translateX(0); }
+      25% { transform: translateX(-50%) translateX(-8px); }
+      75% { transform: translateX(-50%) translateX(8px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="lobby-link" id="backToLobbyLink" href="../index.html?lobby=1">← 로비로 돌아가기</a>
+    <div class="hud">
+      <div class="controls-top">
+        <div class="scores">
+          <span>점수 <strong id="scoreEl">0</strong></span>
+          <span>콤보 <strong id="comboEl">0</strong></span>
+        </div>
+        <button type="button" class="start-btn" id="startBtn">게임 시작</button>
+      </div>
+      <div class="time-wrap">
+        <div class="time-label">남은 시간</div>
+        <div class="time-bar-outer">
+          <div class="time-bar-inner" id="timeBar"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="playfield" id="playfield">
+      <div class="tunnel"></div>
+      <div class="path-line"></div>
+      <div class="lane-hint left"><img src="../assets/prof-face.png" alt="" />교수는 왼쪽</div>
+      <div class="lane-hint right">학생은 오른쪽<img src="../assets/student-face.png" alt="" /></div>
+      <div class="side-target left">
+        <img src="../assets/prof-face.png" alt="" />
+        <p>왼쪽<br />교수</p>
+      </div>
+      <div class="side-target right">
+        <img src="../assets/student-face.png" alt="" />
+        <p>오른쪽<br />학생</p>
+      </div>
+      <div id="queueLayer"></div>
+    </div>
+
+    <p class="legend">
+      앞줄 캐릭터를 분류하세요.<br />
+      <strong>교수 얼굴</strong>은 왼쪽, <strong>학생 얼굴</strong>은 오른쪽으로 넘깁니다.
+    </p>
+
+    <div class="cheeks-row">
+      <button type="button" class="cheek-btn left-cheek" id="leftCheek" aria-label="왼쪽 뺨 — 교수를 왼쪽으로">
+        <img class="target-icon" src="../assets/prof-face.png" alt="" />
+        교수
+        <span class="cheek-hint">(왼쪽으로 넘기기)</span>
+      </button>
+      <div class="face-center" aria-hidden="true">🎓</div>
+      <button type="button" class="cheek-btn right-cheek" id="rightCheek" aria-label="오른쪽 뺨 — 교수를 오른쪽으로">
+        <img class="target-icon" src="../assets/student-face.png" alt="" />
+        학생
+        <span class="cheek-hint">(오른쪽으로 넘기기)</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="overlay show" id="overlay">
+    <div class="overlay-card">
+      <h2>교수님 퇴장 정렬</h2>
+      <p>
+        위에서 내려오는 얼굴을 시간 안에 많이 분류하세요.<br />
+        <strong>교수</strong>는 왼쪽, <strong>학생</strong>은 오른쪽으로 넘깁니다.<br />
+        터치 또는 키보드(A/←, D/→)로 플레이 가능합니다.
+      </p>
+      <button type="button" id="overlayStart">게임 시작</button>
+    </div>
+  </div>
+
+  <script>
+    const GAME_DURATION_SEC = 45;
+    const SLOT_COUNT = 5;
+    const SLOT_SPACING = 78;
+    const TOP_SPAWN_Y = -86;
+    const PROFESSOR_FACE_SRC = "../assets/prof-face.png";
+    const STUDENT_FACE_SRC = "../assets/student-face.png";
+    const playfield = document.getElementById("playfield");
+    const queueLayer = document.getElementById("queueLayer");
+    const scoreEl = document.getElementById("scoreEl");
+    const comboEl = document.getElementById("comboEl");
+    const timeBar = document.getElementById("timeBar");
+    const startBtn = document.getElementById("startBtn");
+    const leftCheek = document.getElementById("leftCheek");
+    const rightCheek = document.getElementById("rightCheek");
+    const overlay = document.getElementById("overlay");
+    const overlayStart = document.getElementById("overlayStart");
+    const backToLobbyLink = document.getElementById("backToLobbyLink");
+
+    /** queue[0] = 맨 앞(아래), queue[length-1] = 맨 위(터널 근처) */
+    let queue = [];
+    let score = 0;
+    let combo = 0;
+    let playing = false;
+    let timeLeft = GAME_DURATION_SEC;
+    let timerId = null;
+
+    function randRole() {
+      return Math.random() < 0.55 ? "professor" : "student";
+    }
+
+    function updateLobbyBackLink() {
+      const fromQuery = (() => {
+        try {
+          return (new URLSearchParams(window.location.search).get("school") || "").trim();
+        } catch {
+          return "";
+        }
+      })();
+      const fromStorage = (localStorage.getItem("animalLeagueSchool") || "").trim();
+      const school = fromQuery || fromStorage;
+      const q = school ? `&school=${encodeURIComponent(school)}` : "";
+      backToLobbyLink.setAttribute("href", `../index.html?lobby=1${q}`);
+    }
+
+    function pickPortraitSrc(role) {
+      return role === "student" ? STUDENT_FACE_SRC : PROFESSOR_FACE_SRC;
+    }
+
+    function getBottomY() {
+      return playfield.clientHeight - 100;
+    }
+
+    function getTopForIndex(index) {
+      return getBottomY() - index * SLOT_SPACING;
+    }
+
+    function createProfessorEl(item, index, spawnFromTop = false) {
+      const el = document.createElement("div");
+      el.className = `prof-slot role-${item.role}`;
+      el.dataset.id = item.id;
+      el.style.top = `${spawnFromTop ? TOP_SPAWN_Y : getTopForIndex(index)}px`;
+      if (spawnFromTop) {
+        el.classList.add("spawn-drop");
+      }
+
+      const face = document.createElement("div");
+      face.className = "portrait-face";
+      face.style.backgroundImage = `url("${item.portraitSrc || pickPortraitSrc(item.role)}")`;
+      face.style.backgroundRepeat = "no-repeat";
+      face.style.backgroundSize = "cover";
+      face.style.backgroundPosition = "center";
+      face.setAttribute("aria-label", item.role === "student" ? "학생" : "교수");
+      el.appendChild(face);
+
+      const badge = document.createElement("div");
+      badge.className = "prof-badge";
+      badge.textContent = item.role === "professor" ? "교수" : "학생";
+      badge.title = item.role === "professor" ? "교수는 왼쪽" : "학생은 오른쪽";
+      el.appendChild(badge);
+      return el;
+    }
+
+    function buildQueueVisual() {
+      queueLayer.innerHTML = "";
+      queue.forEach((item, index) => {
+        queueLayer.appendChild(createProfessorEl(item, index));
+      });
+    }
+
+    function syncDomPositions() {
+      queue.forEach((item, index) => {
+        const el = queueLayer.querySelector(`[data-id="${item.id}"]`);
+        if (el) {
+          const y = getTopForIndex(index);
+          el.style.top = `${y}px`;
+        }
+      });
+    }
+
+    function initQueue() {
+      queue = [];
+      for (let i = 0; i < SLOT_COUNT; i++) {
+        const role = randRole();
+        queue.push({
+          id: `init-${i}-${Math.random().toString(36).slice(2, 8)}`,
+          role,
+          target: role === "professor" ? "left" : "right",
+          portraitSrc: pickPortraitSrc(role)
+        });
+      }
+      buildQueueVisual();
+    }
+
+    function showFloatScore(x, y, text, color) {
+      const n = document.createElement("div");
+      n.className = "float-score";
+      n.textContent = text;
+      n.style.left = `${x}px`;
+      n.style.top = `${y}px`;
+      n.style.color = color;
+      document.body.appendChild(n);
+      setTimeout(() => n.remove(), 900);
+    }
+
+    /** leftCheek => left, rightCheek => right */
+    function resolveInput(input) {
+      const moveDir = input === "leftCheek" ? "left" : "right";
+      return moveDir;
+    }
+
+    function handleSlap(input) {
+      if (!playing || queue.length === 0) return;
+
+      const front = queue[0];
+      const moveDir = resolveInput(input);
+      const correct = moveDir === "right" ? front.target === "right" : front.target === "left";
+
+      const frontEl = queueLayer.querySelector(`[data-id="${front.id}"]`);
+
+      if (correct) {
+        combo += 1;
+        const gain = 10 + Math.min(combo - 1, 20) * 2;
+        score += gain;
+        scoreEl.textContent = String(score);
+        comboEl.textContent = String(combo);
+
+        if (frontEl) {
+          const r = frontEl.getBoundingClientRect();
+          showFloatScore(r.left + r.width / 2 - 20, r.top, `+${gain}`, "#27ae60");
+
+          // 실제 큐는 즉시 갱신하고, 시각 효과는 복제 요소로 처리
+          const ghost = frontEl.cloneNode(true);
+          ghost.style.position = "fixed";
+          ghost.style.left = `${r.left}px`;
+          ghost.style.top = `${r.top}px`;
+          ghost.style.transform = "none";
+          ghost.style.margin = "0";
+          ghost.style.zIndex = "120";
+          ghost.style.pointerEvents = "none";
+          ghost.classList.add(moveDir === "left" ? "ghost-fly-left" : "ghost-fly-right");
+          document.body.appendChild(ghost);
+          setTimeout(() => ghost.remove(), 380);
+          frontEl.remove();
+        }
+
+        queue.shift();
+        syncDomPositions();
+
+        const newcomer = {
+          id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          role: randRole()
+        };
+        newcomer.target = newcomer.role === "professor" ? "left" : "right";
+        newcomer.portraitSrc = pickPortraitSrc(newcomer.role);
+        queue.push(newcomer);
+
+        // 새 캐릭터는 터널 위에서 바로 진입
+        const incomingEl = createProfessorEl(newcomer, queue.length - 1, true);
+        queueLayer.appendChild(incomingEl);
+        requestAnimationFrame(() => {
+          incomingEl.style.top = `${getTopForIndex(queue.length - 1)}px`;
+        });
+      } else {
+        combo = 0;
+        comboEl.textContent = "0";
+        score = Math.max(0, score - 4);
+        scoreEl.textContent = String(score);
+        if (frontEl) {
+          frontEl.classList.remove("shake");
+          void frontEl.offsetWidth;
+          frontEl.classList.add("shake");
+        }
+        const r = (frontEl && frontEl.getBoundingClientRect()) || { left: 0, top: 0, width: 0 };
+        showFloatScore(r.left + r.width / 2 - 10, r.top, "미스!", "#c0392b");
+      }
+    }
+
+    function tickTime() {
+      if (!playing) return;
+      timeLeft -= 1;
+      updateTimeBar();
+      if (timeLeft <= 0) {
+        endGame();
+      }
+    }
+
+    function updateTimeBar() {
+      const p = Math.max(0, timeLeft / GAME_DURATION_SEC);
+      timeBar.style.transform = `scaleX(${p})`;
+    }
+
+    function startGame() {
+      overlay.classList.remove("show");
+      score = 0;
+      combo = 0;
+      timeLeft = GAME_DURATION_SEC;
+      scoreEl.textContent = "0";
+      comboEl.textContent = "0";
+      updateTimeBar();
+      initQueue();
+      playing = true;
+      startBtn.disabled = true;
+      timerId = setInterval(tickTime, 1000);
+    }
+
+    function endGame() {
+      playing = false;
+      startBtn.disabled = false;
+      if (timerId) clearInterval(timerId);
+      timerId = null;
+
+      overlay.querySelector("h2").textContent = "시간 종료!";
+      overlay.querySelector("p").innerHTML =
+        `최종 점수 <strong style="color:#c9a227;font-size:22px">${score}</strong>점<br />다시 도전해 보세요.`;
+      overlay.querySelector("button").textContent = "다시 하기";
+      overlay.classList.add("show");
+    }
+
+    function bindCheek(el, side) {
+      el.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        el.setPointerCapture(e.pointerId);
+        el.classList.add("pressed");
+        handleSlap(side);
+      });
+      el.addEventListener("pointerup", () => el.classList.remove("pressed"));
+      el.addEventListener("pointercancel", () => el.classList.remove("pressed"));
+      el.addEventListener("lostpointercapture", () => el.classList.remove("pressed"));
+    }
+
+    function flashPress(el) {
+      el.classList.add("pressed");
+      setTimeout(() => el.classList.remove("pressed"), 90);
+    }
+
+    function handleKeyboardControl(e) {
+      const key = e.key.toLowerCase();
+
+      if (key === "arrowleft" || key === "a") {
+        e.preventDefault();
+        flashPress(leftCheek);
+        handleSlap("leftCheek");
+      } else if (key === "arrowright" || key === "d") {
+        e.preventDefault();
+        flashPress(rightCheek);
+        handleSlap("rightCheek");
+      }
+    }
+
+    bindCheek(leftCheek, "leftCheek");
+    bindCheek(rightCheek, "rightCheek");
+    document.addEventListener("keydown", handleKeyboardControl);
+
+    startBtn.addEventListener("click", () => {
+      if (playing) return;
+      startGame();
+    });
+
+    overlayStart.addEventListener("click", () => startGame());
+
+    window.addEventListener("resize", () => {
+      if (queue.length) syncDomPositions();
+    });
+
+    initQueue();
+    updateTimeBar();
+    updateLobbyBackLink();
+  </script>
+</body>
+</html>

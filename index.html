@@ -394,6 +394,55 @@
       height: 100%;
     }
 
+    /* 데스크탑 고정 레이아웃 (요청 수치) */
+    @media (min-width: 1121px) {
+      .lobby-main {
+        grid-template-columns: 553.78px 636.84px;
+        justify-content: center;
+      }
+
+      .left-column {
+        width: 553.78px;
+      }
+
+      .left-bottom-row {
+        grid-template-columns: 267.89px 267.89px;
+      }
+
+      .left-bottom-row > .panel.equal-height-panel {
+        width: 267.89px;
+        min-width: 267.89px;
+        max-width: 267.89px;
+        height: 428px;
+        min-height: 428px;
+        max-height: 428px;
+      }
+
+      .game-panel {
+        width: 636.84px;
+        min-width: 636.84px;
+        max-width: 636.84px;
+        height: 720px;
+        min-height: 720px;
+        max-height: 720px;
+      }
+
+      .game-grid {
+        grid-template-columns: repeat(2, 284.42px);
+        grid-auto-rows: 301px;
+        justify-content: center;
+      }
+
+      .game-card {
+        width: 284.42px;
+        min-width: 284.42px;
+        max-width: 284.42px;
+        height: 301px;
+        min-height: 301px;
+        max-height: 301px;
+      }
+    }
+
     .panel {
       background: rgba(255,255,255,0.94);
       border: 4px solid #e7f5de;
@@ -421,6 +470,11 @@
 
     .game-panel {
       height: 100%;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+      flex: 0 0 auto;
     }
 
     .panel-title {
@@ -657,7 +711,30 @@
       position: relative;
       z-index: 1;
       height: 100%;
+      flex: 1;
+      min-height: 0;
       align-content: start;
+      overflow-y: auto;
+      padding-right: 6px;
+      margin-right: -2px;
+      scrollbar-width: thin;
+      scrollbar-color: #b7d6b3 #edf7eb;
+      overscroll-behavior: contain;
+    }
+
+    .game-grid::-webkit-scrollbar {
+      width: 9px;
+    }
+
+    .game-grid::-webkit-scrollbar-track {
+      background: #edf7eb;
+      border-radius: 999px;
+    }
+
+    .game-grid::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #b7d6b3, #95c58f);
+      border-radius: 999px;
+      border: 2px solid #edf7eb;
     }
 
     .game-card {
@@ -832,6 +909,9 @@
     @media (max-width: 980px) {
       .game-grid {
         grid-template-columns: 1fr;
+        overflow-y: visible;
+        padding-right: 0;
+        margin-right: 0;
       }
 
       .intro-title {
@@ -1193,14 +1273,25 @@
               <a class="play-btn" id="playCrossRoad" href="games/cross_road.html">플레이</a>
             </div>
 
-            <!-- 예약 슬롯: 추후 미니게임 -->
+            <!-- 미니게임 4: 교수님 분류전 (professor-cheek-sort.html) -->
+            <div class="game-card">
+              <div class="game-emoji">👨‍🏫➡️🧑‍🎓</div>
+              <h3>교수님 분류전</h3>
+              <p>
+                위에서 내려오는 얼굴을 빠르게 분류하세요.
+                교수는 왼쪽, 학생은 오른쪽으로 넘기면 점수가 올라갑니다.
+              </p>
+              <a class="play-btn" id="playProfessorSort" href="games/professor-cheek-sort.html">플레이</a>
+            </div>
+
+            <!-- 출시 예정: 도토리 레이스 -->
             <div class="game-card">
               <div class="game-emoji">🌰🐿️</div>
               <h3>도토리 레이스</h3>
               <p>
-                동물의 왕국 분위기를 더 살릴 추가 미니게임 슬롯입니다.
+                동물의 왕국 분위기를 더 살릴 출시 예정 미니게임입니다.
               </p>
-              <button class="play-btn coming">준비 중</button>
+              <button class="play-btn coming">출시 예정</button>
             </div>
           </div>
         </div>
@@ -1299,9 +1390,37 @@
 
     const cheerEmoji = document.getElementById("cheerEmoji");
     const cheerText = document.getElementById("cheerText");
+    const leftColumn = document.querySelector(".left-column");
+    const gamePanel = document.querySelector(".game-panel");
+    const gameGrid = document.querySelector(".game-grid");
 
     let storyIndex = 0;
     let storyTimer = null;
+
+    /** 데스크탑에서 요청한 고정 크기 유지 + 미니게임 목록 내부 스크롤 */
+    function syncGamePanelHeightToLeft() {
+      if (!leftColumn || !gamePanel || !gameGrid) return;
+
+      // 단일 컬럼(모바일/태블릿)에서는 기존 자연 레이아웃 유지
+      if (window.innerWidth <= 1120) {
+        gamePanel.style.height = "";
+        gamePanel.style.width = "";
+        gamePanel.style.minHeight = "";
+        gamePanel.style.minWidth = "";
+        gamePanel.style.maxHeight = "";
+        gamePanel.style.maxWidth = "";
+        gamePanel.style.overflow = "visible";
+        return;
+      }
+
+      gamePanel.style.width = "636.84px";
+      gamePanel.style.minWidth = "636.84px";
+      gamePanel.style.maxWidth = "636.84px";
+      gamePanel.style.height = "720px";
+      gamePanel.style.minHeight = "720px";
+      gamePanel.style.maxHeight = "720px";
+      gamePanel.style.overflow = "hidden";
+    }
 
     function renderRankingsLoading() {
       const msg = "데이터를 불러드리는중입니다.";
@@ -1443,6 +1562,8 @@
       } catch {
         rankingData = [];
         renderRankingsLoading();
+      } finally {
+        requestAnimationFrame(syncGamePanelHeightToLeft);
       }
     }
 
@@ -1494,6 +1615,7 @@
       applySchoolToLobby();
       updateGamePlayLinks();
       renderRandomCheer();
+      requestAnimationFrame(syncGamePanelHeightToLeft);
       refreshRankingsFromApi();
     }
 
@@ -1527,6 +1649,10 @@
       if (e.target === rankingModal) {
         rankingModal.style.display = "none";
       }
+    });
+
+    window.addEventListener("resize", () => {
+      requestAnimationFrame(syncGamePanelHeightToLeft);
     });
 
     enterLobbyBtn.addEventListener("click", openSchoolPhase);
@@ -1575,14 +1701,17 @@
       const gh = document.getElementById("playGradeHunt");
       const ce = document.getElementById("playClassroomEscape");
       const cr = document.getElementById("playCrossRoad");
+      const ps = document.getElementById("playProfessorSort");
       if (gh) gh.setAttribute("href", "games/grade-hunt.html" + q);
       if (ce) ce.setAttribute("href", "games/classroom-escape.html" + q);
       if (cr) cr.setAttribute("href", "games/cross_road.html" + q);
+      if (ps) ps.setAttribute("href", "games/professor-cheek-sort.html" + q);
     }
 
     function bootstrap() {
       renderRankingsLoading();
       renderRandomCheer();
+      requestAnimationFrame(syncGamePanelHeightToLeft);
 
       if (wantsLobbyFromQuery()) {
         const fromUrl = schoolFromUrlQuery();
