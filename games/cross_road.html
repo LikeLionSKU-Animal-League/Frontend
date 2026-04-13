@@ -152,6 +152,7 @@
       border: 3px solid #8faec8;
       overflow: hidden;
       line-height: 0;
+      touch-action: none;
     }
 
     canvas {
@@ -214,59 +215,71 @@
       .legend {
         font-size: 11px;
       }
-
-      .dpad-grid {
-        grid-template-columns: repeat(3, min(56px, 18vw));
-        grid-template-rows: repeat(3, min(56px, 18vw));
-        gap: 8px;
-      }
-
-      .dpad-btn {
-        width: 100%;
-        height: 100%;
-        min-width: 48px;
-        min-height: 48px;
-      }
     }
 
-    /* 터치 D패드 */
+    /* 터치 D패드 — 게임 화면 하단 오버레이(반투명·소형) */
     .dpad {
       display: none;
-      margin-top: 14px;
+      position: absolute;
+      left: 50%;
+      bottom: max(6px, env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      z-index: 18;
       justify-content: center;
       align-items: center;
+      pointer-events: none;
     }
-    @media (pointer: coarse) {
-      .dpad { display: flex; }
-    }
+
     .dpad-grid {
       display: grid;
-      grid-template-columns: repeat(3, 64px);
-      grid-template-rows: repeat(3, 64px);
-      gap: 6px;
+      grid-template-columns: repeat(3, 34px);
+      grid-template-rows: repeat(3, 34px);
+      gap: 4px;
+      pointer-events: auto;
+      padding: 5px 7px;
+      border-radius: 16px;
+      background: rgba(15, 30, 48, 0.22);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
     }
+
+    @media (max-width: 900px) {
+      .dpad {
+        display: flex;
+      }
+    }
+
     .dpad-btn {
-      width: 64px;
-      height: 64px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, #e8f2fc, #d2e6f6);
-      border: 2.5px solid #b0cde8;
-      font-size: 26px;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.38);
+      color: rgba(255, 255, 255, 0.92);
+      font-size: 15px;
+      font-weight: 800;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       user-select: none;
       -webkit-user-select: none;
-      box-shadow: 0 4px 10px rgba(62,95,130,0.14);
-      transition: background 0.1s, transform 0.1s;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+      transition: background 0.1s, transform 0.1s, border-color 0.1s;
       -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
+
     .dpad-btn:active {
-      background: linear-gradient(135deg, #c5dcf0, #aecde7);
-      transform: scale(0.92);
+      background: rgba(255, 255, 255, 0.32);
+      border-color: rgba(255, 255, 255, 0.55);
+      transform: scale(0.94);
     }
-    .dpad-empty { visibility: hidden; }
+
+    .dpad-empty {
+      visibility: hidden;
+      pointer-events: none;
+    }
 
     /* 오버레이 */
     .overlay {
@@ -379,24 +392,23 @@
             </div>
           </div>
         </div>
+
+        <div class="dpad" id="crossDpad" aria-label="이동 조작">
+          <div class="dpad-grid">
+            <div class="dpad-empty"></div>
+            <button type="button" class="dpad-btn" id="btnUp">▲</button>
+            <div class="dpad-empty"></div>
+            <button type="button" class="dpad-btn" id="btnLeft">◀</button>
+            <div class="dpad-empty"></div>
+            <button type="button" class="dpad-btn" id="btnRight">▶</button>
+            <div class="dpad-empty"></div>
+            <button type="button" class="dpad-btn" id="btnDown">▼</button>
+            <div class="dpad-empty"></div>
+          </div>
+        </div>
       </div>
 
       <div class="legend">이동: ← ↑ ↓ → 또는 W A S D &nbsp;|&nbsp; 통나무 위에서는 함께 흘러갑니다</div>
-
-      <!-- 모바일 터치 D패드 -->
-      <div class="dpad">
-        <div class="dpad-grid">
-          <div class="dpad-empty"></div>
-          <button class="dpad-btn" id="btnUp">▲</button>
-          <div class="dpad-empty"></div>
-          <button class="dpad-btn" id="btnLeft">◀</button>
-          <div class="dpad-empty"></div>
-          <button class="dpad-btn" id="btnRight">▶</button>
-          <div class="dpad-empty"></div>
-          <button class="dpad-btn" id="btnDown">▼</button>
-          <div class="dpad-empty"></div>
-        </div>
-      </div>
     </div>
   </div>
 

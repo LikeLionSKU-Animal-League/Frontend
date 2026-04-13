@@ -162,22 +162,32 @@
       line-height: 1.4;
     }
 
-    /* 모바일·터치용 방향 패드 */
+    /* 모바일 방향 패드 — 뷰포트 하단 오버레이(반투명·소형) */
     .classroom-dpad {
       display: none;
-      margin-top: 10px;
+      position: absolute;
+      left: 50%;
+      bottom: max(4px, env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      z-index: 25;
       justify-content: center;
       user-select: none;
       -webkit-user-select: none;
       -webkit-tap-highlight-color: transparent;
+      pointer-events: none;
     }
 
     .classroom-dpad-grid {
       display: grid;
-      grid-template-columns: repeat(3, min(56px, 20vw));
-      grid-template-rows: repeat(3, min(52px, 18vw));
-      gap: 6px;
-      max-width: 100%;
+      grid-template-columns: repeat(3, 34px);
+      grid-template-rows: repeat(3, 34px);
+      gap: 4px;
+      pointer-events: auto;
+      padding: 5px 7px;
+      border-radius: 16px;
+      background: rgba(35, 28, 18, 0.32);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
     }
 
     .classroom-dpad-empty {
@@ -187,20 +197,24 @@
 
     .classroom-dpad-btn {
       border: none;
-      border-radius: 16px;
-      background: linear-gradient(145deg, #e8f2fc, #d2e6f6);
-      border: 2px solid #b0cde8;
-      font-size: 22px;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      font-size: 15px;
       font-weight: 800;
-      color: #304e6f;
+      color: rgba(255, 255, 255, 0.92);
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(62, 95, 130, 0.14);
-      transition: transform 0.08s ease, background 0.08s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      transition: transform 0.08s ease, background 0.08s ease, border-color 0.08s ease;
+      touch-action: manipulation;
     }
 
     .classroom-dpad-btn:active {
       transform: scale(0.94);
-      background: linear-gradient(145deg, #c5dcf0, #aecde7);
+      background: rgba(255, 255, 255, 0.28);
+      border-color: rgba(255, 255, 255, 0.55);
     }
 
     .game-viewport {
@@ -541,10 +555,6 @@
         padding: 12px 10px;
       }
 
-      .classroom-dpad {
-        display: flex;
-      }
-
       .controls {
         flex-direction: column;
         align-items: stretch;
@@ -559,9 +569,8 @@
         font-size: 12px;
       }
 
-      .classroom-dpad-grid {
-        grid-template-columns: repeat(3, min(52px, 22vw));
-        grid-template-rows: repeat(3, min(50px, 20vw));
+      .classroom-dpad {
+        display: flex;
       }
 
       .overlay-card {
@@ -651,7 +660,6 @@
           </div>
         </div>
       </div>
-      </div>
 
       <div class="classroom-dpad" id="classroomDpad" aria-label="이동 조작">
         <div class="classroom-dpad-grid">
@@ -665,6 +673,7 @@
           <button type="button" class="classroom-dpad-btn" id="ceDpadDown" aria-label="아래">▼</button>
           <span class="classroom-dpad-empty"></span>
         </div>
+      </div>
       </div>
     </div>
   </div>
@@ -687,15 +696,7 @@
       const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
       const top = vp.getBoundingClientRect().top;
       const pad = 12;
-      const dpadEl = document.getElementById("classroomDpad");
-      let reserveBelow = pad;
-      if (dpadEl) {
-        const dStyle = window.getComputedStyle(dpadEl);
-        if (dStyle.display !== "none") {
-          reserveBelow += (dpadEl.offsetHeight || 0) + 8;
-        }
-      }
-      const availH = Math.max(200, vh - top - reserveBelow);
+      const availH = Math.max(200, vh - top - pad);
       const scaleByW = w / GAME_WIDTH;
       const scaleByH = availH / GAME_HEIGHT;
       const scale = Math.min(1, scaleByW, scaleByH);
