@@ -162,12 +162,12 @@
       line-height: 1.4;
     }
 
-    /* 모바일 방향 패드 — 좌하단 오버레이(얇게 비침·소형) */
+    /* 모바일 방향 패드 — 좌하단 코너에 안전 영역만큼만 띄움 */
     .classroom-dpad {
       display: none;
       position: absolute;
-      left: max(6px, env(safe-area-inset-left));
-      bottom: max(6px, env(safe-area-inset-bottom));
+      left: calc(0px + env(safe-area-inset-left, 0px));
+      bottom: calc(0px + env(safe-area-inset-bottom, 0px));
       transform: none;
       z-index: 25;
       justify-content: flex-start;
@@ -183,8 +183,8 @@
       grid-template-rows: repeat(3, 26px);
       gap: 3px;
       pointer-events: auto;
-      padding: 4px 5px;
-      border-radius: 12px;
+      padding: 1px;
+      border-radius: 10px;
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid rgba(255, 255, 255, 0.18);
       backdrop-filter: blur(2px);
@@ -686,29 +686,29 @@
       overflow: hidden;
     }
 
-    /* 모바일 가로 — 상단 UI 최소화로 게임 뷰 최대 */
+    /* 모바일 가로 — 상단·여백 최소화로 게임 뷰 최대 */
     @media (orientation: landscape) and (max-width: 932px) {
       body {
-        padding: max(4px, env(safe-area-inset-top)) max(6px, env(safe-area-inset-right))
-          max(4px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left));
+        padding: max(2px, env(safe-area-inset-top)) max(3px, env(safe-area-inset-right))
+          max(2px, env(safe-area-inset-bottom)) max(3px, env(safe-area-inset-left));
         align-items: stretch;
       }
 
       .wrap {
         width: 100%;
         max-width: 100%;
-        padding: 6px;
+        padding: 2px 4px;
       }
 
       .shell {
-        padding: 8px 10px;
-        border-radius: 14px;
+        padding: 4px 6px;
+        border-radius: 12px;
       }
 
       .lobby-link {
-        padding: 6px 12px;
-        font-size: 12px;
-        margin-bottom: 6px;
+        padding: 4px 10px;
+        font-size: 11px;
+        margin-bottom: 4px;
       }
 
       .topbar {
@@ -716,8 +716,19 @@
         flex-wrap: nowrap;
         align-items: center;
         justify-content: space-between;
-        gap: 8px;
-        margin-bottom: 6px;
+        gap: 6px;
+        margin-bottom: 4px;
+      }
+
+      .game-viewport {
+        border-width: 2px;
+        border-radius: 12px;
+      }
+
+      .classroom-dpad-grid {
+        padding: 0;
+        gap: 2px;
+        border-radius: 8px;
       }
 
       .title {
@@ -752,26 +763,22 @@
       }
 
       .controls {
-        margin-bottom: 6px;
+        margin-bottom: 2px;
         flex-wrap: nowrap;
-        gap: 6px;
+        gap: 4px;
         align-items: center;
       }
 
       #restartBtn {
-        padding: 8px 12px;
-        font-size: 12px;
-        min-height: 40px;
+        padding: 6px 10px;
+        font-size: 11px;
+        min-height: 36px;
         flex-shrink: 0;
       }
 
+      /* 가로에서 세로 공간 확보 — 안내 문구는 숨김(패드·게임 영역 우선) */
       #message {
-        font-size: 11px;
-        flex: 1;
-        min-width: 0;
-        line-height: 1.25;
-        max-height: 2.6em;
-        overflow: hidden;
+        display: none !important;
       }
     }
   </style>
@@ -912,16 +919,24 @@
       const w = layout ? contentBoxInnerWidth(layout) : vp.clientWidth;
       if (w <= 0) return;
 
-      const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-      const top = vp.getBoundingClientRect().top;
+      const rect = vp.getBoundingClientRect();
       const narrow = window.matchMedia("(max-width: 932px)").matches;
       const landscape = window.matchMedia("(orientation: landscape)").matches;
-      const pad = landscape && narrow ? 5 : 12;
-      const availH = Math.max(200, vh - top - pad);
-      /* .game-viewport 좌우 테두리 4px × 2 — content-box일 때 바깥 점유 폭 */
-      const vpBorderXY = 8;
-      const scaleByW = Math.max(0, w - vpBorderXY) / GAME_WIDTH;
-      const scaleByH = Math.max(0, availH - vpBorderXY) / GAME_HEIGHT;
+      const pad = landscape && narrow ? 1 : 12;
+      let availH;
+      if (window.visualViewport) {
+        const vv = window.visualViewport;
+        availH = Math.max(200, vv.offsetTop + vv.height - rect.top - pad);
+      } else {
+        availH = Math.max(200, window.innerHeight - rect.top - pad);
+      }
+      const csVp = getComputedStyle(vp);
+      const vpBorderX =
+        (parseFloat(csVp.borderLeftWidth) || 0) + (parseFloat(csVp.borderRightWidth) || 0);
+      const vpBorderY =
+        (parseFloat(csVp.borderTopWidth) || 0) + (parseFloat(csVp.borderBottomWidth) || 0);
+      const scaleByW = Math.max(0, w - vpBorderX) / GAME_WIDTH;
+      const scaleByH = Math.max(0, availH - vpBorderY) / GAME_HEIGHT;
       const scale = Math.min(1, scaleByW, scaleByH);
 
       const scaledW = GAME_WIDTH * scale;
