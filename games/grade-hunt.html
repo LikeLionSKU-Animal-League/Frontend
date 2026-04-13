@@ -86,9 +86,17 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 18px;
+      margin-bottom: 12px;
+    }
+
+    .head-group {
+      flex: 1 1 260px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .title-box h1 {
@@ -107,14 +115,16 @@
     .start-btn {
       border: none;
       border-radius: 999px;
-      padding: 14px 24px;
-      font-size: 18px;
+      padding: 12px 22px;
+      font-size: 17px;
       font-weight: 800;
       cursor: pointer;
       color: #4f4a2b;
       background: linear-gradient(135deg, #ffe59a, #ffd57a);
       box-shadow: 0 10px 22px rgba(235, 188, 70, 0.28);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
+      flex-shrink: 0;
+      align-self: center;
     }
 
     .start-btn:hover {
@@ -129,38 +139,46 @@
     .info-panel {
       position: relative;
       z-index: 1;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 18px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: 8px;
+      margin-bottom: 0;
     }
 
     .info-item {
+      flex: 1 1 0;
+      min-width: 0;
       background: linear-gradient(180deg, #ffffff, #f7fff3);
       border: 2px solid #e6f4df;
-      border-radius: 22px;
-      padding: 14px 16px;
+      border-radius: 14px;
+      padding: 8px 10px;
       text-align: center;
       box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7);
     }
 
     .info-item .label {
-      font-size: 13px;
+      font-size: 11px;
       color: #8aa18d;
-      margin-bottom: 6px;
+      margin-bottom: 2px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
     }
 
     .info-item .value {
-      font-size: 28px;
+      font-size: 22px;
       font-weight: 900;
       color: #43664a;
+      line-height: 1.1;
     }
 
     #gameArea {
       position: relative;
       z-index: 1;
       width: 100%;
-      height: 500px;
+      height: min(600px, calc(100vh - 220px));
+      height: min(600px, calc(100dvh - 220px));
+      min-height: 440px;
       overflow: hidden;
       border-radius: 30px;
       border: 4px solid #8ec18f;
@@ -412,10 +430,15 @@
         align-items: stretch;
       }
 
+      .head-group {
+        flex: 1 1 auto;
+      }
+
       .start-btn {
         width: 100%;
         min-height: 48px;
         font-size: 17px;
+        align-self: stretch;
       }
 
       .title-box h1 {
@@ -423,20 +446,30 @@
       }
 
       .title-box p {
-        font-size: 14px;
+        font-size: 13px;
+        margin-top: 4px;
       }
 
       .info-panel {
-        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      .info-item {
+        padding: 6px 6px;
+        border-radius: 12px;
+      }
+
+      .info-item .label {
+        font-size: 10px;
       }
 
       .info-item .value {
-        font-size: 24px;
+        font-size: 18px;
       }
 
       #gameArea {
-        height: min(52vh, 440px);
-        min-height: 320px;
+        height: min(70vh, 600px);
+        min-height: 360px;
       }
 
       .grade {
@@ -514,26 +547,27 @@
       <div class="flower flower2">🌼</div>
 
       <div class="top-area">
-        <div class="title-box">
-          <h1>🐾 동물의 왕국 : 학점 사냥</h1>
-          <p>짧은 시간 안에 높은 학점을 많이 잡고, 함정 학점은 피하세요!</p>
+        <div class="head-group">
+          <div class="title-box">
+            <h1>🐾 동물의 왕국 : 학점 사냥</h1>
+            <p>짧은 시간 안에 높은 학점을 많이 잡고, 함정 학점은 피하세요!</p>
+          </div>
+          <div class="info-panel">
+            <div class="info-item">
+              <div class="label">점수</div>
+              <div class="value" id="score">0</div>
+            </div>
+            <div class="info-item">
+              <div class="label">콤보</div>
+              <div class="value" id="combo">0</div>
+            </div>
+            <div class="info-item">
+              <div class="label">남은 시간</div>
+              <div class="value" id="time">15</div>
+            </div>
+          </div>
         </div>
         <button class="start-btn" onclick="startGame()">게임 시작</button>
-      </div>
-
-      <div class="info-panel">
-        <div class="info-item">
-          <div class="label">점수</div>
-          <div class="value" id="score">0</div>
-        </div>
-        <div class="info-item">
-          <div class="label">콤보</div>
-          <div class="value" id="combo">0</div>
-        </div>
-        <div class="info-item">
-          <div class="label">남은 시간</div>
-          <div class="value" id="time">15</div>
-        </div>
       </div>
 
       <div id="gameArea">
