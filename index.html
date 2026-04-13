@@ -453,12 +453,11 @@
       z-index: 1;
     }
 
-    /* Top 3 */
+    /* Top 3 — 가로 한 줄(메달 · 동물 · 학교 · 점수) */
     .podium {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      align-items: end;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
       margin-top: 4px;
       position: relative;
       z-index: 1;
@@ -466,8 +465,7 @@
 
     .rankings-loading,
     .rankings-empty {
-      grid-column: 1 / -1;
-      min-height: 220px;
+      min-height: 120px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -500,61 +498,62 @@
     }
 
     .rank-card {
-      border-radius: 24px;
-      padding: 16px 12px;
-      text-align: center;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      text-align: left;
       position: relative;
-      border: 3px solid rgba(255,255,255,0.8);
-      box-shadow: 0 12px 20px rgba(0,0,0,0.08);
+      border: 2px solid rgba(255,255,255,0.85);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.06);
     }
 
     .rank-card.first {
-      min-height: 245px;
-      background: linear-gradient(180deg, #fff3b9, #ffe089);
-      order: 2;
+      background: linear-gradient(90deg, #fff3d0, #ffe9a0);
     }
 
     .rank-card.second {
-      min-height: 210px;
-      background: linear-gradient(180deg, #edf3ff, #d9e7ff);
-      order: 1;
+      background: linear-gradient(90deg, #eef4ff, #dce8ff);
     }
 
     .rank-card.third {
-      min-height: 190px;
-      background: linear-gradient(180deg, #ffe7cf, #ffd5a9);
-      order: 3;
+      background: linear-gradient(90deg, #fff0e0, #ffdcc4);
     }
 
-    .medal {
-      font-size: 30px;
-      margin-bottom: 6px;
+    .podium-medal {
+      flex-shrink: 0;
+      width: 34px;
+      text-align: center;
+      font-size: 22px;
+      line-height: 1;
     }
 
-    .animal-face {
-      font-size: 50px;
-      margin: 6px 0 8px;
+    .podium-animal {
+      flex-shrink: 0;
+      width: 40px;
+      text-align: center;
+      font-size: 28px;
+      line-height: 1;
     }
 
-    .uni-name {
-      font-size: 16px;
+    .podium-uni {
+      flex: 1;
+      min-width: 0;
+      font-size: 15px;
       font-weight: 900;
       color: #425045;
-      margin-bottom: 6px;
-      word-break: keep-all;
+      word-break: break-word;
+      line-height: 1.35;
     }
 
-    .score-text {
-      font-size: 15px;
-      font-weight: 800;
-      color: #5d6d5f;
-    }
-
-    .animal-name {
-      margin-top: 6px;
+    .podium-score {
+      flex-shrink: 0;
       font-size: 14px;
       font-weight: 900;
-      color: #5d6b36;
+      color: #4d6b52;
+      white-space: nowrap;
     }
 
     /* My university */
@@ -835,17 +834,6 @@
         grid-template-columns: 1fr;
       }
 
-      .podium {
-        grid-template-columns: 1fr;
-      }
-
-      .rank-card.first,
-      .rank-card.second,
-      .rank-card.third {
-        min-height: auto;
-        order: initial;
-      }
-
       .intro-title {
         font-size: 42px;
       }
@@ -972,15 +960,30 @@
       }
 
       .podium {
-        grid-template-columns: 1fr;
-        gap: 10px;
+        gap: 6px;
       }
 
-      .rank-card.first,
-      .rank-card.second,
-      .rank-card.third {
-        min-height: 0;
-        order: initial;
+      .rank-card {
+        padding: 9px 10px;
+        gap: 8px;
+      }
+
+      .podium-medal {
+        width: 30px;
+        font-size: 20px;
+      }
+
+      .podium-animal {
+        width: 36px;
+        font-size: 24px;
+      }
+
+      .podium-uni {
+        font-size: 14px;
+      }
+
+      .podium-score {
+        font-size: 13px;
       }
 
       .game-card h3 {
@@ -1330,19 +1333,24 @@
       while (top3.length < 3) {
         top3.push({ university: "—", score: 0, animal: "🌱" });
       }
-      const arranged = [top3[1], top3[0], top3[2]];
-      const arrangedClasses = ["second", "first", "third"];
-      const arrangedMedals = ["🥈", "🥇", "🥉"];
+      const rows = [
+        { item: top3[0], medal: "🥇", cls: "first" },
+        { item: top3[1], medal: "🥈", cls: "second" },
+        { item: top3[2], medal: "🥉", cls: "third" }
+      ];
 
-      top3Container.innerHTML = arranged.map((item, index) => `
-        <div class="rank-card ${arrangedClasses[index]}">
-          <div class="medal">${arrangedMedals[index]}</div>
-          <div class="animal-face">${item.animal}</div>
-          <div class="uni-name">${item.university}</div>
-          <div class="score-text">${item.score}점</div>
-          <div class="animal-name">${animalTitle[item.animal] || "대표 동물"}</div>
+      top3Container.innerHTML = rows
+        .map(
+          ({ item, medal, cls }) => `
+        <div class="rank-card ${cls}">
+          <span class="podium-medal" aria-hidden="true">${medal}</span>
+          <span class="podium-animal" title="${animalTitle[item.animal] || "대표 동물"}">${item.animal}</span>
+          <span class="podium-uni">${item.university}</span>
+          <span class="podium-score">${item.score}점</span>
         </div>
-      `).join("");
+      `
+        )
+        .join("");
     }
 
     function renderFullRanking() {
