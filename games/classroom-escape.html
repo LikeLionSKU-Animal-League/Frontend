@@ -219,9 +219,9 @@
     }
 
     .game-viewport {
-      /* 너비·높이는 updateGameViewportScale에서 스케일에 맞게 지정(가로 여백 띠 방지) */
+      /* 너비·높이는 updateGameViewportScale에서 지정 — 논리 무대가 1140보다 넓어질 수 있음 */
       width: 100%;
-      max-width: 1140px;
+      max-width: none;
       margin: 0 auto;
       overflow: hidden;
       border-radius: 24px;
@@ -235,6 +235,7 @@
 
     #game {
       position: relative;
+      min-width: 1140px;
       width: 1140px;
       height: 720px;
       overflow: hidden;
@@ -931,8 +932,11 @@
     crossorigin="anonymous"
   ></script>
   <script>
-    const GAME_WIDTH = 1140;
+    /** 스테이지·책상·교수 경로 등이 설계된 기준 폭 (이보다 좁은 논리 폭은 쓰지 않음) */
+    const BASE_STAGE_WIDTH = 1140;
     const GAME_HEIGHT = 720;
+    /** 뷰포트가 더 넓으면 바닥·벽이 이어지도록 논리 폭만 확장 (비율 유지 단일 scale) */
+    let gameWorldWidth = BASE_STAGE_WIDTH;
 
     function contentBoxInnerWidth(el) {
       if (!el) return 0;
@@ -994,27 +998,27 @@
         (parseFloat(csVp.borderLeftWidth) || 0) + (parseFloat(csVp.borderRightWidth) || 0);
       const vpBorderY =
         (parseFloat(csVp.borderTopWidth) || 0) + (parseFloat(csVp.borderBottomWidth) || 0);
-      const scaleByW = Math.max(0, w - vpBorderX) / GAME_WIDTH;
-      const scaleByH = Math.max(0, availH - vpBorderY) / GAME_HEIGHT;
-
-      let scaledW;
-      let scaledH;
-      let transform;
-      if (landscape && narrow) {
-        /* 가로 모바일: 가로·세로를 각각 칸에 맞춤(비율 약간 달라져도 빈 갈색 띠 없이 교실이 꽉 참) */
-        const scaleX = scaleByW;
-        const scaleY = scaleByH;
-        scaledW = GAME_WIDTH * scaleX;
-        scaledH = GAME_HEIGHT * scaleY;
-        transform = `scale(${scaleX}, ${scaleY})`;
+      const innerW = Math.max(0, w - vpBorderX);
+      const innerH = Math.max(1, availH - vpBorderY);
+      const slotAspect = innerW / innerH;
+      const baseAspect = BASE_STAGE_WIDTH / GAME_HEIGHT;
+      if (slotAspect > baseAspect + 0.0005) {
+        gameWorldWidth = Math.max(
+          BASE_STAGE_WIDTH,
+          Math.min(2400, Math.ceil(innerW * (GAME_HEIGHT / innerH)))
+        );
       } else {
-        const scale = Math.min(scaleByW, scaleByH);
-        scaledW = GAME_WIDTH * scale;
-        scaledH = GAME_HEIGHT * scale;
-        transform = `scale(${scale})`;
+        gameWorldWidth = BASE_STAGE_WIDTH;
       }
 
-      gameEl.style.width = `${GAME_WIDTH}px`;
+      const scaleByW = innerW / gameWorldWidth;
+      const scaleByH = innerH / GAME_HEIGHT;
+      const scale = Math.min(scaleByW, scaleByH);
+      const scaledW = gameWorldWidth * scale;
+      const scaledH = GAME_HEIGHT * scale;
+      const transform = `scale(${scale})`;
+
+      gameEl.style.width = `${gameWorldWidth}px`;
       gameEl.style.height = `${GAME_HEIGHT}px`;
       gameEl.style.transformOrigin = "top left";
       gameEl.style.transform = transform;
@@ -1024,6 +1028,11 @@
       vp.style.maxWidth = "100%";
       vp.style.marginLeft = "auto";
       vp.style.marginRight = "auto";
+
+      playerX = Math.max(0, Math.min(playerX, gameWorldWidth - PLAYER_SIZE));
+      if (player) {
+        player.style.left = `${playerX}px`;
+      }
     }
 
     window.addEventListener(
@@ -1623,7 +1632,7 @@ doorLock.textContent = "🔒";
 
       if (dx === 0 && dy === 0) return;
 
-      let nextX = Math.max(0, Math.min(GAME_WIDTH - PLAYER_SIZE, playerX + dx));
+      let nextX = Math.max(0, Math.min(gameWorldWidth - PLAYER_SIZE, playerX + dx));
       let nextY = Math.max(0, Math.min(GAME_HEIGHT - PLAYER_SIZE, playerY + dy));
 
       const xRect = getRect(nextX, playerY, PLAYER_SIZE, PLAYER_SIZE);
@@ -1653,7 +1662,7 @@ function findSafePassPosition() {
 
   for (let i = 0; i < maxTries; i++) {
 
-    const x = 80 + Math.random() * (GAME_WIDTH - 220);
+    const x = 80 + Math.random() * (gameWorldWidth - 220);
     const y = 260 + Math.random() * (GAME_HEIGHT - 360);
 
     const passRect = getRect(x, y, PASS_SIZE, PASS_SIZE);
