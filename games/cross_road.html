@@ -613,6 +613,18 @@ const SDIR = '../assets/sounds/';
   S[k] = a;
 });
 
+/* --- 이미지 프리로드 --- */
+const IMGS = {};
+const IDIR = '../assets/images/cross_road/';
+[
+  'long_log', 'short_log', 'road', 'river', 'glass',
+  ...Array.from({ length: 9 }, (_, i) => [`car${i+1}_left`, `car${i+1}_right`]).flat(),
+].forEach(name => {
+  const img = new Image();
+  img.onload = () => { IMGS[name] = img; };
+  img.src = IDIR + name + '.png';
+});
+
 /** 효과음 재생(겹침 재생을 위해 cloneNode) */
 function play(key, vol = 0.5) {
   const src = S[key];
@@ -691,12 +703,11 @@ function hideOverlay() {
   overlay.style.display = 'none';
 }
 
-/** 배경 타일 색만 한 번 그림(준비 화면) */
+/** 배경 타일 한 번 그림(준비 화면) */
 function drawStatic() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (let r = 0; r < ROWS; r++) {
-    ctx.fillStyle = getTileColor(r);
-    ctx.fillRect(0, r * TILE, canvas.width, TILE);
+    drawBgRow(r);
   }
 }
 
@@ -719,18 +730,18 @@ const DIFF = [
 /** 도로 행에 차, 물 행에 통나무 배치 */
 function spawnObjects() {
   const d = DIFF[getDifficulty()];
-  const CAR_EMOJIS = ['🚗','🚙','🚕','🚌','🚎','🏎️','🚓','🚑','🚒'];
-
   ROAD_ROWS.forEach((row, i) => {
     const dir   = i % 2 === 0 ? 1 : -1;
     const spd   = (d.carSpd[0] + Math.random() * d.carSpd[1]) * TILE;
     const count = d.carCount[0] + Math.floor(Math.random() * (d.carCount[1] + 1));
+    const side  = dir > 0 ? 'left' : 'right';
     for (let c = 0; c < count; c++) {
+      const n = Math.floor(Math.random() * 9) + 1;
       cars.push({
         row, dir, speed: spd,
         x: (c * COLS / count) * TILE,
         w: TILE * 1.5,
-        emoji: CAR_EMOJIS[Math.floor(Math.random() * CAR_EMOJIS.length)],
+        imgKey: `car${n}_${side}`,
       });
     }
   });
@@ -886,8 +897,7 @@ function draw() {
 
   /* 줄마다 배경 + 도로 중앙선 + 물결선 */
   for (let r = 0; r < ROWS; r++) {
-    ctx.fillStyle = getTileColor(r);
-    ctx.fillRect(0, r * TILE, canvas.width, TILE);
+    drawBgRow(r);
     if (ROAD_ROWS.includes(r)) {
       ctx.strokeStyle = 'rgba(255,255,255,0.18)';
       ctx.setLineDash([10, 10]);
@@ -909,33 +919,29 @@ function draw() {
   }
 
   logs.forEach(log => {
-    ctx.save();
-    ctx.font = '28px serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    const cy = log.row * TILE + TILE / 2;
-    const seg = Math.ceil(log.w / TILE);
-    for (let i = 0; i < seg; i++) {
-      ctx.fillText('🪵', OX + log.x + i * TILE + TILE / 2, cy);
+    const img = IMGS[log.w >= TILE * 2.0 ? 'long_log' : 'short_log'];
+    if (img) {
+      ctx.drawImage(img, OX + log.x, log.row * TILE, log.w, TILE);
+    } else {
+      ctx.fillStyle = '#8B4513';
+      ctx.fillRect(OX + log.x, log.row * TILE + 4, log.w, TILE - 8);
     }
-    ctx.restore();
   });
 
   cars.forEach(car => {
-    const cx = OX + car.x + car.w / 2;
-    const cy = car.row * TILE + TILE / 2;
-    ctx.save();
-    ctx.font = '30px serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    if (car.dir < 0) {
-      ctx.translate(cx, cy);
-      ctx.scale(-1, 1);
-      ctx.fillText(car.emoji, 0, 0);
+    const img = IMGS[car.imgKey];
+    if (img) {
+      ctx.drawImage(img, OX + car.x, car.row * TILE, car.w, TILE);
     } else {
-      ctx.fillText(car.emoji, cx, cy);
+      const cx = OX + car.x + car.w / 2;
+      const cy = car.row * TILE + TILE / 2;
+      ctx.save();
+      ctx.font = '30px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🚗', cx, cy);
+      ctx.restore();
     }
-    ctx.restore();
   });
 
   particles.forEach(p => {
@@ -968,6 +974,12 @@ function getTileColor(r) {
   if (ROAD_ROWS.includes(r))  return LANE_COLOR.road;
   if (WATER_ROWS.includes(r)) return LANE_COLOR.water;
   return LANE_COLOR.grass;
+}
+
+/** 행 하나의 배경을 색상으로 그림 */
+function drawBgRow(r) {
+  ctx.fillStyle = getTileColor(r);
+  ctx.fillRect(0, r * TILE, canvas.width, TILE);
 }
 
 /** 사자 이모지(스쿼시 스케일 적용) */
