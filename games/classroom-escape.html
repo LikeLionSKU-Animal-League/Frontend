@@ -7,6 +7,10 @@
   <style>
     * { box-sizing: border-box; }
 
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
     body {
       margin: 0;
       font-family: "Arial", "맑은 고딕", sans-serif;
@@ -37,64 +41,72 @@
       background: rgba(255,255,255,0.97);
       border: 3px solid #dde9f5;
       border-radius: 28px;
-      padding: 18px;
+      padding: 14px 16px;
       box-shadow: 0 18px 42px rgba(62, 95, 130, 0.16);
     }
 
     .topbar {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-      margin-bottom: 14px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      margin-bottom: 10px;
     }
 
     .title h1 {
       margin: 0;
-      font-size: 32px;
+      font-size: clamp(20px, 4.2vw, 30px);
       color: #304e6f;
+      line-height: 1.2;
     }
 
     .title p {
-      margin: 6px 0 0;
-      font-size: 14px;
+      margin: 4px 0 0;
+      font-size: 13px;
       color: #698198;
+      line-height: 1.45;
     }
 
     .status {
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: 6px;
+      width: 100%;
     }
 
     .status-box {
-      min-width: 120px;
-      padding: 10px 14px;
+      flex: 1 1 0;
+      min-width: 0;
+      padding: 6px 8px;
       text-align: center;
-      border-radius: 16px;
+      border-radius: 12px;
       background: #f7fbff;
       border: 2px solid #e0ebf6;
     }
 
     .status-label {
-      font-size: 12px;
+      font-size: 10px;
       color: #7a90a4;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
     }
 
     .status-value {
-      font-size: 22px;
+      font-size: clamp(14px, 3.5vw, 18px);
       font-weight: 800;
       color: #2e4b69;
+      line-height: 1.15;
+      word-break: keep-all;
     }
 
     .controls {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       align-items: center;
       flex-wrap: wrap;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
     }
 
     button {
@@ -137,15 +149,58 @@
 
     #message {
       flex: 1;
-      min-height: 48px;
+      min-height: 40px;
       display: flex;
       align-items: center;
-      padding: 0 14px;
-      border-radius: 16px;
+      padding: 8px 12px;
+      border-radius: 14px;
       background: #f7fbff;
       border: 2px solid #e1ebf5;
       color: #60788d;
       font-weight: 700;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    /* 모바일·터치용 방향 패드 */
+    .classroom-dpad {
+      display: none;
+      margin-top: 10px;
+      justify-content: center;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .classroom-dpad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, min(56px, 20vw));
+      grid-template-rows: repeat(3, min(52px, 18vw));
+      gap: 6px;
+      max-width: 100%;
+    }
+
+    .classroom-dpad-empty {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .classroom-dpad-btn {
+      border: none;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #e8f2fc, #d2e6f6);
+      border: 2px solid #b0cde8;
+      font-size: 22px;
+      font-weight: 800;
+      color: #304e6f;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(62, 95, 130, 0.14);
+      transition: transform 0.08s ease, background 0.08s ease;
+    }
+
+    .classroom-dpad-btn:active {
+      transform: scale(0.94);
+      background: linear-gradient(145deg, #c5dcf0, #aecde7);
     }
 
     .game-viewport {
@@ -482,13 +537,12 @@
         padding: 10px 8px;
       }
 
-      .topbar {
-        flex-direction: column;
-        align-items: stretch;
+      .shell {
+        padding: 12px 10px;
       }
 
-      .title h1 {
-        font-size: clamp(20px, 5vw, 28px);
+      .classroom-dpad {
+        display: flex;
       }
 
       .controls {
@@ -501,9 +555,13 @@
       }
 
       #message {
-        font-size: 13px;
         min-height: auto;
-        padding: 10px 12px;
+        font-size: 12px;
+      }
+
+      .classroom-dpad-grid {
+        grid-template-columns: repeat(3, min(52px, 22vw));
+        grid-template-rows: repeat(3, min(50px, 20vw));
       }
 
       .overlay-card {
@@ -594,6 +652,20 @@
         </div>
       </div>
       </div>
+
+      <div class="classroom-dpad" id="classroomDpad" aria-label="이동 조작">
+        <div class="classroom-dpad-grid">
+          <span class="classroom-dpad-empty"></span>
+          <button type="button" class="classroom-dpad-btn" id="ceDpadUp" aria-label="위">▲</button>
+          <span class="classroom-dpad-empty"></span>
+          <button type="button" class="classroom-dpad-btn" id="ceDpadLeft" aria-label="왼쪽">◀</button>
+          <span class="classroom-dpad-empty"></span>
+          <button type="button" class="classroom-dpad-btn" id="ceDpadRight" aria-label="오른쪽">▶</button>
+          <span class="classroom-dpad-empty"></span>
+          <button type="button" class="classroom-dpad-btn" id="ceDpadDown" aria-label="아래">▼</button>
+          <span class="classroom-dpad-empty"></span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -612,7 +684,21 @@
       if (!vp || !gameEl) return;
       const w = vp.clientWidth;
       if (w <= 0) return;
-      const scale = Math.min(1, w / GAME_WIDTH);
+      const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      const top = vp.getBoundingClientRect().top;
+      const pad = 12;
+      const dpadEl = document.getElementById("classroomDpad");
+      let reserveBelow = pad;
+      if (dpadEl) {
+        const dStyle = window.getComputedStyle(dpadEl);
+        if (dStyle.display !== "none") {
+          reserveBelow += (dpadEl.offsetHeight || 0) + 8;
+        }
+      }
+      const availH = Math.max(200, vh - top - reserveBelow);
+      const scaleByW = w / GAME_WIDTH;
+      const scaleByH = availH / GAME_HEIGHT;
+      const scale = Math.min(1, scaleByW, scaleByH);
       gameEl.style.width = `${GAME_WIDTH}px`;
       gameEl.style.height = `${GAME_HEIGHT}px`;
       gameEl.style.transformOrigin = "top left";
@@ -864,6 +950,34 @@
       ArrowLeft: false,
       ArrowRight: false
     };
+
+    function bindClassroomTouchDpad() {
+      const pairs = [
+        ["ceDpadUp", "ArrowUp"],
+        ["ceDpadDown", "ArrowDown"],
+        ["ceDpadLeft", "ArrowLeft"],
+        ["ceDpadRight", "ArrowRight"]
+      ];
+      for (const [id, key] of pairs) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const down = (e) => {
+          e.preventDefault();
+          keys[key] = true;
+        };
+        const up = (e) => {
+          e.preventDefault();
+          keys[key] = false;
+        };
+        el.addEventListener("touchstart", down, { passive: false });
+        el.addEventListener("touchend", up);
+        el.addEventListener("touchcancel", up);
+        el.addEventListener("mousedown", down);
+        el.addEventListener("mouseup", up);
+        el.addEventListener("mouseleave", up);
+      }
+    }
+    bindClassroomTouchDpad();
 
     function setMessage(text) {
       message.textContent = text;
