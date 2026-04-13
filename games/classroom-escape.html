@@ -743,14 +743,12 @@
         margin-bottom: 0;
       }
 
+      /* width: 100% 금지 — 스크립트가 맞춘 스케일 너비보다 뷰만 넓어져 갈색 빈칸이 생김 */
       #gameViewport {
         grid-area: game;
         min-width: 0;
-        width: 100% !important;
-        max-width: none !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        justify-self: stretch;
+        justify-self: center;
+        align-self: start;
       }
 
       .controls {
@@ -960,11 +958,17 @@
       const rect = vp.getBoundingClientRect();
       const fullShellW = layout ? contentBoxInnerWidth(layout) : vp.clientWidth;
       let w = fullShellW;
-      if (landscape && narrow && toolsEl) {
+      if (landscape && narrow && layout && toolsEl) {
         const tr = toolsEl.getBoundingClientRect();
+        const lr = layout.getBoundingClientRect();
         const sideBySide = Math.abs(tr.top - rect.top) < 48;
-        if (sideBySide && tr.width > 20 && tr.width < fullShellW * 0.55) {
-          w = Math.max(120, fullShellW - tr.width - 10);
+        if (sideBySide && tr.width > 20 && tr.width < lr.width * 0.55) {
+          const lcs = getComputedStyle(layout);
+          const innerLeft =
+            lr.left +
+            (parseFloat(lcs.borderLeftWidth) || 0) +
+            (parseFloat(lcs.paddingLeft) || 0);
+          w = Math.max(120, tr.left - innerLeft - 4);
         }
       }
       if (w <= 0) return;
@@ -992,17 +996,29 @@
         (parseFloat(csVp.borderTopWidth) || 0) + (parseFloat(csVp.borderBottomWidth) || 0);
       const scaleByW = Math.max(0, w - vpBorderX) / GAME_WIDTH;
       const scaleByH = Math.max(0, availH - vpBorderY) / GAME_HEIGHT;
-      const scale = Math.min(scaleByW, scaleByH);
 
-      const scaledW = GAME_WIDTH * scale;
-      const scaledH = GAME_HEIGHT * scale;
+      let scaledW;
+      let scaledH;
+      let transform;
+      if (landscape && narrow) {
+        /* 가로 모바일: 가로·세로를 각각 칸에 맞춤(비율 약간 달라져도 빈 갈색 띠 없이 교실이 꽉 참) */
+        const scaleX = scaleByW;
+        const scaleY = scaleByH;
+        scaledW = GAME_WIDTH * scaleX;
+        scaledH = GAME_HEIGHT * scaleY;
+        transform = `scale(${scaleX}, ${scaleY})`;
+      } else {
+        const scale = Math.min(scaleByW, scaleByH);
+        scaledW = GAME_WIDTH * scale;
+        scaledH = GAME_HEIGHT * scale;
+        transform = `scale(${scale})`;
+      }
 
       gameEl.style.width = `${GAME_WIDTH}px`;
       gameEl.style.height = `${GAME_HEIGHT}px`;
       gameEl.style.transformOrigin = "top left";
-      gameEl.style.transform = `scale(${scale})`;
+      gameEl.style.transform = transform;
 
-      /* 높이 기준으로 줄었을 때 오른쪽 빈 베이지 띠가 생기지 않도록 뷰포트를 실제 스케일 크기에 맞춤 */
       vp.style.width = `${scaledW}px`;
       vp.style.height = `${scaledH}px`;
       vp.style.maxWidth = "100%";
