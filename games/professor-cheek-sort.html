@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ㄷ턋<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
@@ -526,14 +526,14 @@
     <div class="playfield" id="playfield">
       <div class="tunnel"></div>
       <div class="path-line"></div>
-      <div class="lane-hint left"><img src="../assets/prof-face.png" alt="" />교수는 왼쪽</div>
-      <div class="lane-hint right">학생은 오른쪽<img src="../assets/student-face.png" alt="" /></div>
+      <div class="lane-hint left"><img src="../assets/images/identify_prof/prof-face.png" alt="" />교수는 왼쪽</div>
+      <div class="lane-hint right">학생은 오른쪽<img src="../assets/images/identify_prof/student-face.png" alt="" /></div>
       <div class="side-target left">
-        <img src="../assets/prof-face.png" alt="" />
+        <img src="../assets/images/identify_prof/prof-face.png" alt="" />
         <p>왼쪽<br />교수</p>
       </div>
       <div class="side-target right">
-        <img src="../assets/student-face.png" alt="" />
+        <img src="../assets/images/identify_prof/student-face.png" alt="" />
         <p>오른쪽<br />학생</p>
       </div>
       <div id="queueLayer"></div>
@@ -546,13 +546,13 @@
 
     <div class="cheeks-row">
       <button type="button" class="cheek-btn left-cheek" id="leftCheek" aria-label="왼쪽 뺨 — 교수를 왼쪽으로">
-        <img class="target-icon" src="../assets/prof-face.png" alt="" />
+        <img class="target-icon" src="../assets/images/identify_prof/prof-face.png" alt="" />
         교수
         <span class="cheek-hint">(왼쪽으로 넘기기)</span>
       </button>
       <div class="face-center" aria-hidden="true">🎓</div>
       <button type="button" class="cheek-btn right-cheek" id="rightCheek" aria-label="오른쪽 뺨 — 교수를 오른쪽으로">
-        <img class="target-icon" src="../assets/student-face.png" alt="" />
+        <img class="target-icon" src="../assets/images/identify_prof/student-face.png" alt="" />
         학생
         <span class="cheek-hint">(오른쪽으로 넘기기)</span>
       </button>
@@ -577,8 +577,8 @@
     const SLOT_COUNT = 5;
     const SLOT_SPACING = 78;
     const TOP_SPAWN_Y = -86;
-    const PROFESSOR_FACE_SRC = "../assets/prof-face.png";
-    const STUDENT_FACE_SRC = "../assets/student-face.png";
+    const PROFESSOR_FACE_SRC = "../assets/images/identify_prof/prof-face.png";
+    const STUDENT_FACE_SRC = "../assets/images/identify_prof/student-face.png";
     const playfield = document.getElementById("playfield");
     const queueLayer = document.getElementById("queueLayer");
     const scoreEl = document.getElementById("scoreEl");
