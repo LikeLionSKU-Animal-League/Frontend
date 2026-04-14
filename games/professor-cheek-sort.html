@@ -624,6 +624,15 @@
       backToLobbyLink.setAttribute("href", `../index.html?lobby=1${q}`);
     }
 
+    function removeStrayBodyTextNodes() {
+      const childNodes = Array.from(document.body.childNodes);
+      childNodes.forEach((node) => {
+        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+          node.remove();
+        }
+      });
+    }
+
     function pickPortraitSrc(role) {
       return role === "student" ? STUDENT_FACE_SRC : PROFESSOR_FACE_SRC;
     }
@@ -870,6 +879,7 @@
     });
 
     initQueue();
+    removeStrayBodyTextNodes();
     updateTimeBar();
     lifeEl.textContent = livesToHearts(MAX_LIVES);
     updateLobbyBackLink();
