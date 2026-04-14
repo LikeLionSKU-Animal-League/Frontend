@@ -650,13 +650,20 @@
 
     function submitScoreToLeague(game, value) {
       const school = getLeagueSchool();
-      if (!school) return;
+      if (!school) {
+        if (!window.__leagueSchoolMissingWarned) {
+          window.__leagueSchoolMissingWarned = true;
+          alert("학교 정보가 없어 점수를 저장할 수 없습니다. 로비에서 학교를 먼저 입력해 주세요.");
+        }
+        return;
+      }
 
       const scoreToSend = Math.round(Number(value));
       if (!Number.isFinite(scoreToSend)) return;
 
       fetch(`${API_BASE}/api/scores`, {
         method: "POST",
+        keepalive: true,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ school, game, score: scoreToSend })
       }).catch(() => {});
@@ -671,21 +678,6 @@
       return Math.random() < 0.55 ? "professor" : "student";
     }
 
-<<<<<<< HEAD
-    function getLeagueSchool() {
-      const fromQuery = (() => {
-        try {
-          return (new URLSearchParams(window.location.search).get("school") || "").trim();
-        } catch {
-          return "";
-        }
-      })();
-      const fromStorage = (localStorage.getItem("animalLeagueSchool") || "").trim();
-      return fromQuery || fromStorage;
-    }
-
-=======
->>>>>>> 835b257be8ceee8b1fb4c569b4fdfc99c0006115
     function updateLobbyBackLink() {
       const school = getLeagueSchool();
       const q = school ? `&school=${encodeURIComponent(school)}` : "";
