@@ -434,6 +434,16 @@
       background: linear-gradient(135deg, #7dcc7f, #4a9f5a);
     }
 
+    #kakaoShareResultBtn {
+      margin-top: 10px;
+      background: linear-gradient(135deg, #fee500, #ffd400);
+      color: #3c1e1e;
+    }
+
+    #kakaoShareResultBtn.hidden {
+      display: none;
+    }
+
     .float-score {
       position: fixed;
       pointer-events: none;
@@ -568,9 +578,17 @@
         오답 시 목숨이 1개 줄며, 목숨 0이면 즉시 종료됩니다.
       </p>
       <button type="button" id="overlayStart">게임 시작</button>
+      <button type="button" id="kakaoShareResultBtn" class="hidden" onclick="shareToKakao()">
+        결과 공유하기
+      </button>
     </div>
   </div>
 
+  <script
+    src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js"
+    integrity="sha384-l+xbElFSnPZ2rOaPrU//2FF5B4LB8FiX5q4fXYTlfcG4PGpMkE1vcL7kNXI6Cci0"
+    crossorigin="anonymous"
+  ></script>
   <script>
     const GAME_DURATION_SEC = 15;
     const MAX_LIVES = 3;
@@ -590,7 +608,11 @@
     const rightCheek = document.getElementById("rightCheek");
     const overlay = document.getElementById("overlay");
     const overlayStart = document.getElementById("overlayStart");
+    const kakaoShareResultBtn = document.getElementById("kakaoShareResultBtn");
     const backToLobbyLink = document.getElementById("backToLobbyLink");
+    const KAKAO_JS_APP_KEY = "fa75c82718597e9124f913d174cd92a2";
+    const SHARE_SITE_ORIGIN = "https://campus-animal-battle.vercel.app";
+    const SHARE_FEED_IMAGE_URL = `${SHARE_SITE_ORIGIN}/assets/game-preview.png`;
 
     /** queue[0] = 맨 앞(아래), queue[length-1] = 맨 위(터널 근처) */
     let queue = [];
@@ -610,7 +632,7 @@
       return Math.random() < 0.55 ? "professor" : "student";
     }
 
-    function updateLobbyBackLink() {
+    function getLeagueSchool() {
       const fromQuery = (() => {
         try {
           return (new URLSearchParams(window.location.search).get("school") || "").trim();
@@ -619,9 +641,63 @@
         }
       })();
       const fromStorage = (localStorage.getItem("animalLeagueSchool") || "").trim();
-      const school = fromQuery || fromStorage;
+      return fromQuery || fromStorage;
+    }
+
+    function updateLobbyBackLink() {
+      const school = getLeagueSchool();
       const q = school ? `&school=${encodeURIComponent(school)}` : "";
       backToLobbyLink.setAttribute("href", `../index.html?lobby=1${q}`);
+    }
+
+    function buildShareLobbyUrl() {
+      const school = getLeagueSchool();
+      const base = `${SHARE_SITE_ORIGIN}/?lobby=true`;
+      return school ? `${base}&school=${encodeURIComponent(school)}` : base;
+    }
+
+    (function initKakaoSdk() {
+      if (!window.Kakao || !KAKAO_JS_APP_KEY) return;
+      if (!Kakao.isInitialized()) {
+        Kakao.init(KAKAO_JS_APP_KEY);
+      }
+    })();
+
+    function hideKakaoShareButton() {
+      if (kakaoShareResultBtn) kakaoShareResultBtn.classList.add("hidden");
+    }
+
+    function showKakaoShareButton() {
+      if (kakaoShareResultBtn) kakaoShareResultBtn.classList.remove("hidden");
+    }
+
+    function shareToKakao() {
+      if (!window.Kakao || !Kakao.isInitialized()) {
+        alert("카카오 SDK를 불러오지 못했거나 초기화되지 않았습니다.");
+        return;
+      }
+      const u = buildShareLobbyUrl();
+      Kakao.Share.sendDefault({
+        objectType: "feed",
+        content: {
+          title: "캠퍼스 애니멀 배틀 🐾",
+          description: "교수님 분류전에서 점수를 올리고 우리 학교를 도와주세요!",
+          imageUrl: SHARE_FEED_IMAGE_URL,
+          link: {
+            mobileWebUrl: u,
+            webUrl: u
+          }
+        },
+        buttons: [
+          {
+            title: "게임 참여하기",
+            link: {
+              mobileWebUrl: u,
+              webUrl: u
+            }
+          }
+        ]
+      });
     }
 
     function removeStrayBodyTextNodes() {
@@ -805,6 +881,8 @@
 
     function startGame() {
       overlay.classList.remove("show");
+      hideKakaoShareButton();
+      overlayStart.textContent = "게임 시작";
       score = 0;
       combo = 0;
       lives = MAX_LIVES;
@@ -828,7 +906,8 @@
       overlay.querySelector("h2").textContent = title;
       overlay.querySelector("p").innerHTML =
         `최종 점수 <strong style="color:#c9a227;font-size:22px">${score}</strong>점<br />${desc}`;
-      overlay.querySelector("button").textContent = "다시 하기";
+      overlayStart.textContent = "다시 하기";
+      showKakaoShareButton();
       overlay.classList.add("show");
     }
 
