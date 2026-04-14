@@ -2,8 +2,21 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#dff6ff" />
   <title>Animal League</title>
+  <!-- Open Graph: 카카오톡 등 링크 미리보기용 -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="캠퍼스 애니멀 배틀" />
+  <meta property="og:title" content="캠퍼스 애니멀 배틀" />
+  <meta
+    property="og:description"
+    content="대학 대표 동물들이 미니게임에 도전하고, 점수에 따라 더 강한 동물로 진화합니다."
+  />
+  <meta property="og:url" content="https://campus-animal-battle.vercel.app/" />
+  <meta property="og:image" content="https://campus-animal-battle.vercel.app/assets/game-preview.png" />
+  <meta property="og:image:alt" content="캠퍼스 애니멀 배틀 대표 이미지" />
+  <meta name="twitter:card" content="summary_large_image" />
   <style>
     @font-face {
       font-family: 'NeoDunggeunmo';
@@ -14,6 +27,10 @@
 
     * {
       box-sizing: border-box;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
     }
 
     body {
@@ -27,6 +44,20 @@
       color: #33423a;
       overflow-x: hidden;
       min-height: 100vh;
+<<<<<<< HEAD
+=======
+      min-height: 100dvh;
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    button,
+    .play-btn,
+    .header-btn,
+    .close-btn {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+>>>>>>> 8931fb550f777039c2bd4d82f7d34a0a470e1043
     }
 
     button {
@@ -343,7 +374,59 @@
       gap: 12px;
     }
 
+<<<<<<< HEAD
     /* 공통 패널 — 베이지 카드 */
+=======
+    /* 데스크탑 고정 레이아웃 (요청 수치) */
+    @media (min-width: 1121px) {
+      .lobby-main {
+        grid-template-columns: 553.78px 636.84px;
+        justify-content: center;
+      }
+
+      .left-column {
+        width: 553.78px;
+      }
+
+      .left-bottom-row {
+        grid-template-columns: 267.89px 267.89px;
+      }
+
+      .left-bottom-row > .panel.equal-height-panel {
+        width: 267.89px;
+        min-width: 267.89px;
+        max-width: 267.89px;
+        height: 428px;
+        min-height: 428px;
+        max-height: 428px;
+      }
+
+      .game-panel {
+        width: 636.84px;
+        min-width: 636.84px;
+        max-width: 636.84px;
+        height: 720px;
+        min-height: 720px;
+        max-height: 720px;
+      }
+
+      .game-grid {
+        grid-template-columns: repeat(2, 284.42px);
+        grid-auto-rows: 301px;
+        justify-content: center;
+      }
+
+      .game-card {
+        width: 284.42px;
+        min-width: 284.42px;
+        max-width: 284.42px;
+        height: 301px;
+        min-height: 301px;
+        max-height: 301px;
+      }
+    }
+
+>>>>>>> 8931fb550f777039c2bd4d82f7d34a0a470e1043
     .panel {
       background: rgba(245, 238, 220, 0.93);
       border: 3px solid #e0d3b0;
@@ -354,8 +437,23 @@
 
     .panel::before { display: none; }
 
+<<<<<<< HEAD
     .equal-height-panel { height: 100%; }
     .game-panel { height: 100%; }
+=======
+    .equal-height-panel {
+      height: 100%;
+    }
+
+    .game-panel {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+      flex: 0 0 auto;
+    }
+>>>>>>> 8931fb550f777039c2bd4d82f7d34a0a470e1043
 
     .panel-title {
       display: flex;
@@ -382,19 +480,31 @@
       color: #4a3728;
     }
 
+<<<<<<< HEAD
     /* TOP 3 포디움 */
     .podium {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
       align-items: end;
+=======
+    /* Top 3 — 가로 한 줄(메달 · 동물 · 학교 · 점수) */
+    .podium {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+>>>>>>> 8931fb550f777039c2bd4d82f7d34a0a470e1043
       margin-top: 4px;
     }
 
     .rankings-loading,
     .rankings-empty {
+<<<<<<< HEAD
       grid-column: 1 / -1;
       min-height: 180px;
+=======
+      min-height: 120px;
+>>>>>>> 8931fb550f777039c2bd4d82f7d34a0a470e1043
       display: flex;
       align-items: center;
       justify-content: center;
@@ -423,6 +533,7 @@
     }
 
     .rank-card {
+<<<<<<< HEAD
       border-radius: 14px;
       padding: 10px 8px;
       text-align: center;
@@ -441,6 +552,67 @@
     .animal-name { margin-top: 4px; font-size: 11px; color: #6a5a40; }
 
     /* 내 대학 */
+=======
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      text-align: left;
+      position: relative;
+      border: 2px solid rgba(255,255,255,0.85);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+    }
+
+    .rank-card.first {
+      background: linear-gradient(90deg, #fff3d0, #ffe9a0);
+    }
+
+    .rank-card.second {
+      background: linear-gradient(90deg, #eef4ff, #dce8ff);
+    }
+
+    .rank-card.third {
+      background: linear-gradient(90deg, #fff0e0, #ffdcc4);
+    }
+
+    .podium-medal {
+      flex-shrink: 0;
+      width: 34px;
+      text-align: center;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .podium-animal {
+      flex-shrink: 0;
+      width: 40px;
+      text-align: center;
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .podium-uni {
+      flex: 1;
+      min-width: 0;
+      font-size: 15px;
+      font-weight: 900;
+      color: #425045;
+      word-break: break-word;
+      line-height: 1.35;
+    }
+
+    .podium-score {
+      flex-shrink: 0;
+      font-size: 14px;
+      font-weight: 900;
+      color: #4d6b52;
+      white-space: nowrap;
+    }
+
+    /* My university */
+>>>>>>> 8931fb550f777039c2bd4d82f7d34a0a470e1043
     .my-card-top {
       display: flex;
       align-items: center;
@@ -518,8 +690,38 @@
     .game-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
+<<<<<<< HEAD
       gap: 10px;
+=======
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      flex: 1;
+      min-height: 0;
+>>>>>>> 8931fb550f777039c2bd4d82f7d34a0a470e1043
       align-content: start;
+      overflow-y: auto;
+      padding-right: 6px;
+      margin-right: -2px;
+      scrollbar-width: thin;
+      scrollbar-color: #b7d6b3 #edf7eb;
+      overscroll-behavior: contain;
+    }
+
+    .game-grid::-webkit-scrollbar {
+      width: 9px;
+    }
+
+    .game-grid::-webkit-scrollbar-track {
+      background: #edf7eb;
+      border-radius: 999px;
+    }
+
+    .game-grid::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #b7d6b3, #95c58f);
+      border-radius: 999px;
+      border: 2px solid #edf7eb;
     }
 
     .game-card {
@@ -673,12 +875,225 @@
     }
 
     @media (max-width: 980px) {
+<<<<<<< HEAD
       .game-grid { grid-template-columns: 1fr; }
       .podium { grid-template-columns: 1fr; }
       .rank-card.first,
       .rank-card.second,
       .rank-card.third { min-height: auto; order: initial; }
       #introText { font-size: 15px; }
+=======
+      .game-grid {
+        grid-template-columns: 1fr;
+        overflow-y: visible;
+        padding-right: 0;
+        margin-right: 0;
+      }
+
+      .intro-title {
+        font-size: 42px;
+      }
+
+      #introText {
+        font-size: 20px;
+      }
+>>>>>>> 8931fb550f777039c2bd4d82f7d34a0a470e1043
+    }
+
+    @media (max-width: 640px) {
+      #introScreen {
+        padding: 16px 12px calc(20px + env(safe-area-inset-bottom));
+        align-items: flex-start;
+      }
+
+      .intro-card {
+        width: 100%;
+        max-width: 100%;
+        padding: 24px 16px 28px;
+        border-radius: 24px;
+      }
+
+      .intro-title {
+        font-size: clamp(26px, 9vw, 40px);
+        line-height: 1.15;
+      }
+
+      .intro-sub {
+        font-size: 15px;
+        margin-bottom: 20px;
+      }
+
+      .intro-animal-row {
+        font-size: clamp(26px, 8vw, 34px);
+        letter-spacing: 3px;
+        margin-bottom: 16px;
+      }
+
+      #introTextBox {
+        padding: 18px 14px;
+        min-height: 0;
+      }
+
+      #introText {
+        font-size: 16px;
+        line-height: 1.65;
+      }
+
+      .intro-btn-row {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      #enterLobbyBtn,
+      #skipStoryBtn,
+      #confirmSchoolBtn {
+        width: 100%;
+        min-height: 48px;
+        font-size: 17px;
+      }
+
+      #skipStoryBtn {
+        padding: 14px 20px;
+      }
+
+      .school-setup-hint {
+        font-size: 15px;
+      }
+
+      #schoolNameInput {
+        font-size: 16px;
+        padding: 14px 16px;
+      }
+
+      #lobbyScreen {
+        padding: 14px 12px calc(24px + env(safe-area-inset-bottom));
+      }
+
+      .lobby-wrap {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .lobby-header {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 18px 16px;
+        border-radius: 22px;
+      }
+
+      .logo-box h1 {
+        font-size: clamp(22px, 6.5vw, 32px);
+      }
+
+      .logo-box p {
+        font-size: 14px;
+      }
+
+      .header-actions {
+        width: 100%;
+      }
+
+      .header-actions .header-btn {
+        flex: 1;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .panel {
+        padding: 16px 14px;
+        border-radius: 22px;
+      }
+
+      .panel-title {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .panel-title h2 {
+        font-size: 20px;
+      }
+
+      .podium {
+        gap: 6px;
+      }
+
+      .rank-card {
+        padding: 9px 10px;
+        gap: 8px;
+      }
+
+      .podium-medal {
+        width: 30px;
+        font-size: 20px;
+      }
+
+      .podium-animal {
+        width: 36px;
+        font-size: 24px;
+      }
+
+      .podium-uni {
+        font-size: 14px;
+      }
+
+      .podium-score {
+        font-size: 13px;
+      }
+
+      .game-card h3 {
+        font-size: 20px;
+      }
+
+      .game-card p {
+        font-size: 14px;
+        margin-bottom: 14px;
+      }
+
+      .play-btn {
+        display: block;
+        width: 100%;
+        min-height: 48px;
+        line-height: 1.25;
+        padding: 14px 16px;
+        font-size: 16px;
+      }
+
+      .modal {
+        padding: 0;
+        align-items: flex-end;
+      }
+
+      .modal-content {
+        width: 100%;
+        max-width: 100%;
+        max-height: min(92dvh, 92vh);
+        border-radius: 20px 20px 0 0;
+      }
+
+      .modal-head {
+        padding: 16px 16px 10px;
+      }
+
+      .modal-head h2 {
+        font-size: 20px;
+      }
+
+      .ranking-scroll {
+        padding: 12px 12px 20px;
+      }
+
+      thead th,
+      tbody td {
+        font-size: 13px;
+        padding: 10px 6px;
+      }
+
+      .animal-cell {
+        font-size: 22px;
+      }
     }
   </style>
 </head>
@@ -792,7 +1207,9 @@
             <span>원하는 게임을 선택하세요</span>
           </div>
 
+          <!-- 각 카드: games/*.html 로 이동 (스크립트가 ?school= 쿼리를 href에 붙임) -->
           <div class="game-grid">
+            <!-- 미니게임 1: 학점 사냥 (grade-hunt.html) -->
             <div class="game-card">
               <div class="game-emoji">🎓🪰</div>
               <h3>학점 사냥</h3>
@@ -803,6 +1220,7 @@
               <a class="play-btn" id="playGradeHunt" href="games/grade-hunt.html">플레이</a>
             </div>
 
+            <!-- 미니게임 2: 강의실 탈출 (classroom-escape.html) -->
             <div class="game-card">
               <div class="game-emoji">🏫🚪</div>
               <h3>강의실 탈출</h3>
@@ -813,22 +1231,35 @@
               <a class="play-btn" id="playClassroomEscape" href="games/classroom-escape.html">플레이</a>
             </div>
 
+            <!-- 미니게임 3: 사자의 길 건너기 (cross_road.html) -->
             <div class="game-card">
-              <div class="game-emoji">🍄✨</div>
-              <h3>버섯 점프</h3>
+              <div class="game-emoji">🦁🚗</div>
+              <h3>사자의 길 건너기</h3>
               <p>
-                숲속 버섯 발판을 타고 점프하며 점수를 쌓는 예정 콘텐츠입니다.
+                차를 피하고 통나무를 타고 강을 건너세요. 통나무 위에서는 사자도 함께 흘러갑니다.
               </p>
-              <button class="play-btn coming">준비 중</button>
+              <a class="play-btn" id="playCrossRoad" href="games/cross_road.html">플레이</a>
             </div>
 
+            <!-- 미니게임 4: 교수님 분류전 (professor-cheek-sort.html) -->
+            <div class="game-card">
+              <div class="game-emoji">👨‍🏫➡️🧑‍🎓</div>
+              <h3>교수님 분류전</h3>
+              <p>
+                위에서 내려오는 얼굴을 빠르게 분류하세요.
+                교수는 왼쪽, 학생은 오른쪽으로 넘기면 점수가 올라갑니다.
+              </p>
+              <a class="play-btn" id="playProfessorSort" href="games/professor-cheek-sort.html">플레이</a>
+            </div>
+
+            <!-- 출시 예정: 도토리 레이스 -->
             <div class="game-card">
               <div class="game-emoji">🌰🐿️</div>
               <h3>도토리 레이스</h3>
               <p>
-                동물의 왕국 분위기를 더 살릴 추가 미니게임 슬롯입니다.
+                동물의 왕국 분위기를 더 살릴 출시 예정 미니게임입니다.
               </p>
-              <button class="play-btn coming">준비 중</button>
+              <button class="play-btn coming">출시 예정</button>
             </div>
           </div>
         </div>
@@ -901,7 +1332,7 @@
       window.ANIMAL_LEAGUE_API ||
       (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
         ? "http://localhost:3000"
-        : "https://backend-jso9.onrender.com");
+        : "https://backend-m5wz.onrender.com");
 
     const introScreen = document.getElementById("introScreen");
     const lobbyScreen = document.getElementById("lobbyScreen");
@@ -927,9 +1358,37 @@
 
     const cheerEmoji = document.getElementById("cheerEmoji");
     const cheerText = document.getElementById("cheerText");
+    const leftColumn = document.querySelector(".left-column");
+    const gamePanel = document.querySelector(".game-panel");
+    const gameGrid = document.querySelector(".game-grid");
 
     let storyIndex = 0;
     let storyTimer = null;
+
+    /** 데스크탑에서 요청한 고정 크기 유지 + 미니게임 목록 내부 스크롤 */
+    function syncGamePanelHeightToLeft() {
+      if (!leftColumn || !gamePanel || !gameGrid) return;
+
+      // 단일 컬럼(모바일/태블릿)에서는 기존 자연 레이아웃 유지
+      if (window.innerWidth <= 1120) {
+        gamePanel.style.height = "";
+        gamePanel.style.width = "";
+        gamePanel.style.minHeight = "";
+        gamePanel.style.minWidth = "";
+        gamePanel.style.maxHeight = "";
+        gamePanel.style.maxWidth = "";
+        gamePanel.style.overflow = "visible";
+        return;
+      }
+
+      gamePanel.style.width = "636.84px";
+      gamePanel.style.minWidth = "636.84px";
+      gamePanel.style.maxWidth = "636.84px";
+      gamePanel.style.height = "720px";
+      gamePanel.style.minHeight = "720px";
+      gamePanel.style.maxHeight = "720px";
+      gamePanel.style.overflow = "hidden";
+    }
 
     function renderRankingsLoading() {
       const msg = "데이터를 불러드리는중입니다.";
@@ -966,19 +1425,24 @@
       while (top3.length < 3) {
         top3.push({ university: "—", score: 0, animal: "🌱" });
       }
-      const arranged = [top3[1], top3[0], top3[2]];
-      const arrangedClasses = ["second", "first", "third"];
-      const arrangedMedals = ["🥈", "🥇", "🥉"];
+      const rows = [
+        { item: top3[0], medal: "🥇", cls: "first" },
+        { item: top3[1], medal: "🥈", cls: "second" },
+        { item: top3[2], medal: "🥉", cls: "third" }
+      ];
 
-      top3Container.innerHTML = arranged.map((item, index) => `
-        <div class="rank-card ${arrangedClasses[index]}">
-          <div class="medal">${arrangedMedals[index]}</div>
-          <div class="animal-face">${item.animal}</div>
-          <div class="uni-name">${item.university}</div>
-          <div class="score-text">${item.score}점</div>
-          <div class="animal-name">${animalTitle[item.animal] || "대표 동물"}</div>
+      top3Container.innerHTML = rows
+        .map(
+          ({ item, medal, cls }) => `
+        <div class="rank-card ${cls}">
+          <span class="podium-medal" aria-hidden="true">${medal}</span>
+          <span class="podium-animal" title="${animalTitle[item.animal] || "대표 동물"}">${item.animal}</span>
+          <span class="podium-uni">${item.university}</span>
+          <span class="podium-score">${item.score}점</span>
         </div>
-      `).join("");
+      `
+        )
+        .join("");
     }
 
     function renderFullRanking() {
@@ -1066,6 +1530,8 @@
       } catch {
         rankingData = [];
         renderRankingsLoading();
+      } finally {
+        requestAnimationFrame(syncGamePanelHeightToLeft);
       }
     }
 
@@ -1117,6 +1583,7 @@
       applySchoolToLobby();
       updateGamePlayLinks();
       renderRandomCheer();
+      requestAnimationFrame(syncGamePanelHeightToLeft);
       refreshRankingsFromApi();
     }
 
@@ -1150,6 +1617,10 @@
       if (e.target === rankingModal) {
         rankingModal.style.display = "none";
       }
+    });
+
+    window.addEventListener("resize", () => {
+      requestAnimationFrame(syncGamePanelHeightToLeft);
     });
 
     enterLobbyBtn.addEventListener("click", openSchoolPhase);
@@ -1191,18 +1662,24 @@
       }
     }
 
+    /** 로비에 저장된 학교가 있으면 각 미니게임 플레이 링크에 ?school= 붙임 */
     function updateGamePlayLinks() {
       const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
       const q = school ? `?school=${encodeURIComponent(school)}` : "";
       const gh = document.getElementById("playGradeHunt");
       const ce = document.getElementById("playClassroomEscape");
+      const cr = document.getElementById("playCrossRoad");
+      const ps = document.getElementById("playProfessorSort");
       if (gh) gh.setAttribute("href", "games/grade-hunt.html" + q);
       if (ce) ce.setAttribute("href", "games/classroom-escape.html" + q);
+      if (cr) cr.setAttribute("href", "games/cross_road.html" + q);
+      if (ps) ps.setAttribute("href", "games/professor-cheek-sort.html" + q);
     }
 
     function bootstrap() {
       renderRankingsLoading();
       renderRandomCheer();
+      requestAnimationFrame(syncGamePanelHeightToLeft);
 
       if (wantsLobbyFromQuery()) {
         const fromUrl = schoolFromUrlQuery();
