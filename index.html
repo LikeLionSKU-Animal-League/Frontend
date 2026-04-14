@@ -5,16 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Animal League</title>
   <style>
+    @font-face {
+      font-family: 'NeoDunggeunmo';
+      src: url('./assets/fonts/neodgm.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
     * {
       box-sizing: border-box;
     }
 
     body {
       margin: 0;
-      font-family: "Trebuchet MS", "맑은 고딕", sans-serif;
-      background: linear-gradient(180deg, #dff6ff 0%, #eefbe1 45%, #fff7df 100%);
+      font-family: 'NeoDunggeunmo', sans-serif;
+      background-image: url('./assets/images/Home.jpg');
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
       color: #33423a;
       overflow-x: hidden;
+      min-height: 100vh;
     }
 
     button {
@@ -33,136 +45,89 @@
     }
 
     .bg-deco {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
+      display: none;
     }
-
-    .cloud, .leaf, .flower, .star {
-      position: absolute;
-      opacity: 0.35;
-      user-select: none;
-    }
-
-    .cloud { font-size: 48px; }
-    .leaf { font-size: 28px; }
-    .flower { font-size: 24px; }
-    .star { font-size: 18px; opacity: 0.28; }
-
-    .c1 { top: 40px; left: 60px; }
-    .c2 { top: 90px; right: 80px; }
-    .c3 { top: 180px; left: 15%; }
-    .l1 { top: 150px; right: 14%; transform: rotate(18deg); }
-    .l2 { bottom: 120px; left: 9%; transform: rotate(-12deg); }
-    .l3 { bottom: 90px; right: 12%; transform: rotate(10deg); }
-    .f1 { bottom: 40px; left: 60px; }
-    .f2 { bottom: 50px; right: 60px; }
-    .s1 { top: 130px; left: 48%; }
-    .s2 { top: 260px; right: 22%; }
-    .s3 { bottom: 160px; left: 22%; }
 
     /* Intro */
     #introScreen {
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 30px;
+      padding: 20px;
       position: relative;
       z-index: 1;
     }
 
     .intro-card {
-      width: min(920px, 94vw);
-      background: rgba(255,255,255,0.92);
-      border: 4px solid #e9f6df;
-      border-radius: 36px;
-      box-shadow: 0 22px 48px rgba(91, 124, 95, 0.15);
-      padding: 42px 34px;
+      width: min(680px, 94vw);
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      padding: 0;
       text-align: center;
       position: relative;
-      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .intro-card::before,
-    .intro-card::after {
-      content: "";
-      position: absolute;
-      border-radius: 50%;
-      opacity: 0.45;
+    /* 로고 이미지 */
+    .intro-logo {
+      width: min(560px, 90vw);
+      display: block;
+      margin: 0 auto 12px;
     }
 
-    .intro-card::before {
-      width: 220px;
-      height: 220px;
-      background: #d7f5cf;
-      top: -70px;
-      right: -50px;
-    }
-
-    .intro-card::after {
-      width: 180px;
-      height: 180px;
-      background: #ffeeb8;
-      bottom: -50px;
-      left: -40px;
-    }
-
-    .intro-title {
+    /* 텍스트박스 래퍼 */
+    .intro-textbox-wrap {
       position: relative;
-      z-index: 1;
-      font-size: 56px;
-      margin: 0 0 14px;
-      color: #4d7c55;
-      letter-spacing: -1px;
-    }
-
-    .intro-sub {
-      position: relative;
-      z-index: 1;
-      margin: 0 0 28px;
-      color: #6c8570;
-      font-size: 18px;
-    }
-
-    .intro-animal-row {
-      position: relative;
-      z-index: 1;
-      font-size: 40px;
-      margin-bottom: 22px;
-      letter-spacing: 6px;
-    }
-
-    #introTextBox {
-      position: relative;
-      z-index: 1;
-      width: min(740px, 100%);
-      min-height: 160px;
+      width: min(580px, 92vw);
       margin: 0 auto;
-      background: linear-gradient(180deg, #ffffff, #f9fff2);
-      border: 3px solid #e8f4df;
-      border-radius: 28px;
-      padding: 28px 24px;
+    }
+
+    /* text_box2 (주황 라이언 뱃지) — 좌측 상단에 겹침 */
+    .intro-textbox2 {
+      position: absolute;
+      top: -26px;
+      left: 2px;
+      height: 54px;
+      z-index: 2;
+    }
+
+    /* text_box (말풍선 배경) */
+    .intro-textbox-bg {
+      width: 100%;
+      display: block;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 말풍선 위에 올라가는 텍스트 */
+    .intro-textbox-inner {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7);
+      padding: 18px 48px 18px 44px;
     }
 
     #introText {
-      font-size: 24px;
+      font-size: 21px;
       line-height: 1.8;
       color: #435246;
       font-weight: 700;
       word-break: keep-all;
+      text-align: center;
     }
 
     .intro-btn-row {
       position: relative;
       z-index: 1;
-      margin-top: 28px;
+      margin-top: 20px;
       display: flex;
       justify-content: center;
       gap: 12px;
@@ -174,20 +139,22 @@
       border-radius: 999px;
       font-size: 20px;
       font-weight: 900;
-      color: white;
-      background: linear-gradient(135deg, #7dcc7f, #55ad62);
-      box-shadow: 0 12px 24px rgba(76, 161, 88, 0.28);
+      color: #7a5f2a;
+      background: rgba(255, 236, 153, 0.88);
+      box-shadow: 0 8px 18px rgba(220, 170, 60, 0.22);
+      backdrop-filter: blur(4px);
       display: none;
     }
 
     #skipStoryBtn {
-      padding: 14px 24px;
+      padding: 14px 28px;
       border-radius: 999px;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 900;
-      color: #57655b;
-      background: linear-gradient(135deg, #f4f4f4, #e6e6e6);
-      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+      color: #7a5f2a;
+      background: rgba(255, 236, 153, 0.88);
+      box-shadow: 0 8px 18px rgba(220, 170, 60, 0.22);
+      backdrop-filter: blur(4px);
     }
 
     /* School setup (intro second step) */
@@ -258,9 +225,10 @@
       border-radius: 999px;
       font-size: 20px;
       font-weight: 900;
-      color: white;
-      background: linear-gradient(135deg, #7dcc7f, #55ad62);
-      box-shadow: 0 12px 24px rgba(76, 161, 88, 0.28);
+      color: #7a5f2a;
+      background: rgba(255, 236, 153, 0.88);
+      box-shadow: 0 8px 18px rgba(220, 170, 60, 0.22);
+      backdrop-filter: blur(4px);
     }
 
     #backToStoryBtn {
@@ -281,416 +249,342 @@
       opacity: 0.92;
     }
 
-    /* Lobby */
+    /* ── LOBBY ───────────────────────────────────────── */
     #lobbyScreen {
       min-height: 100vh;
-      padding: 28px 22px 40px;
+      padding: 20px 16px 32px;
       position: relative;
       z-index: 1;
     }
 
     .lobby-wrap {
-      width: min(1280px, 96vw);
+      width: min(1160px, 94vw);
       margin: 0 auto;
     }
 
+    /* 헤더 */
     .lobby-header {
-      background: rgba(255,255,255,0.93);
-      border: 4px solid #e7f5de;
-      border-radius: 34px;
-      box-shadow: 0 18px 40px rgba(88, 119, 91, 0.14);
-      padding: 26px 28px;
+      background: rgba(245, 238, 220, 0.93);
+      border: 3px solid #e0d3b0;
+      border-radius: 24px;
+      padding: 14px 22px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 18px;
       flex-wrap: wrap;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
 
-    .logo-box h1 {
+    .logo-box {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .lobby-logo-img {
+      height: 56px;
+    }
+
+    .lobby-title-text h1 {
       margin: 0;
-      font-size: 42px;
-      color: #4e7b53;
-      letter-spacing: -1px;
+      font-size: 26px;
+      color: #4a3728;
+      letter-spacing: -0.5px;
     }
 
-    .logo-box p {
-      margin: 8px 0 0;
-      color: #6e8571;
-      font-size: 15px;
+    .lobby-title-text p {
+      margin: 6px 0 0;
+      color: #7a6a55;
+      font-size: 13px;
     }
 
     .header-actions {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
+    /* 나무 표지판 버튼 스타일 */
     .header-btn {
-      padding: 13px 20px;
-      border-radius: 999px;
-      font-size: 15px;
-      font-weight: 900;
-      color: #4f4a2a;
-      background: linear-gradient(135deg, #ffe59f, #ffd474);
-      box-shadow: 0 10px 20px rgba(230, 186, 74, 0.2);
+      padding: 9px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-family: 'NeoDunggeunmo', sans-serif;
+      color: #4a3728;
+      background: #f0e6cc;
+      border: 3px solid #c9a96e;
+      box-shadow: 0 4px 0 #b08a4a, 0 6px 12px rgba(0,0,0,0.12);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
     }
 
-    .header-btn.green {
-      color: white;
-      background: linear-gradient(135deg, #8dd68f, #60b86e);
-      box-shadow: 0 10px 20px rgba(91, 176, 103, 0.22);
+    .header-btn:hover {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #b08a4a, 0 4px 8px rgba(0,0,0,0.10);
     }
 
+    /* 메인 그리드 */
     .lobby-main {
       display: grid;
       grid-template-columns: 1fr 1.15fr;
-      gap: 18px;
-      align-items: stretch;
+      gap: 14px;
+      align-items: start;
     }
 
     .left-column {
-      display: grid;
-      grid-template-rows: auto 1fr;
-      gap: 18px;
-      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     .left-bottom-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      align-items: stretch;
-      height: 100%;
+      gap: 12px;
     }
 
+    /* 공통 패널 — 베이지 카드 */
     .panel {
-      background: rgba(255,255,255,0.94);
-      border: 4px solid #e7f5de;
-      border-radius: 32px;
-      box-shadow: 0 18px 36px rgba(88, 119, 91, 0.12);
-      padding: 22px;
+      background: rgba(245, 238, 220, 0.93);
+      border: 3px solid #e0d3b0;
+      border-radius: 20px;
+      padding: 14px 16px;
       position: relative;
-      overflow: hidden;
     }
 
-    .panel::before {
-      content: "";
-      position: absolute;
-      width: 120px;
-      height: 120px;
-      right: -30px;
-      top: -30px;
-      background: rgba(221, 245, 208, 0.42);
-      border-radius: 50%;
-    }
+    .panel::before { display: none; }
 
-    .equal-height-panel {
-      height: 100%;
-    }
-
-    .game-panel {
-      height: 100%;
-    }
+    .equal-height-panel { height: 100%; }
+    .game-panel { height: 100%; }
 
     .panel-title {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 10px;
-      margin-bottom: 16px;
-      position: relative;
-      z-index: 1;
+      margin-bottom: 14px;
     }
 
     .panel-title h2 {
       margin: 0;
-      font-size: 26px;
-      color: #4c7552;
+      font-size: 18px;
+      color: #4a3728;
     }
 
     .panel-title span {
-      color: #79907e;
-      font-size: 13px;
-      font-weight: 700;
+      color: #9a8a72;
+      font-size: 12px;
     }
 
     .small-panel-title {
-      margin: 0 0 14px;
-      font-size: 22px;
-      color: #4c7552;
-      position: relative;
-      z-index: 1;
+      margin: 0 0 12px;
+      font-size: 15px;
+      color: #4a3728;
     }
 
-    /* Top 3 */
+    /* TOP 3 포디움 */
     .podium {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      gap: 8px;
       align-items: end;
       margin-top: 4px;
-      position: relative;
-      z-index: 1;
     }
 
     .rankings-loading,
     .rankings-empty {
       grid-column: 1 / -1;
-      min-height: 220px;
+      min-height: 180px;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 28px 16px;
-      border-radius: 24px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(249, 255, 244, 0.9));
-      border: 3px dashed #cfe9c4;
-      position: relative;
-      z-index: 1;
+      padding: 24px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.45);
+      border: 2px dashed #d4c49a;
     }
 
     .rankings-loading p,
     .rankings-empty p {
       margin: 0;
-      font-size: 17px;
-      font-weight: 800;
-      color: #5a6d5d;
-      line-height: 1.55;
+      font-size: 15px;
+      color: #7a6a55;
+      line-height: 1.6;
       word-break: keep-all;
     }
 
     .ranking-table-loading td {
       text-align: center;
       padding: 36px 16px !important;
-      font-weight: 800;
-      color: #5a6d5d;
-      font-size: 15px;
+      color: #7a6a55;
+      font-size: 14px;
       border: none !important;
     }
 
     .rank-card {
-      border-radius: 24px;
-      padding: 16px 12px;
+      border-radius: 14px;
+      padding: 10px 8px;
       text-align: center;
-      position: relative;
-      border: 3px solid rgba(255,255,255,0.8);
-      box-shadow: 0 12px 20px rgba(0,0,0,0.08);
+      background: rgba(255,255,255,0.55);
+      border: 2px solid #e0d3b0;
     }
 
-    .rank-card.first {
-      min-height: 245px;
-      background: linear-gradient(180deg, #fff3b9, #ffe089);
-      order: 2;
-    }
+    .rank-card.first  { min-height: 180px; order: 2; background: rgba(255,240,180,0.7); border-color: #d4b86a; }
+    .rank-card.second { min-height: 160px; order: 1; background: rgba(220,228,245,0.7); border-color: #a8b8d8; }
+    .rank-card.third  { min-height: 148px; order: 3; background: rgba(240,220,200,0.7); border-color: #c8a880; }
 
-    .rank-card.second {
-      min-height: 210px;
-      background: linear-gradient(180deg, #edf3ff, #d9e7ff);
-      order: 1;
-    }
+    .medal { font-size: 22px; margin-bottom: 2px; }
+    .animal-face { font-size: 36px; margin: 3px 0 4px; }
+    .uni-name { font-size: 12px; color: #4a3728; margin-bottom: 2px; word-break: keep-all; }
+    .score-text { font-size: 11px; color: #7a6a55; }
+    .animal-name { margin-top: 4px; font-size: 11px; color: #6a5a40; }
 
-    .rank-card.third {
-      min-height: 190px;
-      background: linear-gradient(180deg, #ffe7cf, #ffd5a9);
-      order: 3;
-    }
-
-    .medal {
-      font-size: 30px;
-      margin-bottom: 6px;
-    }
-
-    .animal-face {
-      font-size: 50px;
-      margin: 6px 0 8px;
-    }
-
-    .uni-name {
-      font-size: 16px;
-      font-weight: 900;
-      color: #425045;
-      margin-bottom: 6px;
-      word-break: keep-all;
-    }
-
-    .score-text {
-      font-size: 15px;
-      font-weight: 800;
-      color: #5d6d5f;
-    }
-
-    .animal-name {
-      margin-top: 6px;
-      font-size: 14px;
-      font-weight: 900;
-      color: #5d6b36;
-    }
-
-    /* My university */
+    /* 내 대학 */
     .my-card-top {
       display: flex;
       align-items: center;
-      gap: 14px;
-      margin-bottom: 14px;
-      position: relative;
-      z-index: 1;
+      gap: 12px;
+      margin-bottom: 12px;
     }
 
     .my-animal {
-      width: 68px;
-      height: 68px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 36px;
-      background: linear-gradient(180deg, #fff1b9, #ffe08e);
-      box-shadow: 0 10px 18px rgba(224, 177, 68, 0.18);
-      border: 3px solid white;
+      font-size: 26px;
+      background: rgba(255,240,180,0.8);
+      border: 3px solid #d4b86a;
       flex-shrink: 0;
     }
 
-    .my-meta h3 {
-      margin: 0;
-      color: #49684f;
-      font-size: 21px;
-    }
+    .my-meta h3 { margin: 0; color: #4a3728; font-size: 15px; }
+    .my-meta p  { margin: 4px 0 0; color: #7a6a55; font-size: 12px; }
 
-    .my-meta p {
-      margin: 6px 0 0;
-      color: #708573;
-      font-weight: 700;
-      font-size: 14px;
-    }
-
-    .info-list {
-      position: relative;
-      z-index: 1;
-    }
+    .info-list {}
 
     .info-item {
-      border-radius: 16px;
-      background: linear-gradient(180deg, #ffffff, #f9fff4);
-      border: 2px solid #edf6e8;
-      padding: 11px 13px;
-      margin-bottom: 9px;
-      box-shadow: 0 8px 14px rgba(0,0,0,0.04);
-      font-weight: 700;
-      color: #556859;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.5);
+      border: 2px solid #e0d3b0;
+      padding: 7px 10px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: #5a4a38;
     }
 
-    .info-item strong {
-      color: #49634d;
-    }
+    .info-item strong { color: #4a3728; }
 
-    /* Cheer panel */
-    .cheer-box {
-      position: relative;
-      z-index: 1;
-      border-radius: 24px;
-      background: linear-gradient(180deg, #fffaf0, #fff3d9);
-      border: 3px solid #ffe7b6;
-      padding: 18px;
-      min-height: 100%;
+    /* 응원 패널 */
+    .cheer-panel {
       display: flex;
       flex-direction: column;
+      align-items: center;
       justify-content: center;
       text-align: center;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.65);
+      min-height: 160px;
+    }
+
+    .cheer-main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      gap: 8px;
     }
 
     .cheer-emoji {
-      font-size: 48px;
-      margin-bottom: 12px;
+      font-size: 38px;
     }
 
     .cheer-text {
-      font-size: 18px;
-      font-weight: 900;
-      line-height: 1.7;
-      color: #6f5b2e;
+      font-size: 14px;
+      line-height: 1.75;
+      color: #5a4020;
       word-break: keep-all;
     }
 
     .mini-note {
-      font-size: 13px;
-      color: #8a946f;
-      font-weight: 700;
+      font-size: 11px;
+      color: #9a8a60;
       margin-top: 10px;
     }
 
-    /* Games */
+    /* 게임 그리드 */
     .game-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      position: relative;
-      z-index: 1;
-      height: 100%;
+      gap: 10px;
       align-content: start;
     }
 
     .game-card {
-      border-radius: 28px;
-      padding: 22px 20px;
-      border: 3px solid #eef7e8;
-      background: linear-gradient(180deg, #ffffff, #f8fff2);
-      box-shadow: 0 12px 20px rgba(0,0,0,0.06);
+      border-radius: 16px;
+      padding: 14px 13px;
+      background: rgba(255,255,255,0.55);
+      border: 2px solid #e0d3b0;
       text-align: left;
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
-      position: relative;
-      overflow: hidden;
+      transition: transform 0.15s ease;
     }
 
-    .game-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 18px 28px rgba(0,0,0,0.08);
-    }
+    .game-card:hover { transform: translateY(-3px); }
 
-    .game-emoji {
-      font-size: 52px;
-      margin-bottom: 10px;
-    }
+    .game-emoji { font-size: 32px; margin-bottom: 6px; }
 
     .game-card h3 {
-      margin: 0 0 8px;
-      font-size: 24px;
-      color: #476f50;
+      margin: 0 0 6px;
+      font-size: 15px;
+      color: #4a3728;
     }
 
     .game-card p {
-      margin: 0 0 16px;
-      font-size: 15px;
-      color: #6f8372;
-      line-height: 1.7;
+      margin: 0 0 14px;
+      font-size: 12px;
+      color: #7a6a55;
+      line-height: 1.5;
     }
 
+    /* 플레이 버튼 — 표지판 스타일 */
     .play-btn {
       display: inline-block;
-      padding: 12px 18px;
-      border-radius: 999px;
-      font-size: 15px;
-      font-weight: 900;
-      color: white;
-      background: linear-gradient(135deg, #7fcf84, #58b86a);
-      box-shadow: 0 10px 18px rgba(80, 172, 96, 0.2);
+      padding: 7px 13px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-family: 'NeoDunggeunmo', sans-serif;
+      color: #4a3728;
+      background: #f0e6cc;
+      border: 2px solid #c9a96e;
+      box-shadow: 0 3px 0 #b08a4a;
       text-decoration: none;
       text-align: center;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      cursor: pointer;
+    }
+
+    .play-btn:hover {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #b08a4a;
     }
 
     .coming {
-      background: linear-gradient(135deg, #dfe9ef, #cedbe4);
-      color: #5d707b;
-      box-shadow: none;
+      background: #e8e0d0;
+      border-color: #c8bca0;
+      box-shadow: 0 3px 0 #a89980;
+      color: #9a8a72;
+      cursor: default;
     }
 
-    /* Ranking modal */
+    .coming:hover { transform: none; box-shadow: 0 3px 0 #a8998o; }
+
+    /* 랭킹 모달 */
     .modal {
       position: fixed;
       inset: 0;
-      background: rgba(31, 42, 34, 0.42);
+      background: rgba(30, 20, 10, 0.45);
       display: none;
       align-items: center;
       justify-content: center;
@@ -703,155 +597,107 @@
       width: min(980px, 96vw);
       max-height: 88vh;
       overflow: hidden;
-      background: white;
-      border-radius: 32px;
-      border: 4px solid #e8f5df;
-      box-shadow: 0 22px 44px rgba(0,0,0,0.18);
+      background: #f5eedc;
+      border-radius: 28px;
+      border: 3px solid #e0d3b0;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.22);
       display: flex;
       flex-direction: column;
     }
 
     .modal-head {
-      padding: 22px 24px 12px;
+      padding: 20px 24px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      border-bottom: 2px solid #edf5e7;
+      border-bottom: 2px solid #e0d3b0;
     }
 
-    .modal-head h2 {
-      margin: 0;
-      color: #4e7554;
-      font-size: 30px;
-    }
+    .modal-head h2 { margin: 0; color: #4a3728; font-size: 26px; }
 
     .close-btn {
-      padding: 10px 16px;
-      border-radius: 999px;
+      padding: 9px 18px;
+      border-radius: 12px;
       font-size: 14px;
-      font-weight: 900;
-      color: white;
-      background: linear-gradient(135deg, #ff9ba2, #ff7e88);
+      font-family: 'NeoDunggeunmo', sans-serif;
+      color: #fff;
+      background: #d4765a;
+      border: 2px solid #b85a40;
+      box-shadow: 0 3px 0 #8a4030;
     }
 
-    .ranking-scroll {
-      overflow: auto;
-      padding: 18px 24px 24px;
-    }
+    .close-btn:hover { transform: translateY(2px); box-shadow: 0 1px 0 #8a4030; }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      overflow: hidden;
-      border-radius: 18px;
-    }
+    .ranking-scroll { overflow: auto; padding: 16px 24px 24px; }
+
+    table { width: 100%; border-collapse: collapse; border-radius: 14px; overflow: hidden; }
 
     thead th {
-      background: #f4fbef;
-      color: #56705a;
-      font-size: 15px;
-      padding: 14px 12px;
+      background: rgba(255,255,255,0.5);
+      color: #5a4a38;
+      font-size: 14px;
+      padding: 12px;
       text-align: center;
       position: sticky;
       top: 0;
-      z-index: 1;
     }
 
     tbody td {
-      padding: 13px 12px;
+      padding: 11px 12px;
       text-align: center;
-      border-bottom: 1px solid #edf4e9;
-      font-weight: 700;
-      color: #4d5e50;
-      background: #fff;
+      border-bottom: 1px solid #e0d3b0;
+      color: #4a3728;
+      background: rgba(255,255,255,0.3);
     }
 
-    tbody tr:nth-child(even) td {
-      background: #fbfff8;
-    }
+    tbody tr:nth-child(even) td { background: rgba(255,255,255,0.55); }
 
     .rank-badge {
       display: inline-flex;
       justify-content: center;
       align-items: center;
-      min-width: 34px;
-      height: 34px;
+      min-width: 30px;
+      height: 30px;
       border-radius: 50%;
-      font-weight: 900;
-      background: #edf5ea;
-      color: #49644d;
+      background: #e8d8b0;
+      color: #5a4020;
     }
 
-    .animal-cell {
-      font-size: 28px;
-    }
-
-    .uni-cell {
-      font-weight: 900;
-    }
+    .animal-cell { font-size: 26px; }
+    .uni-cell { font-weight: 700; }
 
     @media (max-width: 1120px) {
-      .lobby-main {
-        grid-template-columns: 1fr;
-      }
-
-      .left-bottom-row {
-        grid-template-columns: 1fr;
-      }
+      .lobby-main { grid-template-columns: 1fr; }
+      .left-bottom-row { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 980px) {
-      .game-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .podium {
-        grid-template-columns: 1fr;
-      }
-
+      .game-grid { grid-template-columns: 1fr; }
+      .podium { grid-template-columns: 1fr; }
       .rank-card.first,
       .rank-card.second,
-      .rank-card.third {
-        min-height: auto;
-        order: initial;
-      }
-
-      .intro-title {
-        font-size: 42px;
-      }
-
-      #introText {
-        font-size: 20px;
-      }
+      .rank-card.third { min-height: auto; order: initial; }
+      #introText { font-size: 15px; }
     }
   </style>
 </head>
 <body>
-  <div class="bg-deco">
-    <div class="cloud c1">☁️</div>
-    <div class="cloud c2">☁️</div>
-    <div class="cloud c3">☁️</div>
-    <div class="leaf l1">🌿</div>
-    <div class="leaf l2">🍃</div>
-    <div class="leaf l3">🌿</div>
-    <div class="flower f1">🌼</div>
-    <div class="flower f2">🌼</div>
-    <div class="star s1">✨</div>
-    <div class="star s2">⭐</div>
-    <div class="star s3">✨</div>
-  </div>
+  <!-- bg-deco 제거됨 (배경 이미지로 대체) -->
 
   <section id="introScreen">
     <div class="intro-card">
-      <h1 class="intro-title">🐾 Animal League</h1>
-      <p class="intro-sub">대학 동물 대항전</p>
+      <!-- 로고 -->
+      <img class="intro-logo" src="./assets/images/logo.png" alt="모여봐요 애니멀 리그" />
 
       <div id="introPhaseStory">
-        <div class="intro-animal-row">🐯 🐴 🦜 🐱 🐿️</div>
-
-        <div id="introTextBox">
-          <div id="introText"></div>
+        <!-- 텍스트박스 (text_box2 뱃지 + text_box 말풍선) -->
+        <div class="intro-textbox-wrap">
+          <img class="intro-textbox2" src="./assets/images/text_box_2.png" alt="라이언" />
+          <img class="intro-textbox-bg" src="./assets/images/text_box.png" alt="" />
+          <div class="intro-textbox-inner">
+            <div id="introText"></div>
+          </div>
         </div>
 
         <div class="intro-btn-row">
@@ -886,13 +732,16 @@
     <div class="lobby-wrap">
       <div class="lobby-header">
         <div class="logo-box">
-          <h1>🌿 동물의 왕국 로비</h1>
-          <p>대학 대표 동물들이 미니게임에 도전하고, 점수에 따라 더 강한 동물로 진화합니다.</p>
+          <img class="lobby-logo-img" src="./assets/images/logo.png" alt="모여봐요 애니멀 리그" />
+          <div class="lobby-title-text">
+            <h1>애니멀 캠퍼스 로비</h1>
+            <p>대학 대표 동물들이 미니게임에 도전하고, 점수에 따라 더 강한 동물로 진화합니다.</p>
+          </div>
         </div>
 
         <div class="header-actions">
-          <button class="header-btn" id="fullRankingBtn">현재 랭킹</button>
-          <button class="header-btn green" id="storyReplayBtn">스토리 다시 보기</button>
+          <button class="header-btn" id="fullRankingBtn">현재랭킹</button>
+          <button class="header-btn" id="storyReplayBtn">스토리 다시보기</button>
         </div>
       </div>
 
@@ -926,16 +775,13 @@
               </div>
             </div>
 
-            <div class="panel equal-height-panel">
+            <div class="panel equal-height-panel cheer-panel">
               <h3 class="small-panel-title">💬 왕국 응원 멘트</h3>
-
-              <div class="cheer-box">
+              <div class="cheer-main">
                 <div class="cheer-emoji" id="cheerEmoji">🐯</div>
-                <div class="cheer-text" id="cheerText">
-                  왕의 자리는 단 하나! 지금 바로 점수를 올려봐!
-                </div>
-                <div class="mini-note">로비에 들어올 때마다 응원 멘트가 바뀝니다.</div>
+                <div class="cheer-text" id="cheerText">왕의 자리는 단 하나! 지금 바로 점수를 올려봐!</div>
               </div>
+              <div class="mini-note">로비에 들어올 때마다 응원 멘트가 바뀝니다.</div>
             </div>
           </div>
         </div>
@@ -1019,7 +865,7 @@
       "각 대학의 동물들은 자신의 학교를 대표하여 가장 강한 호랑이가 되기 위한 도전을 시작한다.",
       "동물들은 다양한 미니게임을 수행하며 점수를 얻고,",
       "게임이 끝난 뒤 점수 순위에 따라 점점 강한 동물로 진화하게 된다.",
-      "가장 높은 점수를 얻은 학교는 동물의 왕인 ‘호랑이’가 되어 최고의 학교로 인정받는다.",
+      "가장 높은 점수를 얻은 학교는 동물의 왕인 '호랑이'가 되어 최고의 학교로 인정받는다.",
       "이렇게 동물들의 대학 대항전이 시작된다."
     ];
 
