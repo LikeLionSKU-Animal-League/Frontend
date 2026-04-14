@@ -5,14 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#dff6ff" />
   <title>Animal League</title>
-  <!-- Open Graph: 카카오톡 등 링크 미리보기용 -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="캠퍼스 애니멀 배틀" />
   <meta property="og:title" content="캠퍼스 애니멀 배틀" />
-  <meta
-    property="og:description"
-    content="대학 대표 동물들이 미니게임에 도전하고, 점수에 따라 더 강한 동물로 진화합니다."
-  />
+  <meta property="og:description" content="대학 대표 동물들이 미니게임에 도전하고, 점수에 따라 더 강한 동물로 진화합니다." />
   <meta property="og:url" content="https://campus-animal-battle.vercel.app/" />
   <meta property="og:image" content="https://campus-animal-battle.vercel.app/assets/game-preview.png" />
   <meta property="og:image:alt" content="캠퍼스 애니멀 배틀 대표 이미지" />
@@ -25,13 +21,9 @@
       font-style: normal;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html {
-      -webkit-text-size-adjust: 100%;
-    }
+    html { -webkit-text-size-adjust: 100%; }
 
     body {
       margin: 0;
@@ -44,8 +36,6 @@
       color: #33423a;
       overflow-x: hidden;
       min-height: 100vh;
-<<<<<<< HEAD
-=======
       min-height: 100dvh;
       padding-left: env(safe-area-inset-left);
       padding-right: env(safe-area-inset-right);
@@ -57,7 +47,6 @@
     .close-btn {
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
->>>>>>> 8931fb550f777039c2bd4d82f7d34a0a470e1043
     }
 
     button {
@@ -67,19 +56,12 @@
       transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
     }
 
-    button:hover {
-      transform: translateY(-2px);
-    }
+    button:hover { transform: translateY(-2px); }
 
-    .hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
+    .bg-deco { display: none; }
 
-    .bg-deco {
-      display: none;
-    }
-
-    /* Intro */
+    /* ── INTRO ── */
     #introScreen {
       min-height: 100vh;
       display: flex;
@@ -104,21 +86,18 @@
       align-items: center;
     }
 
-    /* 로고 이미지 */
     .intro-logo {
       width: min(560px, 90vw);
       display: block;
       margin: 0 auto 12px;
     }
 
-    /* 텍스트박스 래퍼 */
     .intro-textbox-wrap {
       position: relative;
       width: min(580px, 92vw);
       margin: 0 auto;
     }
 
-    /* text_box2 (주황 라이언 뱃지) — 좌측 상단에 겹침 */
     .intro-textbox2 {
       position: absolute;
       top: -26px;
@@ -127,7 +106,6 @@
       z-index: 2;
     }
 
-    /* text_box (말풍선 배경) */
     .intro-textbox-bg {
       width: 100%;
       display: block;
@@ -135,7 +113,6 @@
       z-index: 1;
     }
 
-    /* 말풍선 위에 올라가는 텍스트 */
     .intro-textbox-inner {
       position: absolute;
       inset: 0;
@@ -165,6 +142,7 @@
       flex-wrap: wrap;
     }
 
+    /* 연한 노란색 버튼 통일 */
     #enterLobbyBtn {
       padding: 16px 34px;
       border-radius: 999px;
@@ -188,7 +166,7 @@
       backdrop-filter: blur(4px);
     }
 
-    /* School setup (intro second step) */
+    /* ── SCHOOL SETUP ── */
     #introPhaseSchool {
       position: relative;
       z-index: 1;
@@ -232,15 +210,12 @@
       transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
-    #schoolNameInput::placeholder {
-      color: #9aaa9c;
-      font-weight: 600;
-    }
+    #schoolNameInput::placeholder { color: #9aaa9c; font-weight: 600; }
 
     #schoolNameInput:focus {
       outline: none;
       border-color: #9dd9a0;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7), 0 0 0 3px rgba(125, 204, 127, 0.25);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7), 0 0 0 3px rgba(125,204,127,0.25);
     }
 
     .school-actions {
@@ -274,13 +249,9 @@
       text-underline-offset: 4px;
     }
 
-    #backToStoryBtn:hover {
-      color: #3d5a44;
-      transform: none;
-      opacity: 0.92;
-    }
+    #backToStoryBtn:hover { color: #3d5a44; transform: none; opacity: 0.92; }
 
-    /* ── LOBBY ───────────────────────────────────────── */
+    /* ── LOBBY ── */
     #lobbyScreen {
       min-height: 100vh;
       padding: 20px 16px 32px;
@@ -293,7 +264,7 @@
       margin: 0 auto;
     }
 
-    /* 헤더 */
+    /* 헤더 — 베이지 카드 */
     .lobby-header {
       background: rgba(245, 238, 220, 0.93);
       border: 3px solid #e0d3b0;
@@ -307,15 +278,8 @@
       margin-bottom: 14px;
     }
 
-    .logo-box {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .lobby-logo-img {
-      height: 56px;
-    }
+    .logo-box { display: flex; align-items: center; gap: 16px; }
+    .lobby-logo-img { height: 56px; }
 
     .lobby-title-text h1 {
       margin: 0;
@@ -324,19 +288,11 @@
       letter-spacing: -0.5px;
     }
 
-    .lobby-title-text p {
-      margin: 6px 0 0;
-      color: #7a6a55;
-      font-size: 13px;
-    }
+    .lobby-title-text p { margin: 6px 0 0; color: #7a6a55; font-size: 13px; }
 
-    .header-actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+    .header-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
-    /* 나무 표지판 버튼 스타일 */
+    /* 나무 표지판 버튼 */
     .header-btn {
       padding: 9px 16px;
       border-radius: 12px;
@@ -362,11 +318,7 @@
       align-items: start;
     }
 
-    .left-column {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+    .left-column { display: flex; flex-direction: column; gap: 12px; }
 
     .left-bottom-row {
       display: grid;
@@ -374,59 +326,34 @@
       gap: 12px;
     }
 
-<<<<<<< HEAD
-    /* 공통 패널 — 베이지 카드 */
-=======
-    /* 데스크탑 고정 레이아웃 (요청 수치) */
+    /* 데스크탑 고정 레이아웃 (팀원 코드 유지) */
     @media (min-width: 1121px) {
       .lobby-main {
         grid-template-columns: 553.78px 636.84px;
         justify-content: center;
       }
-
-      .left-column {
-        width: 553.78px;
-      }
-
-      .left-bottom-row {
-        grid-template-columns: 267.89px 267.89px;
-      }
-
+      .left-column { width: 553.78px; }
+      .left-bottom-row { grid-template-columns: 267.89px 267.89px; }
       .left-bottom-row > .panel.equal-height-panel {
-        width: 267.89px;
-        min-width: 267.89px;
-        max-width: 267.89px;
-        height: 428px;
-        min-height: 428px;
-        max-height: 428px;
+        width: 267.89px; min-width: 267.89px; max-width: 267.89px;
+        height: 428px; min-height: 428px; max-height: 428px;
       }
-
       .game-panel {
-        width: 636.84px;
-        min-width: 636.84px;
-        max-width: 636.84px;
-        height: 720px;
-        min-height: 720px;
-        max-height: 720px;
+        width: 636.84px; min-width: 636.84px; max-width: 636.84px;
+        height: 720px; min-height: 720px; max-height: 720px;
       }
-
       .game-grid {
         grid-template-columns: repeat(2, 284.42px);
         grid-auto-rows: 301px;
         justify-content: center;
       }
-
       .game-card {
-        width: 284.42px;
-        min-width: 284.42px;
-        max-width: 284.42px;
-        height: 301px;
-        min-height: 301px;
-        max-height: 301px;
+        width: 284.42px; min-width: 284.42px; max-width: 284.42px;
+        height: 301px; min-height: 301px; max-height: 301px;
       }
     }
 
->>>>>>> 8931fb550f777039c2bd4d82f7d34a0a470e1043
+    /* 공통 패널 — 베이지 카드 */
     .panel {
       background: rgba(245, 238, 220, 0.93);
       border: 3px solid #e0d3b0;
@@ -437,13 +364,7 @@
 
     .panel::before { display: none; }
 
-<<<<<<< HEAD
     .equal-height-panel { height: 100%; }
-    .game-panel { height: 100%; }
-=======
-    .equal-height-panel {
-      height: 100%;
-    }
 
     .game-panel {
       height: 100%;
@@ -453,7 +374,6 @@
       overflow: hidden;
       flex: 0 0 auto;
     }
->>>>>>> 8931fb550f777039c2bd4d82f7d34a0a470e1043
 
     .panel-title {
       display: flex;
@@ -463,48 +383,16 @@
       margin-bottom: 14px;
     }
 
-    .panel-title h2 {
-      margin: 0;
-      font-size: 18px;
-      color: #4a3728;
-    }
+    .panel-title h2 { margin: 0; font-size: 18px; color: #4a3728; }
+    .panel-title span { color: #9a8a72; font-size: 12px; }
+    .small-panel-title { margin: 0 0 12px; font-size: 15px; color: #4a3728; }
 
-    .panel-title span {
-      color: #9a8a72;
-      font-size: 12px;
-    }
-
-    .small-panel-title {
-      margin: 0 0 12px;
-      font-size: 15px;
-      color: #4a3728;
-    }
-
-<<<<<<< HEAD
-    /* TOP 3 포디움 */
-    .podium {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      align-items: end;
-=======
-    /* Top 3 — 가로 한 줄(메달 · 동물 · 학교 · 점수) */
-    .podium {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
->>>>>>> 8931fb550f777039c2bd4d82f7d34a0a470e1043
-      margin-top: 4px;
-    }
+    /* TOP 3 — 팀원 가로 한 줄 스타일 유지 */
+    .podium { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
 
     .rankings-loading,
     .rankings-empty {
-<<<<<<< HEAD
-      grid-column: 1 / -1;
-      min-height: 180px;
-=======
       min-height: 120px;
->>>>>>> 8931fb550f777039c2bd4d82f7d34a0a470e1043
       display: flex;
       align-items: center;
       justify-content: center;
@@ -516,43 +404,15 @@
     }
 
     .rankings-loading p,
-    .rankings-empty p {
-      margin: 0;
-      font-size: 15px;
-      color: #7a6a55;
-      line-height: 1.6;
-      word-break: keep-all;
-    }
+    .rankings-empty p { margin: 0; font-size: 15px; color: #7a6a55; line-height: 1.6; word-break: keep-all; }
 
     .ranking-table-loading td {
-      text-align: center;
-      padding: 36px 16px !important;
-      color: #7a6a55;
-      font-size: 14px;
-      border: none !important;
+      text-align: center; padding: 36px 16px !important;
+      color: #7a6a55; font-size: 14px; border: none !important;
     }
 
+    /* rank-card — 팀원 가로 스타일 + 내 베이지 색상 */
     .rank-card {
-<<<<<<< HEAD
-      border-radius: 14px;
-      padding: 10px 8px;
-      text-align: center;
-      background: rgba(255,255,255,0.55);
-      border: 2px solid #e0d3b0;
-    }
-
-    .rank-card.first  { min-height: 180px; order: 2; background: rgba(255,240,180,0.7); border-color: #d4b86a; }
-    .rank-card.second { min-height: 160px; order: 1; background: rgba(220,228,245,0.7); border-color: #a8b8d8; }
-    .rank-card.third  { min-height: 148px; order: 3; background: rgba(240,220,200,0.7); border-color: #c8a880; }
-
-    .medal { font-size: 22px; margin-bottom: 2px; }
-    .animal-face { font-size: 36px; margin: 3px 0 4px; }
-    .uni-name { font-size: 12px; color: #4a3728; margin-bottom: 2px; word-break: keep-all; }
-    .score-text { font-size: 11px; color: #7a6a55; }
-    .animal-name { margin-top: 4px; font-size: 11px; color: #6a5a40; }
-
-    /* 내 대학 */
-=======
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -561,72 +421,25 @@
       border-radius: 16px;
       text-align: left;
       position: relative;
-      border: 2px solid rgba(255,255,255,0.85);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+      border: 2px solid #e0d3b0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
 
-    .rank-card.first {
-      background: linear-gradient(90deg, #fff3d0, #ffe9a0);
-    }
+    .rank-card.first  { background: rgba(255, 240, 180, 0.75); border-color: #d4b86a; }
+    .rank-card.second { background: rgba(220, 228, 245, 0.75); border-color: #a8b8d8; }
+    .rank-card.third  { background: rgba(240, 220, 200, 0.75); border-color: #c8a880; }
 
-    .rank-card.second {
-      background: linear-gradient(90deg, #eef4ff, #dce8ff);
-    }
+    .podium-medal { flex-shrink: 0; width: 34px; text-align: center; font-size: 22px; line-height: 1; }
+    .podium-animal { flex-shrink: 0; width: 40px; text-align: center; font-size: 28px; line-height: 1; }
+    .podium-uni { flex: 1; min-width: 0; font-size: 15px; color: #4a3728; word-break: break-word; line-height: 1.35; }
+    .podium-score { flex-shrink: 0; font-size: 14px; color: #5a4a38; white-space: nowrap; }
 
-    .rank-card.third {
-      background: linear-gradient(90deg, #fff0e0, #ffdcc4);
-    }
-
-    .podium-medal {
-      flex-shrink: 0;
-      width: 34px;
-      text-align: center;
-      font-size: 22px;
-      line-height: 1;
-    }
-
-    .podium-animal {
-      flex-shrink: 0;
-      width: 40px;
-      text-align: center;
-      font-size: 28px;
-      line-height: 1;
-    }
-
-    .podium-uni {
-      flex: 1;
-      min-width: 0;
-      font-size: 15px;
-      font-weight: 900;
-      color: #425045;
-      word-break: break-word;
-      line-height: 1.35;
-    }
-
-    .podium-score {
-      flex-shrink: 0;
-      font-size: 14px;
-      font-weight: 900;
-      color: #4d6b52;
-      white-space: nowrap;
-    }
-
-    /* My university */
->>>>>>> 8931fb550f777039c2bd4d82f7d34a0a470e1043
-    .my-card-top {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
+    /* 내 대학 */
+    .my-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
 
     .my-animal {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 50px; height: 50px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
       font-size: 26px;
       background: rgba(255,240,180,0.8);
       border: 3px solid #d4b86a;
@@ -635,8 +448,6 @@
 
     .my-meta h3 { margin: 0; color: #4a3728; font-size: 15px; }
     .my-meta p  { margin: 4px 0 0; color: #7a6a55; font-size: 12px; }
-
-    .info-list {}
 
     .info-item {
       border-radius: 12px;
@@ -669,59 +480,37 @@
       gap: 8px;
     }
 
-    .cheer-emoji {
-      font-size: 38px;
-    }
+    .cheer-emoji { font-size: 38px; }
 
-    .cheer-text {
-      font-size: 14px;
-      line-height: 1.75;
-      color: #5a4020;
-      word-break: keep-all;
-    }
+    .cheer-text { font-size: 14px; line-height: 1.75; color: #5a4020; word-break: keep-all; }
 
-    .mini-note {
-      font-size: 11px;
-      color: #9a8a60;
-      margin-top: 10px;
-    }
+    .mini-note { font-size: 11px; color: #9a8a60; margin-top: 10px; }
 
     /* 게임 그리드 */
     .game-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-<<<<<<< HEAD
-      gap: 10px;
-=======
       gap: 16px;
       position: relative;
       z-index: 1;
       height: 100%;
       flex: 1;
       min-height: 0;
->>>>>>> 8931fb550f777039c2bd4d82f7d34a0a470e1043
       align-content: start;
       overflow-y: auto;
       padding-right: 6px;
       margin-right: -2px;
       scrollbar-width: thin;
-      scrollbar-color: #b7d6b3 #edf7eb;
+      scrollbar-color: #c9a96e #f0e6cc;
       overscroll-behavior: contain;
     }
 
-    .game-grid::-webkit-scrollbar {
-      width: 9px;
-    }
-
-    .game-grid::-webkit-scrollbar-track {
-      background: #edf7eb;
-      border-radius: 999px;
-    }
-
+    .game-grid::-webkit-scrollbar { width: 9px; }
+    .game-grid::-webkit-scrollbar-track { background: #f0e6cc; border-radius: 999px; }
     .game-grid::-webkit-scrollbar-thumb {
-      background: linear-gradient(180deg, #b7d6b3, #95c58f);
+      background: linear-gradient(180deg, #c9a96e, #b08a4a);
       border-radius: 999px;
-      border: 2px solid #edf7eb;
+      border: 2px solid #f0e6cc;
     }
 
     .game-card {
@@ -737,20 +526,11 @@
 
     .game-emoji { font-size: 32px; margin-bottom: 6px; }
 
-    .game-card h3 {
-      margin: 0 0 6px;
-      font-size: 15px;
-      color: #4a3728;
-    }
+    .game-card h3 { margin: 0 0 6px; font-size: 15px; color: #4a3728; }
 
-    .game-card p {
-      margin: 0 0 14px;
-      font-size: 12px;
-      color: #7a6a55;
-      line-height: 1.5;
-    }
+    .game-card p { margin: 0 0 14px; font-size: 12px; color: #7a6a55; line-height: 1.5; }
 
-    /* 플레이 버튼 — 표지판 스타일 */
+    /* 플레이 버튼 — 나무 표지판 */
     .play-btn {
       display: inline-block;
       padding: 7px 13px;
@@ -767,10 +547,7 @@
       cursor: pointer;
     }
 
-    .play-btn:hover {
-      transform: translateY(2px);
-      box-shadow: 0 1px 0 #b08a4a;
-    }
+    .play-btn:hover { transform: translateY(2px); box-shadow: 0 1px 0 #b08a4a; }
 
     .coming {
       background: #e8e0d0;
@@ -780,53 +557,37 @@
       cursor: default;
     }
 
-    .coming:hover { transform: none; box-shadow: 0 3px 0 #a8998o; }
+    .coming:hover { transform: none; box-shadow: 0 3px 0 #a89980; }
 
     /* 랭킹 모달 */
     .modal {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background: rgba(30, 20, 10, 0.45);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      z-index: 99;
-      backdrop-filter: blur(3px);
+      display: none; align-items: center; justify-content: center;
+      padding: 24px; z-index: 99; backdrop-filter: blur(3px);
     }
 
     .modal-content {
-      width: min(980px, 96vw);
-      max-height: 88vh;
-      overflow: hidden;
+      width: min(980px, 96vw); max-height: 88vh; overflow: hidden;
       background: #f5eedc;
-      border-radius: 28px;
-      border: 3px solid #e0d3b0;
+      border-radius: 28px; border: 3px solid #e0d3b0;
       box-shadow: 0 16px 40px rgba(0,0,0,0.22);
-      display: flex;
-      flex-direction: column;
+      display: flex; flex-direction: column;
     }
 
     .modal-head {
       padding: 20px 24px 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      border-bottom: 2px solid #e0d3b0;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 12px; border-bottom: 2px solid #e0d3b0;
     }
 
     .modal-head h2 { margin: 0; color: #4a3728; font-size: 26px; }
 
     .close-btn {
-      padding: 9px 18px;
-      border-radius: 12px;
-      font-size: 14px;
+      padding: 9px 18px; border-radius: 12px; font-size: 14px;
       font-family: 'NeoDunggeunmo', sans-serif;
-      color: #fff;
-      background: #d4765a;
-      border: 2px solid #b85a40;
-      box-shadow: 0 3px 0 #8a4030;
+      color: #fff; background: #d4765a;
+      border: 2px solid #b85a40; box-shadow: 0 3px 0 #8a4030;
     }
 
     .close-btn:hover { transform: translateY(2px); box-shadow: 0 1px 0 #8a4030; }
@@ -836,34 +597,22 @@
     table { width: 100%; border-collapse: collapse; border-radius: 14px; overflow: hidden; }
 
     thead th {
-      background: rgba(255,255,255,0.5);
-      color: #5a4a38;
-      font-size: 14px;
-      padding: 12px;
-      text-align: center;
-      position: sticky;
-      top: 0;
+      background: rgba(255,255,255,0.5); color: #5a4a38;
+      font-size: 14px; padding: 12px; text-align: center; position: sticky; top: 0;
     }
 
     tbody td {
-      padding: 11px 12px;
-      text-align: center;
-      border-bottom: 1px solid #e0d3b0;
-      color: #4a3728;
+      padding: 11px 12px; text-align: center;
+      border-bottom: 1px solid #e0d3b0; color: #4a3728;
       background: rgba(255,255,255,0.3);
     }
 
     tbody tr:nth-child(even) td { background: rgba(255,255,255,0.55); }
 
     .rank-badge {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      min-width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: #e8d8b0;
-      color: #5a4020;
+      display: inline-flex; justify-content: center; align-items: center;
+      min-width: 30px; height: 30px; border-radius: 50%;
+      background: #e8d8b0; color: #5a4020;
     }
 
     .animal-cell { font-size: 26px; }
@@ -875,238 +624,53 @@
     }
 
     @media (max-width: 980px) {
-<<<<<<< HEAD
-      .game-grid { grid-template-columns: 1fr; }
-      .podium { grid-template-columns: 1fr; }
-      .rank-card.first,
-      .rank-card.second,
-      .rank-card.third { min-height: auto; order: initial; }
-      #introText { font-size: 15px; }
-=======
-      .game-grid {
-        grid-template-columns: 1fr;
-        overflow-y: visible;
-        padding-right: 0;
-        margin-right: 0;
-      }
-
-      .intro-title {
-        font-size: 42px;
-      }
-
-      #introText {
-        font-size: 20px;
-      }
->>>>>>> 8931fb550f777039c2bd4d82f7d34a0a470e1043
+      .game-grid { grid-template-columns: 1fr; overflow-y: visible; padding-right: 0; margin-right: 0; }
+      #introText { font-size: 18px; }
     }
 
     @media (max-width: 640px) {
-      #introScreen {
-        padding: 16px 12px calc(20px + env(safe-area-inset-bottom));
-        align-items: flex-start;
-      }
-
-      .intro-card {
-        width: 100%;
-        max-width: 100%;
-        padding: 24px 16px 28px;
-        border-radius: 24px;
-      }
-
-      .intro-title {
-        font-size: clamp(26px, 9vw, 40px);
-        line-height: 1.15;
-      }
-
-      .intro-sub {
-        font-size: 15px;
-        margin-bottom: 20px;
-      }
-
-      .intro-animal-row {
-        font-size: clamp(26px, 8vw, 34px);
-        letter-spacing: 3px;
-        margin-bottom: 16px;
-      }
-
-      #introTextBox {
-        padding: 18px 14px;
-        min-height: 0;
-      }
-
-      #introText {
-        font-size: 16px;
-        line-height: 1.65;
-      }
-
-      .intro-btn-row {
-        flex-direction: column;
-        width: 100%;
-        margin-top: 20px;
-      }
-
-      #enterLobbyBtn,
-      #skipStoryBtn,
-      #confirmSchoolBtn {
-        width: 100%;
-        min-height: 48px;
-        font-size: 17px;
-      }
-
-      #skipStoryBtn {
-        padding: 14px 20px;
-      }
-
-      .school-setup-hint {
-        font-size: 15px;
-      }
-
-      #schoolNameInput {
-        font-size: 16px;
-        padding: 14px 16px;
-      }
-
-      #lobbyScreen {
-        padding: 14px 12px calc(24px + env(safe-area-inset-bottom));
-      }
-
-      .lobby-wrap {
-        width: 100%;
-        max-width: 100%;
-      }
-
-      .lobby-header {
-        flex-direction: column;
-        align-items: stretch;
-        padding: 18px 16px;
-        border-radius: 22px;
-      }
-
-      .logo-box h1 {
-        font-size: clamp(22px, 6.5vw, 32px);
-      }
-
-      .logo-box p {
-        font-size: 14px;
-      }
-
-      .header-actions {
-        width: 100%;
-      }
-
-      .header-actions .header-btn {
-        flex: 1;
-        min-height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .panel {
-        padding: 16px 14px;
-        border-radius: 22px;
-      }
-
-      .panel-title {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .panel-title h2 {
-        font-size: 20px;
-      }
-
-      .podium {
-        gap: 6px;
-      }
-
-      .rank-card {
-        padding: 9px 10px;
-        gap: 8px;
-      }
-
-      .podium-medal {
-        width: 30px;
-        font-size: 20px;
-      }
-
-      .podium-animal {
-        width: 36px;
-        font-size: 24px;
-      }
-
-      .podium-uni {
-        font-size: 14px;
-      }
-
-      .podium-score {
-        font-size: 13px;
-      }
-
-      .game-card h3 {
-        font-size: 20px;
-      }
-
-      .game-card p {
-        font-size: 14px;
-        margin-bottom: 14px;
-      }
-
-      .play-btn {
-        display: block;
-        width: 100%;
-        min-height: 48px;
-        line-height: 1.25;
-        padding: 14px 16px;
-        font-size: 16px;
-      }
-
-      .modal {
-        padding: 0;
-        align-items: flex-end;
-      }
-
-      .modal-content {
-        width: 100%;
-        max-width: 100%;
-        max-height: min(92dvh, 92vh);
-        border-radius: 20px 20px 0 0;
-      }
-
-      .modal-head {
-        padding: 16px 16px 10px;
-      }
-
-      .modal-head h2 {
-        font-size: 20px;
-      }
-
-      .ranking-scroll {
-        padding: 12px 12px 20px;
-      }
-
-      thead th,
-      tbody td {
-        font-size: 13px;
-        padding: 10px 6px;
-      }
-
-      .animal-cell {
-        font-size: 22px;
-      }
+      #introScreen { padding: 16px 12px calc(20px + env(safe-area-inset-bottom)); align-items: flex-start; }
+      .intro-card { width: 100%; max-width: 100%; padding: 24px 16px 28px; border-radius: 24px; }
+      #introText { font-size: 16px; line-height: 1.65; }
+      .intro-btn-row { flex-direction: column; width: 100%; margin-top: 20px; }
+      #enterLobbyBtn, #skipStoryBtn, #confirmSchoolBtn { width: 100%; min-height: 48px; font-size: 17px; }
+      #skipStoryBtn { padding: 14px 20px; }
+      .school-setup-hint { font-size: 15px; }
+      #schoolNameInput { font-size: 16px; padding: 14px 16px; }
+      #lobbyScreen { padding: 14px 12px calc(24px + env(safe-area-inset-bottom)); }
+      .lobby-wrap { width: 100%; max-width: 100%; }
+      .lobby-header { flex-direction: column; align-items: stretch; padding: 18px 16px; border-radius: 22px; }
+      .header-actions { width: 100%; }
+      .header-actions .header-btn { flex: 1; min-height: 48px; display: flex; align-items: center; justify-content: center; }
+      .panel { padding: 16px 14px; border-radius: 22px; }
+      .panel-title { flex-direction: column; align-items: flex-start; }
+      .panel-title h2 { font-size: 20px; }
+      .podium { gap: 6px; }
+      .rank-card { padding: 9px 10px; gap: 8px; }
+      .podium-medal { width: 30px; font-size: 20px; }
+      .podium-animal { width: 36px; font-size: 24px; }
+      .podium-uni { font-size: 14px; }
+      .podium-score { font-size: 13px; }
+      .game-card h3 { font-size: 20px; }
+      .game-card p { font-size: 14px; margin-bottom: 14px; }
+      .play-btn { display: block; width: 100%; min-height: 48px; line-height: 1.25; padding: 14px 16px; font-size: 16px; }
+      .modal { padding: 0; align-items: flex-end; }
+      .modal-content { width: 100%; max-width: 100%; max-height: min(92dvh, 92vh); border-radius: 20px 20px 0 0; }
+      .modal-head { padding: 16px 16px 10px; }
+      .modal-head h2 { font-size: 20px; }
+      .ranking-scroll { padding: 12px 12px 20px; }
+      thead th, tbody td { font-size: 13px; padding: 10px 6px; }
+      .animal-cell { font-size: 22px; }
     }
   </style>
 </head>
 <body>
-  <!-- bg-deco 제거됨 (배경 이미지로 대체) -->
 
   <section id="introScreen">
     <div class="intro-card">
-      <!-- 로고 -->
       <img class="intro-logo" src="./assets/images/logo.png" alt="모여봐요 애니멀 리그" />
 
       <div id="introPhaseStory">
-        <!-- 텍스트박스 (text_box2 뱃지 + text_box 말풍선) -->
         <div class="intro-textbox-wrap">
           <img class="intro-textbox2" src="./assets/images/text_box_2.png" alt="라이언" />
           <img class="intro-textbox-bg" src="./assets/images/text_box.png" alt="" />
@@ -1122,18 +686,10 @@
       </div>
 
       <div id="introPhaseSchool" class="hidden">
-        <p class="school-setup-hint">
-          대항전에 참가할 학교 이름을 적어 주세요. 로비와 기록에 표시됩니다.
-        </p>
+        <p class="school-setup-hint">대항전에 참가할 학교 이름을 적어 주세요. 로비와 기록에 표시됩니다.</p>
         <div class="school-field">
           <label for="schoolNameInput">학교 이름</label>
-          <input
-            id="schoolNameInput"
-            type="text"
-            maxlength="40"
-            placeholder="예: 성균관대학교"
-            autocomplete="organization"
-          />
+          <input id="schoolNameInput" type="text" maxlength="40" placeholder="예: 성균관대학교" autocomplete="organization" />
         </div>
         <div class="school-actions">
           <button type="button" id="confirmSchoolBtn">로비 입장</button>
@@ -1153,7 +709,6 @@
             <p>대학 대표 동물들이 미니게임에 도전하고, 점수에 따라 더 강한 동물로 진화합니다.</p>
           </div>
         </div>
-
         <div class="header-actions">
           <button class="header-btn" id="fullRankingBtn">현재랭킹</button>
           <button class="header-btn" id="storyReplayBtn">스토리 다시보기</button>
@@ -1173,7 +728,6 @@
           <div class="left-bottom-row">
             <div class="panel equal-height-panel">
               <h3 class="small-panel-title">🏫 내 대학 정보</h3>
-
               <div class="my-card-top">
                 <div class="my-animal" id="mySchoolAnimal">🐱</div>
                 <div class="my-meta">
@@ -1181,7 +735,6 @@
                   <p id="mySchoolSub">서버에 연결되면 실시간 순위가 표시됩니다.</p>
                 </div>
               </div>
-
               <div class="info-list" id="mySchoolInfoList">
                 <div class="info-item"><strong>누적 점수</strong> · —</div>
                 <div class="info-item"><strong>대표 동물</strong> · —</div>
@@ -1207,58 +760,39 @@
             <span>원하는 게임을 선택하세요</span>
           </div>
 
-          <!-- 각 카드: games/*.html 로 이동 (스크립트가 ?school= 쿼리를 href에 붙임) -->
           <div class="game-grid">
-            <!-- 미니게임 1: 학점 사냥 (grade-hunt.html) -->
             <div class="game-card">
               <div class="game-emoji">🎓🪰</div>
               <h3>학점 사냥</h3>
-              <p>
-                날아다니는 학점 버블 중 높은 학점을 빠르게 잡아 점수를 획득하는 순발력 게임.
-                F를 잘못 누르면 감점됩니다.
-              </p>
+              <p>날아다니는 학점 버블 중 높은 학점을 빠르게 잡아 점수를 획득하는 순발력 게임. F를 잘못 누르면 감점됩니다.</p>
               <a class="play-btn" id="playGradeHunt" href="games/grade-hunt.html">플레이</a>
             </div>
 
-            <!-- 미니게임 2: 강의실 탈출 (classroom-escape.html) -->
             <div class="game-card">
               <div class="game-emoji">🏫🚪</div>
               <h3>강의실 탈출</h3>
-              <p>
-                교수님의 시야를 피해 학생증을 챙기고 출구까지 도달해야 하는 스텔스 미니게임.
-                단계가 올라갈수록 더 어려워집니다.
-              </p>
+              <p>교수님의 시야를 피해 학생증을 챙기고 출구까지 도달해야 하는 스텔스 미니게임. 단계가 올라갈수록 더 어려워집니다.</p>
               <a class="play-btn" id="playClassroomEscape" href="games/classroom-escape.html">플레이</a>
             </div>
 
-            <!-- 미니게임 3: 사자의 길 건너기 (cross_road.html) -->
             <div class="game-card">
               <div class="game-emoji">🦁🚗</div>
               <h3>사자의 길 건너기</h3>
-              <p>
-                차를 피하고 통나무를 타고 강을 건너세요. 통나무 위에서는 사자도 함께 흘러갑니다.
-              </p>
+              <p>차를 피하고 통나무를 타고 강을 건너세요. 통나무 위에서는 사자도 함께 흘러갑니다.</p>
               <a class="play-btn" id="playCrossRoad" href="games/cross_road.html">플레이</a>
             </div>
 
-            <!-- 미니게임 4: 교수님 분류전 (professor-cheek-sort.html) -->
             <div class="game-card">
               <div class="game-emoji">👨‍🏫➡️🧑‍🎓</div>
               <h3>교수님 분류전</h3>
-              <p>
-                위에서 내려오는 얼굴을 빠르게 분류하세요.
-                교수는 왼쪽, 학생은 오른쪽으로 넘기면 점수가 올라갑니다.
-              </p>
+              <p>위에서 내려오는 얼굴을 빠르게 분류하세요. 교수는 왼쪽, 학생은 오른쪽으로 넘기면 점수가 올라갑니다.</p>
               <a class="play-btn" id="playProfessorSort" href="games/professor-cheek-sort.html">플레이</a>
             </div>
 
-            <!-- 출시 예정: 도토리 레이스 -->
             <div class="game-card">
               <div class="game-emoji">🌰🐿️</div>
               <h3>도토리 레이스</h3>
-              <p>
-                동물의 왕국 분위기를 더 살릴 출시 예정 미니게임입니다.
-              </p>
+              <p>동물의 왕국 분위기를 더 살릴 출시 예정 미니게임입니다.</p>
               <button class="play-btn coming">출시 예정</button>
             </div>
           </div>
@@ -1273,16 +807,10 @@
         <h2>🏅 현재 랭킹 TOP 30</h2>
         <button class="close-btn" id="closeRankingBtn">닫기</button>
       </div>
-
       <div class="ranking-scroll">
         <table>
           <thead>
-            <tr>
-              <th>순위</th>
-              <th>대학명</th>
-              <th>점수</th>
-              <th>동물</th>
-            </tr>
+            <tr><th>순위</th><th>대학명</th><th>점수</th><th>동물</th></tr>
           </thead>
           <tbody id="rankingTableBody"></tbody>
         </table>
@@ -1303,20 +831,9 @@
     let rankingData = [];
 
     const animalTitle = {
-      "🐯": "호랑이",
-      "🐴": "말",
-      "🦜": "앵무새",
-      "🐱": "고양이",
-      "🐿️": "다람쥐",
-      "🐰": "토끼",
-      "🦊": "여우",
-      "🐻": "곰",
-      "🦌": "사슴",
-      "🐼": "판다",
-      "🦉": "부엉이",
-      "🐨": "코알라",
-      "🐹": "햄스터",
-      "🦝": "너구리"
+      "🐯":"호랑이","🐴":"말","🦜":"앵무새","🐱":"고양이","🐿️":"다람쥐",
+      "🐰":"토끼","🦊":"여우","🐻":"곰","🦌":"사슴","🐼":"판다",
+      "🦉":"부엉이","🐨":"코알라","🐹":"햄스터","🦝":"너구리"
     };
 
     const cheerMessages = [
@@ -1349,13 +866,11 @@
     const mySchoolSub = document.getElementById("mySchoolSub");
     const mySchoolAnimal = document.getElementById("mySchoolAnimal");
     const mySchoolInfoList = document.getElementById("mySchoolInfoList");
-
     const top3Container = document.getElementById("top3Container");
     const rankingTableBody = document.getElementById("rankingTableBody");
     const rankingModal = document.getElementById("rankingModal");
     const fullRankingBtn = document.getElementById("fullRankingBtn");
     const closeRankingBtn = document.getElementById("closeRankingBtn");
-
     const cheerEmoji = document.getElementById("cheerEmoji");
     const cheerText = document.getElementById("cheerText");
     const leftColumn = document.querySelector(".left-column");
@@ -1365,11 +880,8 @@
     let storyIndex = 0;
     let storyTimer = null;
 
-    /** 데스크탑에서 요청한 고정 크기 유지 + 미니게임 목록 내부 스크롤 */
     function syncGamePanelHeightToLeft() {
       if (!leftColumn || !gamePanel || !gameGrid) return;
-
-      // 단일 컬럼(모바일/태블릿)에서는 기존 자연 레이아웃 유지
       if (window.innerWidth <= 1120) {
         gamePanel.style.height = "";
         gamePanel.style.width = "";
@@ -1380,7 +892,6 @@
         gamePanel.style.overflow = "visible";
         return;
       }
-
       gamePanel.style.width = "636.84px";
       gamePanel.style.minWidth = "636.84px";
       gamePanel.style.maxWidth = "636.84px";
@@ -1392,16 +903,8 @@
 
     function renderRankingsLoading() {
       const msg = "데이터를 불러드리는중입니다.";
-      top3Container.innerHTML = `
-        <div class="rankings-loading">
-          <p>${msg}</p>
-        </div>
-      `;
-      rankingTableBody.innerHTML = `
-        <tr class="ranking-table-loading">
-          <td colspan="4">${msg}</td>
-        </tr>
-      `;
+      top3Container.innerHTML = `<div class="rankings-loading"><p>${msg}</p></div>`;
+      rankingTableBody.innerHTML = `<tr class="ranking-table-loading"><td colspan="4">${msg}</td></tr>`;
       mySchoolSub.textContent = msg;
       mySchoolInfoList.innerHTML = `
         <div class="info-item"><strong>누적 점수</strong> · …</div>
@@ -1413,51 +916,34 @@
 
     function renderTop3() {
       if (rankingData.length === 0) {
-        top3Container.innerHTML = `
-          <div class="rankings-empty">
-            <p>아직 랭킹 기록이 없습니다.<br /><span style="font-size:14px;font-weight:700;color:#79907e;">게임을 플레이하면 여기에 표시됩니다.</span></p>
-          </div>
-        `;
+        top3Container.innerHTML = `<div class="rankings-empty"><p>아직 랭킹 기록이 없습니다.<br /><span style="font-size:14px;color:#79907e;">게임을 플레이하면 여기에 표시됩니다.</span></p></div>`;
         return;
       }
-
       const top3 = rankingData.slice(0, 3);
-      while (top3.length < 3) {
-        top3.push({ university: "—", score: 0, animal: "🌱" });
-      }
+      while (top3.length < 3) top3.push({ university: "—", score: 0, animal: "🌱" });
       const rows = [
         { item: top3[0], medal: "🥇", cls: "first" },
         { item: top3[1], medal: "🥈", cls: "second" },
         { item: top3[2], medal: "🥉", cls: "third" }
       ];
-
-      top3Container.innerHTML = rows
-        .map(
-          ({ item, medal, cls }) => `
+      top3Container.innerHTML = rows.map(({ item, medal, cls }) => `
         <div class="rank-card ${cls}">
-          <span class="podium-medal" aria-hidden="true">${medal}</span>
+          <span class="podium-medal">${medal}</span>
           <span class="podium-animal" title="${animalTitle[item.animal] || "대표 동물"}">${item.animal}</span>
           <span class="podium-uni">${item.university}</span>
           <span class="podium-score">${item.score}점</span>
         </div>
-      `
-        )
-        .join("");
+      `).join("");
     }
 
     function renderFullRanking() {
       if (rankingData.length === 0) {
-        rankingTableBody.innerHTML = `
-          <tr class="ranking-table-loading">
-            <td colspan="4">등록된 랭킹이 없습니다.</td>
-          </tr>
-        `;
+        rankingTableBody.innerHTML = `<tr class="ranking-table-loading"><td colspan="4">등록된 랭킹이 없습니다.</td></tr>`;
         return;
       }
-
-      rankingTableBody.innerHTML = rankingData.map((item, index) => `
+      rankingTableBody.innerHTML = rankingData.map((item, i) => `
         <tr>
-          <td><span class="rank-badge">${index + 1}</span></td>
+          <td><span class="rank-badge">${i + 1}</span></td>
           <td class="uni-cell">${item.university}</td>
           <td>${item.score}</td>
           <td class="animal-cell">${item.animal}</td>
@@ -1491,19 +977,10 @@
           : `${API_BASE}/api/rankings?limit=30`;
         const res = await fetch(url);
         if (!res.ok) throw new Error("rankings failed");
-
         const data = await res.json();
-        const rows = (data.rankings || []).map((r) => ({
-          university: r.university,
-          score: r.score,
-          animal: r.animal
-        }));
-
-        rankingData = rows;
-
+        rankingData = (data.rankings || []).map(r => ({ university: r.university, score: r.score, animal: r.animal }));
         renderTop3();
         renderFullRanking();
-
         if (data.mySchool) {
           const m = data.mySchool;
           mySchoolAnimal.textContent = m.animal || "🦝";
@@ -1539,7 +1016,6 @@
       clearTimeout(storyTimer);
       introPhaseSchool.classList.add("hidden");
       introPhaseStory.classList.remove("hidden");
-      enterLobbyBtn.textContent = "로비 입장";
       storyIndex = 0;
       introText.textContent = "";
       enterLobbyBtn.style.display = "none";
@@ -1557,9 +1033,7 @@
 
     function applySchoolToLobby() {
       const name = localStorage.getItem(STORAGE_SCHOOL);
-      if (name) {
-        mySchoolName.textContent = name;
-      }
+      if (name) mySchoolName.textContent = name;
     }
 
     function showNextStory() {
@@ -1589,11 +1063,7 @@
 
     function confirmSchoolAndEnter() {
       const name = schoolNameInput.value.trim();
-      if (!name) {
-        alert("학교 이름을 입력해 주세요.");
-        schoolNameInput.focus();
-        return;
-      }
+      if (!name) { alert("학교 이름을 입력해 주세요."); schoolNameInput.focus(); return; }
       localStorage.setItem(STORAGE_SCHOOL, name);
       showLobby();
     }
@@ -1604,65 +1074,34 @@
       startStory();
     }
 
-    fullRankingBtn.addEventListener("click", () => {
-      refreshRankingsFromApi();
-      rankingModal.style.display = "flex";
-    });
-
-    closeRankingBtn.addEventListener("click", () => {
-      rankingModal.style.display = "none";
-    });
-
-    rankingModal.addEventListener("click", (e) => {
-      if (e.target === rankingModal) {
-        rankingModal.style.display = "none";
-      }
-    });
-
-    window.addEventListener("resize", () => {
-      requestAnimationFrame(syncGamePanelHeightToLeft);
-    });
-
+    fullRankingBtn.addEventListener("click", () => { refreshRankingsFromApi(); rankingModal.style.display = "flex"; });
+    closeRankingBtn.addEventListener("click", () => { rankingModal.style.display = "none"; });
+    rankingModal.addEventListener("click", e => { if (e.target === rankingModal) rankingModal.style.display = "none"; });
+    window.addEventListener("resize", () => { requestAnimationFrame(syncGamePanelHeightToLeft); });
     enterLobbyBtn.addEventListener("click", openSchoolPhase);
     skipStoryBtn.addEventListener("click", openSchoolPhase);
     confirmSchoolBtn.addEventListener("click", confirmSchoolAndEnter);
-    schoolNameInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") confirmSchoolAndEnter();
-    });
-    backToStoryBtn.addEventListener("click", () => {
-      introPhaseSchool.classList.add("hidden");
-      introPhaseStory.classList.remove("hidden");
-      startStory();
-    });
+    schoolNameInput.addEventListener("keydown", e => { if (e.key === "Enter") confirmSchoolAndEnter(); });
+    backToStoryBtn.addEventListener("click", () => { introPhaseSchool.classList.add("hidden"); introPhaseStory.classList.remove("hidden"); startStory(); });
     storyReplayBtn.addEventListener("click", showIntroAgain);
 
     function wantsLobbyFromQuery() {
-      const p = new URLSearchParams(window.location.search);
-      const v = (p.get("lobby") || "").toLowerCase();
+      const v = (new URLSearchParams(window.location.search).get("lobby") || "").toLowerCase();
       return v === "1" || v === "true" || v === "yes";
     }
 
     function stripLobbyQuery() {
       try {
         const url = new URL(window.location.href);
-        url.searchParams.delete("lobby");
-        url.searchParams.delete("school");
-        const next = url.pathname + url.search + url.hash;
-        window.history.replaceState({}, "", next || url.pathname);
-      } catch {
-        /* file:// 등 일부 환경 */
-      }
+        url.searchParams.delete("lobby"); url.searchParams.delete("school");
+        window.history.replaceState({}, "", url.pathname + url.search + url.hash || url.pathname);
+      } catch {}
     }
 
     function schoolFromUrlQuery() {
-      try {
-        return (new URLSearchParams(window.location.search).get("school") || "").trim();
-      } catch {
-        return "";
-      }
+      try { return (new URLSearchParams(window.location.search).get("school") || "").trim(); } catch { return ""; }
     }
 
-    /** 로비에 저장된 학교가 있으면 각 미니게임 플레이 링크에 ?school= 붙임 */
     function updateGamePlayLinks() {
       const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
       const q = school ? `?school=${encodeURIComponent(school)}` : "";
@@ -1680,29 +1119,15 @@
       renderRankingsLoading();
       renderRandomCheer();
       requestAnimationFrame(syncGamePanelHeightToLeft);
-
       if (wantsLobbyFromQuery()) {
         const fromUrl = schoolFromUrlQuery();
-        if (fromUrl) {
-          try {
-            localStorage.setItem(STORAGE_SCHOOL, fromUrl);
-          } catch {
-            /* 저장 불가 환경 */
-          }
-        }
+        if (fromUrl) { try { localStorage.setItem(STORAGE_SCHOOL, fromUrl); } catch {} }
         stripLobbyQuery();
         clearTimeout(storyTimer);
         const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
-        if (school) {
-          showLobby();
-        } else {
-          introScreen.classList.remove("hidden");
-          lobbyScreen.classList.add("hidden");
-          openSchoolPhase();
-        }
+        if (school) { showLobby(); } else { introScreen.classList.remove("hidden"); lobbyScreen.classList.add("hidden"); openSchoolPhase(); }
         return;
       }
-
       startStory();
     }
 
