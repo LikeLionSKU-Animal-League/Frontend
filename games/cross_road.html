@@ -507,11 +507,18 @@ function setLobbyBackLink() {
 /** 미니게임 점수를 리그 서버에 POST (학교 없으면 생략) */
 function submitScoreToLeague(game, value) {
   const school = getLeagueSchool();
-  if (!school) return;
+  if (!school) {
+    if (!window.__leagueSchoolMissingWarned) {
+      window.__leagueSchoolMissingWarned = true;
+      alert('학교 정보가 없어 점수를 저장할 수 없습니다. 로비에서 학교를 먼저 입력해 주세요.');
+    }
+    return;
+  }
   const s = Math.round(Number(value));
   if (!Number.isFinite(s)) return;
   fetch(`${API_BASE}/api/scores`, {
     method: 'POST',
+    keepalive: true,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ school, game, score: s }),
   }).catch(() => {});
@@ -660,9 +667,19 @@ function addParticles(wx, wy, n, color) {
 
 /* --- 런타임 상태 --- */
 let player, cars, logs, score, lives, gameStarted, gameOver, dying, animFrameId;
+let scoreSubmitted = false;
+
+function submitScoreOnce() {
+  if (scoreSubmitted) return;
+  submitScoreToLeague('cross-road', score);
+  scoreSubmitted = true;
+}
 
 /** 한 판 준비: 위치 초기화·차·통나무 생성·오버레이 */
 function prepareGame() {
+  if (gameStarted && !gameOver && score > 0) {
+    submitScoreOnce();
+  }
   cancelAnimationFrame(animFrameId);
   player = { px: 5 * TILE, row: START_ROW, sx: 1, sy: 1, sqTimer: 0, sqTX: 1, sqTY: 1 };
   cars = []; logs = []; particles = [];
@@ -670,6 +687,7 @@ function prepareGame() {
   flash = { a: 0, color: '#fff' };
   score = 0; lives = 3;
   gameStarted = false; gameOver = false; dying = false;
+  scoreSubmitted = false;
   updateUI();
   spawnObjects();
   showOverlay('게임 준비', '차를 피하고 통나무를 타서 맨 위 줄에 도달하면 점수를 얻습니다.', 'start');
@@ -867,7 +885,7 @@ function die(type) {
       gameOver = true;
       showOverlay('게임 오버', `최종 점수: ${score}점. 다시 도전해 보세요!`, 'over');
       msgEl.textContent = '게임 오버!';
-      submitScoreToLeague('cross-road', score);
+      submitScoreOnce();
     }, 700);
   } else {
     /* 목숨 남음: 잠시 후 시작 줄로 리스폰 */

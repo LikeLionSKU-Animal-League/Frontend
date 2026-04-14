@@ -1455,13 +1455,20 @@
     /** 리그 서버에 점수 제출(학교 없으면 생략, 실패는 무시) */
     function submitScoreToLeague(game, value) {
       const school = getLeagueSchool();
-      if (!school) return;
+      if (!school) {
+        if (!window.__leagueSchoolMissingWarned) {
+          window.__leagueSchoolMissingWarned = true;
+          alert("학교 정보가 없어 점수를 저장할 수 없습니다. 로비에서 학교를 먼저 입력해 주세요.");
+        }
+        return;
+      }
 
       const score = Math.round(Number(value));
       if (!Number.isFinite(score)) return;
 
       fetch(`${API_BASE}/api/scores`, {
         method: "POST",
+        keepalive: true,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ school, game, score })
       }).catch(() => {});
@@ -1477,6 +1484,7 @@
     let hasPass = false;
     /** 전체 런 누적 점수 (5스테이지 클리어 시 서버 제출) */
     let runEscapeScore = 0;
+    let runScoreSubmitted = false;
 
     /* 플레이어 위치(논리 픽셀) */
     let playerX = 42;
@@ -1711,6 +1719,7 @@
       /* 전체 런 점수는 1단계 시작 시에만 초기화 */
       if (currentStage === 0) {
         runEscapeScore = 0;
+        runScoreSubmitted = false;
       }
 
       const config = stageConfigs[currentStage];
@@ -1772,6 +1781,7 @@
       if (currentStage === 4) {
         lastClassroomEscapeTotalScore = runEscapeScore;
         submitScoreToLeague("classroom-escape", runEscapeScore);
+        runScoreSubmitted = true;
         runEscapeScore = 0;
 
         showOverlay(
@@ -1801,6 +1811,10 @@
     function failStage(title, desc) {
       clearInterval(timerInterval);
       cancelAnimationFrame(loopId);
+      if (!runScoreSubmitted && runEscapeScore > 0) {
+        submitScoreToLeague("classroom-escape", runEscapeScore);
+        runScoreSubmitted = true;
+      }
       runEscapeScore = 0;
       gameEnded = true;
       gameStarted = false;

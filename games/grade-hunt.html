@@ -689,13 +689,20 @@
     /** 리그 서버에 점수 제출 (학교 미설정 시 생략) */
     function submitScoreToLeague(game, value) {
       const school = getLeagueSchool();
-      if (!school) return;
+      if (!school) {
+        if (!window.__leagueSchoolMissingWarned) {
+          window.__leagueSchoolMissingWarned = true;
+          alert("학교 정보가 없어 점수를 저장할 수 없습니다. 로비에서 학교를 먼저 입력해 주세요.");
+        }
+        return;
+      }
 
       const score = Math.round(Number(value));
       if (!Number.isFinite(score)) return;
 
       fetch(`${API_BASE}/api/scores`, {
         method: "POST",
+        keepalive: true,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ school, game, score })
       }).catch(() => {});
