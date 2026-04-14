@@ -1,4 +1,4 @@
-ㄷ턋<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
@@ -590,6 +590,13 @@
     crossorigin="anonymous"
   ></script>
   <script>
+    const STORAGE_SCHOOL = "animalLeagueSchool";
+    const API_BASE =
+      window.ANIMAL_LEAGUE_API ||
+      (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+        ? "http://localhost:3000"
+        : "https://backend-m5wz.onrender.com");
+
     const GAME_DURATION_SEC = 15;
     const MAX_LIVES = 3;
     const SLOT_COUNT = 5;
@@ -622,6 +629,38 @@
     let playing = false;
     let timeLeft = GAME_DURATION_SEC;
     let timerId = null;
+    let resultSubmitted = false;
+
+    function getLeagueSchool() {
+      try {
+        const q = (new URLSearchParams(window.location.search).get("school") || "").trim();
+        if (q) {
+          try {
+            localStorage.setItem(STORAGE_SCHOOL, q);
+          } catch {
+            /* ignore */
+          }
+          return q;
+        }
+      } catch {
+        /* ignore */
+      }
+      return (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
+    }
+
+    function submitScoreToLeague(game, value) {
+      const school = getLeagueSchool();
+      if (!school) return;
+
+      const scoreToSend = Math.round(Number(value));
+      if (!Number.isFinite(scoreToSend)) return;
+
+      fetch(`${API_BASE}/api/scores`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ school, game, score: scoreToSend })
+      }).catch(() => {});
+    }
 
     function livesToHearts(n) {
       const clamped = Math.max(0, Math.min(MAX_LIVES, n));
@@ -632,6 +671,7 @@
       return Math.random() < 0.55 ? "professor" : "student";
     }
 
+<<<<<<< HEAD
     function getLeagueSchool() {
       const fromQuery = (() => {
         try {
@@ -644,6 +684,8 @@
       return fromQuery || fromStorage;
     }
 
+=======
+>>>>>>> 835b257be8ceee8b1fb4c569b4fdfc99c0006115
     function updateLobbyBackLink() {
       const school = getLeagueSchool();
       const q = school ? `&school=${encodeURIComponent(school)}` : "";
@@ -887,6 +929,7 @@
       combo = 0;
       lives = MAX_LIVES;
       timeLeft = GAME_DURATION_SEC;
+      resultSubmitted = false;
       scoreEl.textContent = "0";
       comboEl.textContent = "0";
       lifeEl.textContent = livesToHearts(lives);
@@ -902,6 +945,10 @@
       startBtn.disabled = false;
       if (timerId) clearInterval(timerId);
       timerId = null;
+      if (!resultSubmitted) {
+        submitScoreToLeague("professor-cheek-sort", score);
+        resultSubmitted = true;
+      }
 
       overlay.querySelector("h2").textContent = title;
       overlay.querySelector("p").innerHTML =
