@@ -188,6 +188,7 @@
       pointer-events: none;
     }
 
+    /* ====== 동물 버블 ====== */
     .grade {
       position: absolute;
       width: 88px;
@@ -208,6 +209,32 @@
     }
     .grade:hover  { transform: scale(1.08); }
     .grade:active { transform: scale(0.95); }
+
+    /* 물방울 터지는 애니메이션 */
+    .grade.popping {
+      animation: bubblePop 0.32s ease forwards !important;
+      pointer-events: none;
+    }
+
+    @keyframes bubblePop {
+      0%   { transform: scale(1);    opacity: 1; filter: blur(0px); }
+      35%  { transform: scale(1.4);  opacity: 0.7; filter: blur(2px); }
+      100% { transform: scale(0.05); opacity: 0; filter: blur(8px); }
+    }
+
+    /* 물방울 파티클 */
+    .droplet {
+      position: absolute;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    @keyframes dropletFly {
+      0%   { opacity: 1;   transform: translate(0, 0) scale(1); }
+      70%  { opacity: 0.9; }
+      100% { opacity: 0;   transform: translate(var(--dx), var(--dy)) scale(0.2); }
+    }
 
     .animal-img {
       width: 46px;
@@ -505,6 +532,19 @@
       });
     }
 
+    /* ====== 사운드 (경로는 직접 수정해주세요) ====== */
+    const soundGood = new Audio("../assets/sounds/powerUp2.mp3");
+    const soundBad  = new Audio("../assets/sounds/lowRandom.mp3");
+    soundGood.volume = 0.6;
+    soundBad.volume  = 0.6;
+
+    function playSound(isGood) {
+      const snd = isGood ? soundGood : soundBad;
+      snd.currentTime = 0;
+      snd.play().catch(() => {});
+    }
+
+    /* ====== 등급 정의 ====== */
     const grades = [
       { g: "A+", score: 10, type: "good",  img: "../assets/images/a_1.png" },
       { g: "A",  score: 8,  type: "good",  img: "../assets/images/a_1.png" },
@@ -516,6 +556,15 @@
       { g: "F",  score: -10,type: "worst", img: "../assets/images/a_5.png" }
     ];
 
+    /* 등급 타입별 물방울 색상 */
+    const dropletColors = {
+      good:  ["#6ee87a", "#a8f5b0", "#ffffff"],
+      mid:   ["#7ab8f5", "#aad4ff", "#ffffff"],
+      low:   ["#f5d87a", "#ffe4a0", "#ffffff"],
+      bad:   ["#f5a87a", "#ffcaaa", "#ffffff"],
+      worst: ["#e8c87a", "#f5daa0", "#ffffff"]
+    };
+
     let score = 0, combo = 0, time = 15;
     let gameInterval = null, spawnInterval = null, hardModeInterval = null;
     let isPlaying = false;
@@ -526,9 +575,9 @@
     const resultEl = document.getElementById("result");
     const gameArea = document.getElementById("gameArea");
 
-    const overlay = document.getElementById("overlay");
-    const overlayTitle = document.getElementById("overlayTitle");
-    const overlayDesc = document.getElementById("overlayDesc");
+    const overlay          = document.getElementById("overlay");
+    const overlayTitle     = document.getElementById("overlayTitle");
+    const overlayDesc      = document.getElementById("overlayDesc");
     const overlayActionBtn = document.getElementById("overlayActionBtn");
     overlayActionBtn.addEventListener("click", startGame);
 
@@ -586,6 +635,42 @@
       return null;
     }
 
+    /* ====== 물방울 파티클 ====== */
+    function spawnDroplets(cx, cy, type) {
+      const colors = dropletColors[type] || dropletColors.good;
+      const count  = 12;
+
+      for (let i = 0; i < count; i++) {
+        const drop  = document.createElement("div");
+        drop.className = "droplet";
+
+        const angle = (360 / count) * i + (Math.random() * 18 - 9);
+        const dist  = 38 + Math.random() * 50;
+        const rad   = angle * Math.PI / 180;
+        const dx    = Math.cos(rad) * dist;
+        const dy    = Math.sin(rad) * dist;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const w     = 7 + Math.random() * 7;
+        const h     = w * 1.3;
+        const dur   = 0.35 + Math.random() * 0.2;
+
+        drop.style.cssText = `
+          left: ${cx - w / 2}px;
+          top: ${cy - h / 2}px;
+          width: ${w}px;
+          height: ${h}px;
+          background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.8), ${color});
+          --dx: ${dx}px;
+          --dy: ${dy}px;
+          animation: dropletFly ${dur}s ease-out forwards;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+        `;
+
+        gameArea.appendChild(drop);
+        setTimeout(() => drop.remove(), dur * 1000 + 50);
+      }
+    }
+
     function spawnGrade() {
       if (!isPlaying) return;
 
@@ -610,6 +695,15 @@
 
       bubble.onclick = () => {
         if (!isPlaying) return;
+
+        /* 터지는 애니메이션 + 파티클 */
+        bubble.classList.add("popping");
+        spawnDroplets(pos.x + size / 2, pos.y + size / 2, item.type);
+
+        /* 소리 */
+        playSound(item.score > 0);
+
+        /* 점수 계산 */
         score += item.score;
 
         if (item.score > 0) {
@@ -627,11 +721,12 @@
 
         scoreEl.textContent = score;
         comboEl.textContent = combo;
-        bubble.remove();
+
+        setTimeout(() => bubble.remove(), 350);
       };
 
       gameArea.appendChild(bubble);
-      setTimeout(() => bubble.remove(), 2200);
+      setTimeout(() => { if (bubble.parentNode) bubble.remove(); }, 2200);
     }
 
     function showEffect(x, y, text, color) {
