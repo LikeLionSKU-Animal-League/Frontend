@@ -507,11 +507,18 @@ function setLobbyBackLink() {
 /** 미니게임 점수를 리그 서버에 POST (학교 없으면 생략) */
 function submitScoreToLeague(game, value) {
   const school = getLeagueSchool();
-  if (!school) return;
+  if (!school) {
+    if (!window.__leagueSchoolMissingWarned) {
+      window.__leagueSchoolMissingWarned = true;
+      alert('학교 정보가 없어 점수를 저장할 수 없습니다. 로비에서 학교를 먼저 입력해 주세요.');
+    }
+    return;
+  }
   const s = Math.round(Number(value));
   if (!Number.isFinite(s)) return;
   fetch(`${API_BASE}/api/scores`, {
     method: 'POST',
+    keepalive: true,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ school, game, score: s }),
   }).catch(() => {});
@@ -660,9 +667,19 @@ function addParticles(wx, wy, n, color) {
 
 /* --- 런타임 상태 --- */
 let player, cars, logs, score, lives, gameStarted, gameOver, dying, animFrameId;
+let scoreSubmitted = false;
+
+function submitScoreOnce() {
+  if (scoreSubmitted) return;
+  submitScoreToLeague('cross-road', score);
+  scoreSubmitted = true;
+}
 
 /** 한 판 준비: 위치 초기화·차·통나무 생성·오버레이 */
 function prepareGame() {
+  if (gameStarted && !gameOver && score > 0) {
+    submitScoreOnce();
+  }
   cancelAnimationFrame(animFrameId);
   player = { px: 5 * TILE, row: START_ROW, sx: 1, sy: 1, sqTimer: 0, sqTX: 1, sqTY: 1 };
   cars = []; logs = []; particles = [];
@@ -670,9 +687,10 @@ function prepareGame() {
   flash = { a: 0, color: '#fff' };
   score = 0; lives = 3;
   gameStarted = false; gameOver = false; dying = false;
+  scoreSubmitted = false;
   updateUI();
   spawnObjects();
-  showOverlay('게임 준비', '차를 피하고 통나무를 타서 맨 위 줄에 도달하면 점수를 얻습니다.', 'start');
+  showOverlay('🦁 사자의 길 건너기', '차를 피하고 통나무를 타서 강을 건너<br />목적지에 도달하면 점수를 얻습니다!', 'init');
   drawStatic();
 }
 
@@ -686,14 +704,27 @@ function startGame() {
 }
 
 /**
- * @param {'start'|'over'} mode 시작 화면 vs 게임오버(시작 버튼 숨김·공유 표시)
+ * @param {'init'|'start'|'over'} mode
+ *   init  = 첫 진입 (시작 버튼만)
+ *   start = 준비/재시작 (시작 + 다시 시작)
+ *   over  = 게임 오버 (다시 시작 + 카카오 공유)
  */
 function showOverlay(title, desc, mode) {
   overlayTitle.textContent = title;
-  overlayDesc.textContent  = desc;
+  overlayDesc.innerHTML    = desc;
   overlay.style.display    = 'flex';
-  overlayStartBtn.style.display   = mode === 'over' ? 'none' : 'inline-block';
-  overlayRestartBtn.style.display = 'inline-block';
+
+  if (mode === 'over') {
+    overlayStartBtn.style.display   = 'none';
+    overlayRestartBtn.style.display = 'inline-block';
+  } else if (mode === 'init') {
+    overlayStartBtn.style.display   = 'inline-block';
+    overlayRestartBtn.style.display = 'none';
+  } else {
+    overlayStartBtn.style.display   = 'inline-block';
+    overlayRestartBtn.style.display = 'inline-block';
+  }
+
   const kBtn = document.getElementById('kakaoShareResultBtn');
   if (kBtn) kBtn.classList.toggle('hidden', mode !== 'over');
 }
@@ -865,9 +896,9 @@ function die(type) {
     setTimeout(() => {
       play('gameover', 0.8);
       gameOver = true;
-      showOverlay('게임 오버', `최종 점수: ${score}점. 다시 도전해 보세요!`, 'over');
+      showOverlay('🎯 게임 오버', `최종 점수 <strong style="font-size:22px;color:#2e4b69">${score}</strong>점<br />다시 도전해 보세요!`, 'over');
       msgEl.textContent = '게임 오버!';
-      submitScoreToLeague('cross-road', score);
+      submitScoreOnce();
     }, 700);
   } else {
     /* 목숨 남음: 잠시 후 시작 줄로 리스폰 */

@@ -5,31 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#dff6ff" />
   <title>Animal League</title>
-  <!-- Open Graph: 카카오톡 등 링크 미리보기용 -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="캠퍼스 애니멀 배틀" />
   <meta property="og:title" content="캠퍼스 애니멀 배틀" />
-  <meta
-    property="og:description"
-    content="대학 대표 동물들이 미니게임에 도전하고, 점수에 따라 더 강한 동물로 진화합니다."
-  />
+  <meta property="og:description" content="대학 대표 동물들이 미니게임에 도전하고, 점수에 따라 더 강한 동물로 진화합니다." />
   <meta property="og:url" content="https://campus-animal-battle.vercel.app/" />
   <meta property="og:image" content="https://campus-animal-battle.vercel.app/assets/game-preview.png" />
   <meta property="og:image:alt" content="캠퍼스 애니멀 배틀 대표 이미지" />
   <meta name="twitter:card" content="summary_large_image" />
   <style>
-    * {
-      box-sizing: border-box;
+    @font-face {
+      font-family: 'NeoDunggeunmo';
+      src: url('./assets/fonts/neodgm.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
     }
 
-    html {
-      -webkit-text-size-adjust: 100%;
-    }
+    * { box-sizing: border-box; }
+
+    html { -webkit-text-size-adjust: 100%; }
 
     body {
       margin: 0;
-      font-family: "Trebuchet MS", "맑은 고딕", sans-serif;
-      background: linear-gradient(180deg, #dff6ff 0%, #eefbe1 45%, #fff7df 100%);
+      font-family: 'NeoDunggeunmo', sans-serif;
+      background-image: url('./assets/images/Home.jpg');
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
       color: #33423a;
       overflow-x: hidden;
       min-height: 100vh;
@@ -53,145 +56,116 @@
       transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
     }
 
-    button:hover {
-      transform: translateY(-2px);
+    button:hover { transform: translateY(-2px); }
+
+    .hidden { display: none !important; }
+    .bg-deco { display: none; }
+
+    /* ── 동물 이미지 공통 ── */
+    .animal-img {
+      object-fit: contain;
+      display: inline-block;
     }
 
-    .hidden {
-      display: none !important;
+    /* TOP3 카드 내 동물 이미지 */
+    .podium-animal .animal-img {
+      width: 36px;
+      height: 36px;
     }
 
-    .bg-deco {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
+    /* 내 대학 아이콘 */
+    .my-animal .animal-img {
+      width: 38px;
+      height: 38px;
     }
 
-    .cloud, .leaf, .flower, .star {
-      position: absolute;
-      opacity: 0.35;
-      user-select: none;
+    /* 랭킹 테이블 */
+    .animal-cell .animal-img {
+      width: 32px;
+      height: 32px;
     }
 
-    .cloud { font-size: 48px; }
-    .leaf { font-size: 28px; }
-    .flower { font-size: 24px; }
-    .star { font-size: 18px; opacity: 0.28; }
+    /* 응원 멘트 */
+    .cheer-emoji .animal-img {
+      width: 52px;
+      height: 52px;
+    }
 
-    .c1 { top: 40px; left: 60px; }
-    .c2 { top: 90px; right: 80px; }
-    .c3 { top: 180px; left: 15%; }
-    .l1 { top: 150px; right: 14%; transform: rotate(18deg); }
-    .l2 { bottom: 120px; left: 9%; transform: rotate(-12deg); }
-    .l3 { bottom: 90px; right: 12%; transform: rotate(10deg); }
-    .f1 { bottom: 40px; left: 60px; }
-    .f2 { bottom: 50px; right: 60px; }
-    .s1 { top: 130px; left: 48%; }
-    .s2 { top: 260px; right: 22%; }
-    .s3 { bottom: 160px; left: 22%; }
-
-    /* Intro */
+    /* ── INTRO ── */
     #introScreen {
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 30px;
+      padding: 20px;
       position: relative;
       z-index: 1;
     }
 
     .intro-card {
-      width: min(920px, 94vw);
-      background: rgba(255,255,255,0.92);
-      border: 4px solid #e9f6df;
-      border-radius: 36px;
-      box-shadow: 0 22px 48px rgba(91, 124, 95, 0.15);
-      padding: 42px 34px;
+      width: min(680px, 94vw);
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      padding: 0;
       text-align: center;
       position: relative;
-      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .intro-card::before,
-    .intro-card::after {
-      content: "";
-      position: absolute;
-      border-radius: 50%;
-      opacity: 0.45;
+    .intro-logo {
+      width: min(560px, 90vw);
+      display: block;
+      margin: 0 auto 12px;
     }
 
-    .intro-card::before {
-      width: 220px;
-      height: 220px;
-      background: #d7f5cf;
-      top: -70px;
-      right: -50px;
-    }
-
-    .intro-card::after {
-      width: 180px;
-      height: 180px;
-      background: #ffeeb8;
-      bottom: -50px;
-      left: -40px;
-    }
-
-    .intro-title {
+    .intro-textbox-wrap {
       position: relative;
-      z-index: 1;
-      font-size: 56px;
-      margin: 0 0 14px;
-      color: #4d7c55;
-      letter-spacing: -1px;
-    }
-
-    .intro-sub {
-      position: relative;
-      z-index: 1;
-      margin: 0 0 28px;
-      color: #6c8570;
-      font-size: 18px;
-    }
-
-    .intro-animal-row {
-      position: relative;
-      z-index: 1;
-      font-size: 40px;
-      margin-bottom: 22px;
-      letter-spacing: 6px;
-    }
-
-    #introTextBox {
-      position: relative;
-      z-index: 1;
-      width: min(740px, 100%);
-      min-height: 160px;
+      width: min(580px, 92vw);
       margin: 0 auto;
-      background: linear-gradient(180deg, #ffffff, #f9fff2);
-      border: 3px solid #e8f4df;
-      border-radius: 28px;
-      padding: 28px 24px;
+    }
+
+    .intro-textbox2 {
+      position: absolute;
+      top: -26px;
+      left: 2px;
+      height: 54px;
+      z-index: 2;
+    }
+
+    .intro-textbox-bg {
+      width: 100%;
+      display: block;
+      position: relative;
+      z-index: 1;
+    }
+
+    .intro-textbox-inner {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7);
+      padding: 18px 48px 18px 44px;
     }
 
     #introText {
-      font-size: 24px;
+      font-size: 21px;
       line-height: 1.8;
       color: #435246;
       font-weight: 700;
       word-break: keep-all;
+      text-align: center;
     }
 
     .intro-btn-row {
       position: relative;
       z-index: 1;
-      margin-top: 28px;
+      margin-top: 20px;
       display: flex;
       justify-content: center;
       gap: 12px;
@@ -203,23 +177,25 @@
       border-radius: 999px;
       font-size: 20px;
       font-weight: 900;
-      color: white;
-      background: linear-gradient(135deg, #7dcc7f, #55ad62);
-      box-shadow: 0 12px 24px rgba(76, 161, 88, 0.28);
+      color: #7a5f2a;
+      background: rgba(255, 236, 153, 0.88);
+      box-shadow: 0 8px 18px rgba(220, 170, 60, 0.22);
+      backdrop-filter: blur(4px);
       display: none;
     }
 
     #skipStoryBtn {
-      padding: 14px 24px;
+      padding: 14px 28px;
       border-radius: 999px;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 900;
-      color: #57655b;
-      background: linear-gradient(135deg, #f4f4f4, #e6e6e6);
-      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+      color: #7a5f2a;
+      background: rgba(255, 236, 153, 0.88);
+      box-shadow: 0 8px 18px rgba(220, 170, 60, 0.22);
+      backdrop-filter: blur(4px);
     }
 
-    /* School setup (intro second step) */
+    /* ── SCHOOL SETUP ── */
     #introPhaseSchool {
       position: relative;
       z-index: 1;
@@ -263,15 +239,12 @@
       transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
-    #schoolNameInput::placeholder {
-      color: #9aaa9c;
-      font-weight: 600;
-    }
+    #schoolNameInput::placeholder { color: #9aaa9c; font-weight: 600; }
 
     #schoolNameInput:focus {
       outline: none;
       border-color: #9dd9a0;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7), 0 0 0 3px rgba(125, 204, 127, 0.25);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7), 0 0 0 3px rgba(125,204,127,0.25);
     }
 
     .school-actions {
@@ -287,9 +260,10 @@
       border-radius: 999px;
       font-size: 20px;
       font-weight: 900;
-      color: white;
-      background: linear-gradient(135deg, #7dcc7f, #55ad62);
-      box-shadow: 0 12px 24px rgba(76, 161, 88, 0.28);
+      color: #7a5f2a;
+      background: rgba(255, 236, 153, 0.88);
+      box-shadow: 0 8px 18px rgba(220, 170, 60, 0.22);
+      backdrop-filter: blur(4px);
     }
 
     #backToStoryBtn {
@@ -304,169 +278,117 @@
       text-underline-offset: 4px;
     }
 
-    #backToStoryBtn:hover {
-      color: #3d5a44;
-      transform: none;
-      opacity: 0.92;
-    }
+    #backToStoryBtn:hover { color: #3d5a44; transform: none; opacity: 0.92; }
 
-    /* Lobby */
+    /* ── LOBBY ── */
     #lobbyScreen {
       min-height: 100vh;
-      padding: 28px 22px 40px;
+      padding: 20px 16px 32px;
       position: relative;
       z-index: 1;
     }
 
     .lobby-wrap {
-      width: min(1280px, 96vw);
+      width: min(1160px, 94vw);
       margin: 0 auto;
     }
 
     .lobby-header {
-      background: rgba(255,255,255,0.93);
-      border: 4px solid #e7f5de;
-      border-radius: 34px;
-      box-shadow: 0 18px 40px rgba(88, 119, 91, 0.14);
-      padding: 26px 28px;
+      background: rgba(245, 238, 220, 0.93);
+      border: 3px solid #e0d3b0;
+      border-radius: 24px;
+      padding: 14px 22px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 18px;
       flex-wrap: wrap;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
 
-    .logo-box h1 {
+    .logo-box { display: flex; align-items: center; gap: 16px; }
+    .lobby-logo-img { height: 56px; }
+
+    .lobby-title-text h1 {
       margin: 0;
-      font-size: 42px;
-      color: #4e7b53;
-      letter-spacing: -1px;
+      font-size: 26px;
+      color: #4a3728;
+      letter-spacing: -0.5px;
     }
 
-    .logo-box p {
-      margin: 8px 0 0;
-      color: #6e8571;
-      font-size: 15px;
-    }
+    .lobby-title-text p { margin: 6px 0 0; color: #7a6a55; font-size: 13px; }
 
-    .header-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+    .header-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
     .header-btn {
-      padding: 13px 20px;
-      border-radius: 999px;
-      font-size: 15px;
-      font-weight: 900;
-      color: #4f4a2a;
-      background: linear-gradient(135deg, #ffe59f, #ffd474);
-      box-shadow: 0 10px 20px rgba(230, 186, 74, 0.2);
+      padding: 9px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-family: 'NeoDunggeunmo', sans-serif;
+      color: #4a3728;
+      background: #f0e6cc;
+      border: 3px solid #c9a96e;
+      box-shadow: 0 4px 0 #b08a4a, 0 6px 12px rgba(0,0,0,0.12);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
     }
 
-    .header-btn.green {
-      color: white;
-      background: linear-gradient(135deg, #8dd68f, #60b86e);
-      box-shadow: 0 10px 20px rgba(91, 176, 103, 0.22);
+    .header-btn:hover {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #b08a4a, 0 4px 8px rgba(0,0,0,0.10);
     }
 
     .lobby-main {
       display: grid;
       grid-template-columns: 1fr 1.15fr;
-      gap: 18px;
-      align-items: stretch;
+      gap: 14px;
+      align-items: start;
     }
 
-    .left-column {
-      display: grid;
-      grid-template-rows: auto 1fr;
-      gap: 18px;
-      height: 100%;
-    }
+    .left-column { display: flex; flex-direction: column; gap: 12px; }
 
     .left-bottom-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      align-items: stretch;
-      height: 100%;
+      gap: 12px;
     }
 
-    /* 데스크탑 고정 레이아웃 (요청 수치) */
     @media (min-width: 1121px) {
       .lobby-main {
         grid-template-columns: 553.78px 636.84px;
         justify-content: center;
       }
-
-      .left-column {
-        width: 553.78px;
-      }
-
-      .left-bottom-row {
-        grid-template-columns: 267.89px 267.89px;
-      }
-
+      .left-column { width: 553.78px; }
+      .left-bottom-row { grid-template-columns: 267.89px 267.89px; }
       .left-bottom-row > .panel.equal-height-panel {
-        width: 267.89px;
-        min-width: 267.89px;
-        max-width: 267.89px;
-        height: 428px;
-        min-height: 428px;
-        max-height: 428px;
+        width: 267.89px; min-width: 267.89px; max-width: 267.89px;
+        height: 428px; min-height: 428px; max-height: 428px;
       }
-
       .game-panel {
-        width: 636.84px;
-        min-width: 636.84px;
-        max-width: 636.84px;
-        height: 720px;
-        min-height: 720px;
-        max-height: 720px;
+        width: 636.84px; min-width: 636.84px; max-width: 636.84px;
+        height: 720px; min-height: 720px; max-height: 720px;
       }
-
       .game-grid {
         grid-template-columns: repeat(2, 284.42px);
         grid-auto-rows: 301px;
         justify-content: center;
       }
-
       .game-card {
-        width: 284.42px;
-        min-width: 284.42px;
-        max-width: 284.42px;
-        height: 301px;
-        min-height: 301px;
-        max-height: 301px;
+        width: 284.42px; min-width: 284.42px; max-width: 284.42px;
+        height: 301px; min-height: 301px; max-height: 301px;
       }
     }
 
     .panel {
-      background: rgba(255,255,255,0.94);
-      border: 4px solid #e7f5de;
-      border-radius: 32px;
-      box-shadow: 0 18px 36px rgba(88, 119, 91, 0.12);
-      padding: 22px;
+      background: rgba(245, 238, 220, 0.93);
+      border: 3px solid #e0d3b0;
+      border-radius: 20px;
+      padding: 14px 16px;
       position: relative;
-      overflow: hidden;
     }
 
-    .panel::before {
-      content: "";
-      position: absolute;
-      width: 120px;
-      height: 120px;
-      right: -30px;
-      top: -30px;
-      background: rgba(221, 245, 208, 0.42);
-      border-radius: 50%;
-    }
+    .panel::before { display: none; }
 
-    .equal-height-panel {
-      height: 100%;
-    }
+    .equal-height-panel { height: 100%; }
 
     .game-panel {
       height: 100%;
@@ -482,40 +404,14 @@
       justify-content: space-between;
       align-items: center;
       gap: 10px;
-      margin-bottom: 16px;
-      position: relative;
-      z-index: 1;
+      margin-bottom: 14px;
     }
 
-    .panel-title h2 {
-      margin: 0;
-      font-size: 26px;
-      color: #4c7552;
-    }
+    .panel-title h2 { margin: 0; font-size: 18px; color: #4a3728; }
+    .panel-title span { color: #9a8a72; font-size: 12px; }
+    .small-panel-title { margin: 0 0 12px; font-size: 15px; color: #4a3728; }
 
-    .panel-title span {
-      color: #79907e;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .small-panel-title {
-      margin: 0 0 14px;
-      font-size: 22px;
-      color: #4c7552;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Top 3 — 가로 한 줄(메달 · 동물 · 학교 · 점수) */
-    .podium {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 4px;
-      position: relative;
-      z-index: 1;
-    }
+    .podium { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
 
     .rankings-loading,
     .rankings-empty {
@@ -524,31 +420,18 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 28px 16px;
-      border-radius: 24px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(249, 255, 244, 0.9));
-      border: 3px dashed #cfe9c4;
-      position: relative;
-      z-index: 1;
+      padding: 24px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.45);
+      border: 2px dashed #d4c49a;
     }
 
     .rankings-loading p,
-    .rankings-empty p {
-      margin: 0;
-      font-size: 17px;
-      font-weight: 800;
-      color: #5a6d5d;
-      line-height: 1.55;
-      word-break: keep-all;
-    }
+    .rankings-empty p { margin: 0; font-size: 15px; color: #7a6a55; line-height: 1.6; word-break: keep-all; }
 
     .ranking-table-loading td {
-      text-align: center;
-      padding: 36px 16px !important;
-      font-weight: 800;
-      color: #5a6d5d;
-      font-size: 15px;
-      border: none !important;
+      text-align: center; padding: 36px 16px !important;
+      color: #7a6a55; font-size: 14px; border: none !important;
     }
 
     .rank-card {
@@ -560,150 +443,75 @@
       border-radius: 16px;
       text-align: left;
       position: relative;
-      border: 2px solid rgba(255,255,255,0.85);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+      border: 2px solid #e0d3b0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
 
-    .rank-card.first {
-      background: linear-gradient(90deg, #fff3d0, #ffe9a0);
-    }
+    .rank-card.first  { background: rgba(255, 240, 180, 0.75); border-color: #d4b86a; }
+    .rank-card.second { background: rgba(220, 228, 245, 0.75); border-color: #a8b8d8; }
+    .rank-card.third  { background: rgba(240, 220, 200, 0.75); border-color: #c8a880; }
 
-    .rank-card.second {
-      background: linear-gradient(90deg, #eef4ff, #dce8ff);
-    }
+    .podium-medal { flex-shrink: 0; width: 34px; text-align: center; font-size: 22px; line-height: 1; }
+    .podium-animal { flex-shrink: 0; width: 40px; text-align: center; line-height: 1; display: flex; align-items: center; justify-content: center; }
+    .podium-uni { flex: 1; min-width: 0; font-size: 15px; color: #4a3728; word-break: break-word; line-height: 1.35; }
+    .podium-score { flex-shrink: 0; font-size: 14px; color: #5a4a38; white-space: nowrap; }
 
-    .rank-card.third {
-      background: linear-gradient(90deg, #fff0e0, #ffdcc4);
-    }
-
-    .podium-medal {
-      flex-shrink: 0;
-      width: 34px;
-      text-align: center;
-      font-size: 22px;
-      line-height: 1;
-    }
-
-    .podium-animal {
-      flex-shrink: 0;
-      width: 40px;
-      text-align: center;
-      font-size: 28px;
-      line-height: 1;
-    }
-
-    .podium-uni {
-      flex: 1;
-      min-width: 0;
-      font-size: 15px;
-      font-weight: 900;
-      color: #425045;
-      word-break: break-word;
-      line-height: 1.35;
-    }
-
-    .podium-score {
-      flex-shrink: 0;
-      font-size: 14px;
-      font-weight: 900;
-      color: #4d6b52;
-      white-space: nowrap;
-    }
-
-    /* My university */
-    .my-card-top {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 14px;
-      position: relative;
-      z-index: 1;
-    }
+    .my-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
 
     .my-animal {
-      width: 68px;
-      height: 68px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 36px;
-      background: linear-gradient(180deg, #fff1b9, #ffe08e);
-      box-shadow: 0 10px 18px rgba(224, 177, 68, 0.18);
-      border: 3px solid white;
+      width: 50px; height: 50px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,240,180,0.8);
+      border: 3px solid #d4b86a;
       flex-shrink: 0;
+      overflow: hidden;
     }
 
-    .my-meta h3 {
-      margin: 0;
-      color: #49684f;
-      font-size: 21px;
-    }
-
-    .my-meta p {
-      margin: 6px 0 0;
-      color: #708573;
-      font-weight: 700;
-      font-size: 14px;
-    }
-
-    .info-list {
-      position: relative;
-      z-index: 1;
-    }
+    .my-meta h3 { margin: 0; color: #4a3728; font-size: 15px; }
+    .my-meta p  { margin: 4px 0 0; color: #7a6a55; font-size: 12px; }
 
     .info-item {
-      border-radius: 16px;
-      background: linear-gradient(180deg, #ffffff, #f9fff4);
-      border: 2px solid #edf6e8;
-      padding: 11px 13px;
-      margin-bottom: 9px;
-      box-shadow: 0 8px 14px rgba(0,0,0,0.04);
-      font-weight: 700;
-      color: #556859;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.5);
+      border: 2px solid #e0d3b0;
+      padding: 7px 10px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: #5a4a38;
     }
 
-    .info-item strong {
-      color: #49634d;
-    }
+    .info-item strong { color: #4a3728; }
 
-    /* Cheer panel */
-    .cheer-box {
-      position: relative;
-      z-index: 1;
-      border-radius: 24px;
-      background: linear-gradient(180deg, #fffaf0, #fff3d9);
-      border: 3px solid #ffe7b6;
-      padding: 18px;
-      min-height: 100%;
+    .cheer-panel {
       display: flex;
       flex-direction: column;
+      align-items: center;
       justify-content: center;
       text-align: center;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.65);
+      min-height: 160px;
+    }
+
+    .cheer-main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      gap: 8px;
     }
 
     .cheer-emoji {
-      font-size: 48px;
-      margin-bottom: 12px;
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .cheer-text {
-      font-size: 18px;
-      font-weight: 900;
-      line-height: 1.7;
-      color: #6f5b2e;
-      word-break: keep-all;
-    }
+    .cheer-text { font-size: 14px; line-height: 1.75; color: #5a4020; word-break: keep-all; }
 
-    .mini-note {
-      font-size: 13px;
-      color: #8a946f;
-      font-weight: 700;
-      margin-top: 10px;
-    }
+    .mini-note { font-size: 11px; color: #9a8a60; margin-top: 10px; }
 
-    /* Games */
     .game-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -718,433 +526,181 @@
       padding-right: 6px;
       margin-right: -2px;
       scrollbar-width: thin;
-      scrollbar-color: #b7d6b3 #edf7eb;
+      scrollbar-color: #c9a96e #f0e6cc;
       overscroll-behavior: contain;
     }
 
-    .game-grid::-webkit-scrollbar {
-      width: 9px;
-    }
-
-    .game-grid::-webkit-scrollbar-track {
-      background: #edf7eb;
-      border-radius: 999px;
-    }
-
+    .game-grid::-webkit-scrollbar { width: 9px; }
+    .game-grid::-webkit-scrollbar-track { background: #f0e6cc; border-radius: 999px; }
     .game-grid::-webkit-scrollbar-thumb {
-      background: linear-gradient(180deg, #b7d6b3, #95c58f);
+      background: linear-gradient(180deg, #c9a96e, #b08a4a);
       border-radius: 999px;
-      border: 2px solid #edf7eb;
+      border: 2px solid #f0e6cc;
     }
 
     .game-card {
-      border-radius: 28px;
-      padding: 22px 20px;
-      border: 3px solid #eef7e8;
-      background: linear-gradient(180deg, #ffffff, #f8fff2);
-      box-shadow: 0 12px 20px rgba(0,0,0,0.06);
+      border-radius: 16px;
+      padding: 14px 13px;
+      background: rgba(255,255,255,0.55);
+      border: 2px solid #e0d3b0;
       text-align: left;
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
-      position: relative;
-      overflow: hidden;
+      transition: transform 0.15s ease;
     }
 
-    .game-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 18px 28px rgba(0,0,0,0.08);
-    }
+    .game-card:hover { transform: translateY(-3px); }
 
-    .game-emoji {
-      font-size: 52px;
-      margin-bottom: 10px;
-    }
+    .game-emoji { font-size: 32px; margin-bottom: 6px; }
 
-    .game-card h3 {
-      margin: 0 0 8px;
-      font-size: 24px;
-      color: #476f50;
-    }
+    .game-card h3 { margin: 0 0 6px; font-size: 15px; color: #4a3728; }
 
-    .game-card p {
-      margin: 0 0 16px;
-      font-size: 15px;
-      color: #6f8372;
-      line-height: 1.7;
-    }
+    .game-card p { margin: 0 0 14px; font-size: 12px; color: #7a6a55; line-height: 1.5; }
 
     .play-btn {
       display: inline-block;
-      padding: 12px 18px;
-      border-radius: 999px;
-      font-size: 15px;
-      font-weight: 900;
-      color: white;
-      background: linear-gradient(135deg, #7fcf84, #58b86a);
-      box-shadow: 0 10px 18px rgba(80, 172, 96, 0.2);
+      padding: 7px 13px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-family: 'NeoDunggeunmo', sans-serif;
+      color: #4a3728;
+      background: #f0e6cc;
+      border: 2px solid #c9a96e;
+      box-shadow: 0 3px 0 #b08a4a;
       text-decoration: none;
       text-align: center;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      cursor: pointer;
     }
+
+    .play-btn:hover { transform: translateY(2px); box-shadow: 0 1px 0 #b08a4a; }
 
     .coming {
-      background: linear-gradient(135deg, #dfe9ef, #cedbe4);
-      color: #5d707b;
-      box-shadow: none;
+      background: #e8e0d0;
+      border-color: #c8bca0;
+      box-shadow: 0 3px 0 #a89980;
+      color: #9a8a72;
+      cursor: default;
     }
 
-    /* Ranking modal */
+    .coming:hover { transform: none; box-shadow: 0 3px 0 #a89980; }
+
     .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(31, 42, 34, 0.42);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      z-index: 99;
-      backdrop-filter: blur(3px);
+      position: fixed; inset: 0;
+      background: rgba(30, 20, 10, 0.45);
+      display: none; align-items: center; justify-content: center;
+      padding: 24px; z-index: 99; backdrop-filter: blur(3px);
     }
 
     .modal-content {
-      width: min(980px, 96vw);
-      max-height: 88vh;
-      overflow: hidden;
-      background: white;
-      border-radius: 32px;
-      border: 4px solid #e8f5df;
-      box-shadow: 0 22px 44px rgba(0,0,0,0.18);
-      display: flex;
-      flex-direction: column;
+      width: min(980px, 96vw); max-height: 88vh; overflow: hidden;
+      background: #f5eedc;
+      border-radius: 28px; border: 3px solid #e0d3b0;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.22);
+      display: flex; flex-direction: column;
     }
 
     .modal-head {
-      padding: 22px 24px 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      border-bottom: 2px solid #edf5e7;
+      padding: 20px 24px 12px;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 12px; border-bottom: 2px solid #e0d3b0;
     }
 
-    .modal-head h2 {
-      margin: 0;
-      color: #4e7554;
-      font-size: 30px;
-    }
+    .modal-head h2 { margin: 0; color: #4a3728; font-size: 26px; }
 
     .close-btn {
-      padding: 10px 16px;
-      border-radius: 999px;
-      font-size: 14px;
-      font-weight: 900;
-      color: white;
-      background: linear-gradient(135deg, #ff9ba2, #ff7e88);
+      padding: 9px 18px; border-radius: 12px; font-size: 14px;
+      font-family: 'NeoDunggeunmo', sans-serif;
+      color: #fff; background: #d4765a;
+      border: 2px solid #b85a40; box-shadow: 0 3px 0 #8a4030;
     }
 
-    .ranking-scroll {
-      overflow: auto;
-      padding: 18px 24px 24px;
-    }
+    .close-btn:hover { transform: translateY(2px); box-shadow: 0 1px 0 #8a4030; }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      overflow: hidden;
-      border-radius: 18px;
-    }
+    .ranking-scroll { overflow: auto; padding: 16px 24px 24px; }
+
+    table { width: 100%; border-collapse: collapse; border-radius: 14px; overflow: hidden; }
 
     thead th {
-      background: #f4fbef;
-      color: #56705a;
-      font-size: 15px;
-      padding: 14px 12px;
-      text-align: center;
-      position: sticky;
-      top: 0;
-      z-index: 1;
+      background: rgba(255,255,255,0.5); color: #5a4a38;
+      font-size: 14px; padding: 12px; text-align: center; position: sticky; top: 0;
     }
 
     tbody td {
-      padding: 13px 12px;
-      text-align: center;
-      border-bottom: 1px solid #edf4e9;
-      font-weight: 700;
-      color: #4d5e50;
-      background: #fff;
+      padding: 11px 12px; text-align: center;
+      border-bottom: 1px solid #e0d3b0; color: #4a3728;
+      background: rgba(255,255,255,0.3);
     }
 
-    tbody tr:nth-child(even) td {
-      background: #fbfff8;
-    }
+    tbody tr:nth-child(even) td { background: rgba(255,255,255,0.55); }
 
     .rank-badge {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      min-width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      font-weight: 900;
-      background: #edf5ea;
-      color: #49644d;
+      display: inline-flex; justify-content: center; align-items: center;
+      min-width: 30px; height: 30px; border-radius: 50%;
+      background: #e8d8b0; color: #5a4020;
     }
 
-    .animal-cell {
-      font-size: 28px;
-    }
-
-    .uni-cell {
-      font-weight: 900;
-    }
+    .animal-cell { font-size: 26px; }
+    .uni-cell { font-weight: 700; }
 
     @media (max-width: 1120px) {
-      .lobby-main {
-        grid-template-columns: 1fr;
-      }
-
-      .left-bottom-row {
-        grid-template-columns: 1fr;
-      }
+      .lobby-main { grid-template-columns: 1fr; }
+      .left-bottom-row { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 980px) {
-      .game-grid {
-        grid-template-columns: 1fr;
-        overflow-y: visible;
-        padding-right: 0;
-        margin-right: 0;
-      }
-
-      .intro-title {
-        font-size: 42px;
-      }
-
-      #introText {
-        font-size: 20px;
-      }
+      .game-grid { grid-template-columns: 1fr; overflow-y: visible; padding-right: 0; margin-right: 0; }
+      #introText { font-size: 18px; }
     }
 
     @media (max-width: 640px) {
-      #introScreen {
-        padding: 16px 12px calc(20px + env(safe-area-inset-bottom));
-        align-items: flex-start;
-      }
-
-      .intro-card {
-        width: 100%;
-        max-width: 100%;
-        padding: 24px 16px 28px;
-        border-radius: 24px;
-      }
-
-      .intro-title {
-        font-size: clamp(26px, 9vw, 40px);
-        line-height: 1.15;
-      }
-
-      .intro-sub {
-        font-size: 15px;
-        margin-bottom: 20px;
-      }
-
-      .intro-animal-row {
-        font-size: clamp(26px, 8vw, 34px);
-        letter-spacing: 3px;
-        margin-bottom: 16px;
-      }
-
-      #introTextBox {
-        padding: 18px 14px;
-        min-height: 0;
-      }
-
-      #introText {
-        font-size: 16px;
-        line-height: 1.65;
-      }
-
-      .intro-btn-row {
-        flex-direction: column;
-        width: 100%;
-        margin-top: 20px;
-      }
-
-      #enterLobbyBtn,
-      #skipStoryBtn,
-      #confirmSchoolBtn {
-        width: 100%;
-        min-height: 48px;
-        font-size: 17px;
-      }
-
-      #skipStoryBtn {
-        padding: 14px 20px;
-      }
-
-      .school-setup-hint {
-        font-size: 15px;
-      }
-
-      #schoolNameInput {
-        font-size: 16px;
-        padding: 14px 16px;
-      }
-
-      #lobbyScreen {
-        padding: 14px 12px calc(24px + env(safe-area-inset-bottom));
-      }
-
-      .lobby-wrap {
-        width: 100%;
-        max-width: 100%;
-      }
-
-      .lobby-header {
-        flex-direction: column;
-        align-items: stretch;
-        padding: 18px 16px;
-        border-radius: 22px;
-      }
-
-      .logo-box h1 {
-        font-size: clamp(22px, 6.5vw, 32px);
-      }
-
-      .logo-box p {
-        font-size: 14px;
-      }
-
-      .header-actions {
-        width: 100%;
-      }
-
-      .header-actions .header-btn {
-        flex: 1;
-        min-height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .panel {
-        padding: 16px 14px;
-        border-radius: 22px;
-      }
-
-      .panel-title {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .panel-title h2 {
-        font-size: 20px;
-      }
-
-      .podium {
-        gap: 6px;
-      }
-
-      .rank-card {
-        padding: 9px 10px;
-        gap: 8px;
-      }
-
-      .podium-medal {
-        width: 30px;
-        font-size: 20px;
-      }
-
-      .podium-animal {
-        width: 36px;
-        font-size: 24px;
-      }
-
-      .podium-uni {
-        font-size: 14px;
-      }
-
-      .podium-score {
-        font-size: 13px;
-      }
-
-      .game-card h3 {
-        font-size: 20px;
-      }
-
-      .game-card p {
-        font-size: 14px;
-        margin-bottom: 14px;
-      }
-
-      .play-btn {
-        display: block;
-        width: 100%;
-        min-height: 48px;
-        line-height: 1.25;
-        padding: 14px 16px;
-        font-size: 16px;
-      }
-
-      .modal {
-        padding: 0;
-        align-items: flex-end;
-      }
-
-      .modal-content {
-        width: 100%;
-        max-width: 100%;
-        max-height: min(92dvh, 92vh);
-        border-radius: 20px 20px 0 0;
-      }
-
-      .modal-head {
-        padding: 16px 16px 10px;
-      }
-
-      .modal-head h2 {
-        font-size: 20px;
-      }
-
-      .ranking-scroll {
-        padding: 12px 12px 20px;
-      }
-
-      thead th,
-      tbody td {
-        font-size: 13px;
-        padding: 10px 6px;
-      }
-
-      .animal-cell {
-        font-size: 22px;
-      }
+      #introScreen { padding: 16px 12px calc(20px + env(safe-area-inset-bottom)); align-items: flex-start; }
+      .intro-card { width: 100%; max-width: 100%; padding: 24px 16px 28px; border-radius: 24px; }
+      #introText { font-size: 16px; line-height: 1.65; }
+      .intro-btn-row { flex-direction: column; width: 100%; margin-top: 20px; }
+      #enterLobbyBtn, #skipStoryBtn, #confirmSchoolBtn { width: 100%; min-height: 48px; font-size: 17px; }
+      #skipStoryBtn { padding: 14px 20px; }
+      .school-setup-hint { font-size: 15px; }
+      #schoolNameInput { font-size: 16px; padding: 14px 16px; }
+      #lobbyScreen { padding: 14px 12px calc(24px + env(safe-area-inset-bottom)); }
+      .lobby-wrap { width: 100%; max-width: 100%; }
+      .lobby-header { flex-direction: column; align-items: stretch; padding: 18px 16px; border-radius: 22px; }
+      .header-actions { width: 100%; }
+      .header-actions .header-btn { flex: 1; min-height: 48px; display: flex; align-items: center; justify-content: center; }
+      .panel { padding: 16px 14px; border-radius: 22px; }
+      .panel-title { flex-direction: column; align-items: flex-start; }
+      .panel-title h2 { font-size: 20px; }
+      .podium { gap: 6px; }
+      .rank-card { padding: 9px 10px; gap: 8px; }
+      .podium-medal { width: 30px; font-size: 20px; }
+      .podium-animal { width: 36px; }
+      .podium-animal .animal-img { width: 30px; height: 30px; }
+      .podium-uni { font-size: 14px; }
+      .podium-score { font-size: 13px; }
+      .game-card h3 { font-size: 20px; }
+      .game-card p { font-size: 14px; margin-bottom: 14px; }
+      .play-btn { display: block; width: 100%; min-height: 48px; line-height: 1.25; padding: 14px 16px; font-size: 16px; }
+      .modal { padding: 0; align-items: flex-end; }
+      .modal-content { width: 100%; max-width: 100%; max-height: min(92dvh, 92vh); border-radius: 20px 20px 0 0; }
+      .modal-head { padding: 16px 16px 10px; }
+      .modal-head h2 { font-size: 20px; }
+      .ranking-scroll { padding: 12px 12px 20px; }
+      thead th, tbody td { font-size: 13px; padding: 10px 6px; }
+      .animal-cell .animal-img { width: 26px; height: 26px; }
     }
   </style>
 </head>
 <body>
-  <div class="bg-deco">
-    <div class="cloud c1">☁️</div>
-    <div class="cloud c2">☁️</div>
-    <div class="cloud c3">☁️</div>
-    <div class="leaf l1">🌿</div>
-    <div class="leaf l2">🍃</div>
-    <div class="leaf l3">🌿</div>
-    <div class="flower f1">🌼</div>
-    <div class="flower f2">🌼</div>
-    <div class="star s1">✨</div>
-    <div class="star s2">⭐</div>
-    <div class="star s3">✨</div>
-  </div>
 
   <section id="introScreen">
     <div class="intro-card">
-      <h1 class="intro-title">🐾 Animal League</h1>
-      <p class="intro-sub">대학 동물 대항전</p>
+      <img class="intro-logo" src="./assets/images/logo.png" alt="모여봐요 애니멀 리그" />
 
       <div id="introPhaseStory">
-        <div class="intro-animal-row">🐯 🐴 🦜 🐱 🐿️</div>
-
-        <div id="introTextBox">
-          <div id="introText"></div>
+        <div class="intro-textbox-wrap">
+          <img class="intro-textbox2" src="./assets/images/text_box_2.png" alt="라이언" />
+          <img class="intro-textbox-bg" src="./assets/images/text_box.png" alt="" />
+          <div class="intro-textbox-inner">
+            <div id="introText"></div>
+          </div>
         </div>
 
         <div class="intro-btn-row">
@@ -1154,18 +710,10 @@
       </div>
 
       <div id="introPhaseSchool" class="hidden">
-        <p class="school-setup-hint">
-          대항전에 참가할 학교 이름을 적어 주세요. 로비와 기록에 표시됩니다.
-        </p>
+        <p class="school-setup-hint">대항전에 참가할 학교 이름을 적어 주세요. 로비와 기록에 표시됩니다.</p>
         <div class="school-field">
           <label for="schoolNameInput">학교 이름</label>
-          <input
-            id="schoolNameInput"
-            type="text"
-            maxlength="40"
-            placeholder="예: 성균관대학교"
-            autocomplete="organization"
-          />
+          <input id="schoolNameInput" type="text" maxlength="40" placeholder="예: 성균관대학교" autocomplete="organization" />
         </div>
         <div class="school-actions">
           <button type="button" id="confirmSchoolBtn">로비 입장</button>
@@ -1179,13 +727,15 @@
     <div class="lobby-wrap">
       <div class="lobby-header">
         <div class="logo-box">
-          <h1>🌿 동물의 왕국 로비</h1>
-          <p>대학 대표 동물들이 미니게임에 도전하고, 점수에 따라 더 강한 동물로 진화합니다.</p>
+          <img class="lobby-logo-img" src="./assets/images/logo.png" alt="모여봐요 애니멀 리그" />
+          <div class="lobby-title-text">
+            <h1>애니멀 캠퍼스 로비</h1>
+            <p>대학 대표 동물들이 미니게임에 도전하고, 점수에 따라 더 강한 동물로 진화합니다.</p>
+          </div>
         </div>
-
         <div class="header-actions">
-          <button class="header-btn" id="fullRankingBtn">현재 랭킹</button>
-          <button class="header-btn green" id="storyReplayBtn">스토리 다시 보기</button>
+          <button class="header-btn" id="fullRankingBtn">현재랭킹</button>
+          <button class="header-btn" id="storyReplayBtn">스토리 다시보기</button>
         </div>
       </div>
 
@@ -1202,15 +752,15 @@
           <div class="left-bottom-row">
             <div class="panel equal-height-panel">
               <h3 class="small-panel-title">🏫 내 대학 정보</h3>
-
               <div class="my-card-top">
-                <div class="my-animal" id="mySchoolAnimal">🐱</div>
+                <div class="my-animal" id="mySchoolAnimal">
+                  <img class="animal-img" src="./assets/images/a_5.png" alt="대표 동물" />
+                </div>
                 <div class="my-meta">
                   <h3 id="mySchoolName">성균관대학교</h3>
                   <p id="mySchoolSub">서버에 연결되면 실시간 순위가 표시됩니다.</p>
                 </div>
               </div>
-
               <div class="info-list" id="mySchoolInfoList">
                 <div class="info-item"><strong>누적 점수</strong> · —</div>
                 <div class="info-item"><strong>대표 동물</strong> · —</div>
@@ -1219,16 +769,15 @@
               </div>
             </div>
 
-            <div class="panel equal-height-panel">
+            <div class="panel equal-height-panel cheer-panel">
               <h3 class="small-panel-title">💬 왕국 응원 멘트</h3>
-
-              <div class="cheer-box">
-                <div class="cheer-emoji" id="cheerEmoji">🐯</div>
-                <div class="cheer-text" id="cheerText">
-                  왕의 자리는 단 하나! 지금 바로 점수를 올려봐!
+              <div class="cheer-main">
+                <div class="cheer-emoji" id="cheerEmoji">
+                  <img class="animal-img" src="./assets/images/a_1.png" alt="응원 동물" />
                 </div>
-                <div class="mini-note">로비에 들어올 때마다 응원 멘트가 바뀝니다.</div>
+                <div class="cheer-text" id="cheerText">왕의 자리는 단 하나! 지금 바로 점수를 올려봐!</div>
               </div>
+              <div class="mini-note">로비에 들어올 때마다 응원 멘트가 바뀝니다.</div>
             </div>
           </div>
         </div>
@@ -1239,58 +788,39 @@
             <span>원하는 게임을 선택하세요</span>
           </div>
 
-          <!-- 각 카드: games/*.html 로 이동 (스크립트가 ?school= 쿼리를 href에 붙임) -->
           <div class="game-grid">
-            <!-- 미니게임 1: 학점 사냥 (grade-hunt.html) -->
             <div class="game-card">
               <div class="game-emoji">🎓🪰</div>
               <h3>학점 사냥</h3>
-              <p>
-                날아다니는 학점 버블 중 높은 학점을 빠르게 잡아 점수를 획득하는 순발력 게임.
-                F를 잘못 누르면 감점됩니다.
-              </p>
+              <p>날아다니는 학점 버블 중 높은 학점을 빠르게 잡아 점수를 획득하는 순발력 게임. F를 잘못 누르면 감점됩니다.</p>
               <a class="play-btn" id="playGradeHunt" href="games/grade-hunt.html">플레이</a>
             </div>
 
-            <!-- 미니게임 2: 강의실 탈출 (classroom-escape.html) -->
             <div class="game-card">
               <div class="game-emoji">🏫🚪</div>
               <h3>강의실 탈출</h3>
-              <p>
-                교수님의 시야를 피해 학생증을 챙기고 출구까지 도달해야 하는 스텔스 미니게임.
-                단계가 올라갈수록 더 어려워집니다.
-              </p>
+              <p>교수님의 시야를 피해 학생증을 챙기고 출구까지 도달해야 하는 스텔스 미니게임. 단계가 올라갈수록 더 어려워집니다.</p>
               <a class="play-btn" id="playClassroomEscape" href="games/classroom-escape.html">플레이</a>
             </div>
 
-            <!-- 미니게임 3: 사자의 길 건너기 (cross_road.html) -->
             <div class="game-card">
               <div class="game-emoji">🦁🚗</div>
               <h3>사자의 길 건너기</h3>
-              <p>
-                차를 피하고 통나무를 타고 강을 건너세요. 통나무 위에서는 사자도 함께 흘러갑니다.
-              </p>
+              <p>차를 피하고 통나무를 타고 강을 건너세요. 통나무 위에서는 사자도 함께 흘러갑니다.</p>
               <a class="play-btn" id="playCrossRoad" href="games/cross_road.html">플레이</a>
             </div>
 
-            <!-- 미니게임 4: 교수님 분류전 (professor-cheek-sort.html) -->
             <div class="game-card">
               <div class="game-emoji">👨‍🏫➡️🧑‍🎓</div>
               <h3>교수님 분류전</h3>
-              <p>
-                위에서 내려오는 얼굴을 빠르게 분류하세요.
-                교수는 왼쪽, 학생은 오른쪽으로 넘기면 점수가 올라갑니다.
-              </p>
+              <p>위에서 내려오는 얼굴을 빠르게 분류하세요. 교수는 왼쪽, 학생은 오른쪽으로 넘기면 점수가 올라갑니다.</p>
               <a class="play-btn" id="playProfessorSort" href="games/professor-cheek-sort.html">플레이</a>
             </div>
 
-            <!-- 출시 예정: 도토리 레이스 -->
             <div class="game-card">
               <div class="game-emoji">🌰🐿️</div>
               <h3>도토리 레이스</h3>
-              <p>
-                동물의 왕국 분위기를 더 살릴 출시 예정 미니게임입니다.
-              </p>
+              <p>동물의 왕국 분위기를 더 살릴 출시 예정 미니게임입니다.</p>
               <button class="play-btn coming">출시 예정</button>
             </div>
           </div>
@@ -1305,16 +835,10 @@
         <h2>🏅 현재 랭킹 TOP 30</h2>
         <button class="close-btn" id="closeRankingBtn">닫기</button>
       </div>
-
       <div class="ranking-scroll">
         <table>
           <thead>
-            <tr>
-              <th>순위</th>
-              <th>대학명</th>
-              <th>점수</th>
-              <th>동물</th>
-            </tr>
+            <tr><th>순위</th><th>대학명</th><th>점수</th><th>동물</th></tr>
           </thead>
           <tbody id="rankingTableBody"></tbody>
         </table>
@@ -1328,36 +852,84 @@
       "각 대학의 동물들은 자신의 학교를 대표하여 가장 강한 호랑이가 되기 위한 도전을 시작한다.",
       "동물들은 다양한 미니게임을 수행하며 점수를 얻고,",
       "게임이 끝난 뒤 점수 순위에 따라 점점 강한 동물로 진화하게 된다.",
-      "가장 높은 점수를 얻은 학교는 동물의 왕인 ‘호랑이’가 되어 최고의 학교로 인정받는다.",
+      "가장 높은 점수를 얻은 학교는 동물의 왕인 '호랑이'가 되어 최고의 학교로 인정받는다.",
       "이렇게 동물들의 대학 대항전이 시작된다."
     ];
 
     let rankingData = [];
 
-    const animalTitle = {
-      "🐯": "호랑이",
-      "🐴": "말",
-      "🦜": "앵무새",
-      "🐱": "고양이",
-      "🐿️": "다람쥐",
-      "🐰": "토끼",
-      "🦊": "여우",
-      "🐻": "곰",
-      "🦌": "사슴",
-      "🐼": "판다",
-      "🦉": "부엉이",
-      "🐨": "코알라",
-      "🐹": "햄스터",
-      "🦝": "너구리"
+    // ── 순위 → 동물 이미지 매핑 ──
+    // 1등: 사자(a_1), 2등: 말(a_2), 3등: 고양이(a_3), 4등: 다람쥐(a_4), 5등 이하: 앵무새(a_5)
+    const ANIMAL_NAMES = {
+      "a_1": "사자",
+      "a_2": "말",
+      "a_3": "고양이",
+      "a_4": "다람쥐",
+      "a_5": "앵무새"
     };
 
-    const cheerMessages = [
-      { emoji: "🐯", text: "왕의 자리는 단 하나! 지금 바로 점수를 올려봐!" },
-      { emoji: "🦜", text: "조금만 더 날아오르면 상위권도 충분히 가능해!" },
-      { emoji: "🐱", text: "차분하게 플레이하면 순위는 반드시 오른다!" },
-      { emoji: "🐿️", text: "작아 보여도 방심 금지! 역전은 언제든 가능해!" },
-      { emoji: "🐴", text: "지금은 달릴 시간! 한 번에 순위를 끌어올려봐!" }
-    ];
+    function getAnimalKey(rank) {
+      if (rank === 1) return "a_1";
+      if (rank === 2) return "a_2";
+      if (rank === 3) return "a_3";
+      if (rank === 4) return "a_4";
+      return "a_5";
+    }
+
+    function getAnimalImgSrc(rank) {
+      return `./assets/images/${getAnimalKey(rank)}.png`;
+    }
+
+    function getAnimalName(rank) {
+      return ANIMAL_NAMES[getAnimalKey(rank)];
+    }
+
+    // 기존 animal 필드(이모지 문자열 등)를 받아 이름 반환 — 서버 데이터 호환
+    function resolveAnimalName(animalField, rank) {
+      if (animalField && ANIMAL_NAMES[animalField]) return ANIMAL_NAMES[animalField];
+      return getAnimalName(rank);
+    }
+
+    function resolveAnimalImgSrc(animalField, rank) {
+      if (animalField && ANIMAL_NAMES[animalField]) return `./assets/images/${animalField}.png`;
+      return getAnimalImgSrc(rank);
+    }
+
+    function animalImg(src, alt, extraClass) {
+      return `<img class="animal-img${extraClass ? ' ' + extraClass : ''}" src="${src}" alt="${alt}" />`;
+    }
+
+    // 동물별 응원 멘트 (순위에 따라 해당 동물 멘트 중 랜덤 표시)
+    const cheerMessages = {
+      "a_1": [
+        "왕국은 고요하다. 도전자가 없으니, 오늘도 왕좌는 내 것이다.",
+        "사자는 뛰지 않는다. 그저 존재만으로도 1등이다.",
+        "정상에서 내려다보는 풍경, 다른 학교들은 아직도 올려다보고 있군."
+      ],
+      "a_2": [
+        "사자의 숨소리가 들린다. 조금만 더 달리면 왕좌가 보인다!",
+        "2등은 1등의 그림자. 지금이 역전의 순간이다!",
+        "말은 멈추지 않는다. 결승선은 바로 저기!"
+      ],
+      "a_3": [
+        "3등도 충분히 강하다. 하지만 더 올라갈 수 있어!",
+        "고양이는 조용히, 그러나 반드시 위로 올라간다.",
+        "두 계단만 더. 왕좌가 비어있진 않지만, 도전은 계속된다!"
+      ],
+      "a_4": [
+        "작은 다람쥐도 도토리를 모으면 겨울을 난다. 점수를 모아라!",
+        "4등은 아직 중간. 위도 아래도 노려볼 수 있는 자리다!",
+        "다람쥐의 발은 빠르다. 지금 바로 뛰어올라!"
+      ],
+      "a_5": [
+        "앵무새는 말만 잘한다고? 이번엔 점수로 증명할 차례!",
+        "꼴찌도 게임 한 판이면 역전이 가능하다. 지금 당장 시작해!",
+        "날개가 있으면 날아야지. 순위는 지금부터 올라간다!"
+      ]
+    };
+
+    // 현재 내 학교 순위에 맞는 animalKey 저장 (API 응답 후 갱신)
+    let myCurrentAnimalKey = "a_5";
 
     const STORAGE_SCHOOL = "animalLeagueSchool";
     const API_BASE =
@@ -1381,13 +953,11 @@
     const mySchoolSub = document.getElementById("mySchoolSub");
     const mySchoolAnimal = document.getElementById("mySchoolAnimal");
     const mySchoolInfoList = document.getElementById("mySchoolInfoList");
-
     const top3Container = document.getElementById("top3Container");
     const rankingTableBody = document.getElementById("rankingTableBody");
     const rankingModal = document.getElementById("rankingModal");
     const fullRankingBtn = document.getElementById("fullRankingBtn");
     const closeRankingBtn = document.getElementById("closeRankingBtn");
-
     const cheerEmoji = document.getElementById("cheerEmoji");
     const cheerText = document.getElementById("cheerText");
     const leftColumn = document.querySelector(".left-column");
@@ -1397,11 +967,8 @@
     let storyIndex = 0;
     let storyTimer = null;
 
-    /** 데스크탑에서 요청한 고정 크기 유지 + 미니게임 목록 내부 스크롤 */
     function syncGamePanelHeightToLeft() {
       if (!leftColumn || !gamePanel || !gameGrid) return;
-
-      // 단일 컬럼(모바일/태블릿)에서는 기존 자연 레이아웃 유지
       if (window.innerWidth <= 1120) {
         gamePanel.style.height = "";
         gamePanel.style.width = "";
@@ -1412,7 +979,6 @@
         gamePanel.style.overflow = "visible";
         return;
       }
-
       gamePanel.style.width = "636.84px";
       gamePanel.style.minWidth = "636.84px";
       gamePanel.style.maxWidth = "636.84px";
@@ -1424,16 +990,8 @@
 
     function renderRankingsLoading() {
       const msg = "데이터를 불러드리는중입니다.";
-      top3Container.innerHTML = `
-        <div class="rankings-loading">
-          <p>${msg}</p>
-        </div>
-      `;
-      rankingTableBody.innerHTML = `
-        <tr class="ranking-table-loading">
-          <td colspan="4">${msg}</td>
-        </tr>
-      `;
+      top3Container.innerHTML = `<div class="rankings-loading"><p>${msg}</p></div>`;
+      rankingTableBody.innerHTML = `<tr class="ranking-table-loading"><td colspan="4">${msg}</td></tr>`;
       mySchoolSub.textContent = msg;
       mySchoolInfoList.innerHTML = `
         <div class="info-item"><strong>누적 점수</strong> · …</div>
@@ -1445,66 +1003,68 @@
 
     function renderTop3() {
       if (rankingData.length === 0) {
-        top3Container.innerHTML = `
-          <div class="rankings-empty">
-            <p>아직 랭킹 기록이 없습니다.<br /><span style="font-size:14px;font-weight:700;color:#79907e;">게임을 플레이하면 여기에 표시됩니다.</span></p>
-          </div>
-        `;
+        top3Container.innerHTML = `<div class="rankings-empty"><p>아직 랭킹 기록이 없습니다.<br /><span style="font-size:14px;color:#79907e;">게임을 플레이하면 여기에 표시됩니다.</span></p></div>`;
         return;
       }
-
       const top3 = rankingData.slice(0, 3);
-      while (top3.length < 3) {
-        top3.push({ university: "—", score: 0, animal: "🌱" });
-      }
+      while (top3.length < 3) top3.push({ university: "—", score: 0, animal: null });
       const rows = [
-        { item: top3[0], medal: "🥇", cls: "first" },
-        { item: top3[1], medal: "🥈", cls: "second" },
-        { item: top3[2], medal: "🥉", cls: "third" }
+        { item: top3[0], rank: 1, medal: "🥇", cls: "first" },
+        { item: top3[1], rank: 2, medal: "🥈", cls: "second" },
+        { item: top3[2], rank: 3, medal: "🥉", cls: "third" }
       ];
-
-      top3Container.innerHTML = rows
-        .map(
-          ({ item, medal, cls }) => `
-        <div class="rank-card ${cls}">
-          <span class="podium-medal" aria-hidden="true">${medal}</span>
-          <span class="podium-animal" title="${animalTitle[item.animal] || "대표 동물"}">${item.animal}</span>
-          <span class="podium-uni">${item.university}</span>
-          <span class="podium-score">${item.score}점</span>
-        </div>
-      `
-        )
-        .join("");
+      top3Container.innerHTML = rows.map(({ item, rank, medal, cls }) => {
+        const src = resolveAnimalImgSrc(item.animal, rank);
+        const name = resolveAnimalName(item.animal, rank);
+        return `
+          <div class="rank-card ${cls}">
+            <span class="podium-medal">${medal}</span>
+            <span class="podium-animal">${animalImg(src, name)}</span>
+            <span class="podium-uni">${item.university}</span>
+            <span class="podium-score">${item.score}점</span>
+          </div>
+        `;
+      }).join("");
     }
 
     function renderFullRanking() {
       if (rankingData.length === 0) {
-        rankingTableBody.innerHTML = `
-          <tr class="ranking-table-loading">
-            <td colspan="4">등록된 랭킹이 없습니다.</td>
-          </tr>
-        `;
+        rankingTableBody.innerHTML = `<tr class="ranking-table-loading"><td colspan="4">등록된 랭킹이 없습니다.</td></tr>`;
         return;
       }
-
-      rankingTableBody.innerHTML = rankingData.map((item, index) => `
-        <tr>
-          <td><span class="rank-badge">${index + 1}</span></td>
-          <td class="uni-cell">${item.university}</td>
-          <td>${item.score}</td>
-          <td class="animal-cell">${item.animal}</td>
-        </tr>
-      `).join("");
+      rankingTableBody.innerHTML = rankingData.map((item, i) => {
+        const rank = i + 1;
+        const src = resolveAnimalImgSrc(item.animal, rank);
+        const name = resolveAnimalName(item.animal, rank);
+        return `
+          <tr>
+            <td><span class="rank-badge">${rank}</span></td>
+            <td class="uni-cell">${item.university}</td>
+            <td>${item.score}</td>
+            <td class="animal-cell">${animalImg(src, name)}</td>
+          </tr>
+        `;
+      }).join("");
     }
 
-    function renderRandomCheer() {
-      const pick = cheerMessages[Math.floor(Math.random() * cheerMessages.length)];
-      cheerEmoji.textContent = pick.emoji;
-      cheerText.textContent = pick.text;
+    function renderRandomCheer(animalKey) {
+      const key = animalKey || myCurrentAnimalKey || "a_5";
+      const messages = cheerMessages[key];
+      const text = messages[Math.floor(Math.random() * messages.length)];
+      const src = `./assets/images/${key}.png`;
+      const name = ANIMAL_NAMES[key];
+      cheerEmoji.innerHTML = animalImg(src, name);
+      cheerText.textContent = text;
+    }
+
+    function setMySchoolAnimalImg(rank) {
+      const src = getAnimalImgSrc(rank || 99);
+      mySchoolAnimal.innerHTML = animalImg(src, getAnimalName(rank || 99));
     }
 
     function setMySchoolPanelDemo() {
-      mySchoolAnimal.textContent = "🐱";
+      // 데모 상태: 앵무새(5등 이하 기본값)
+      setMySchoolAnimalImg(99);
       mySchoolSub.textContent = "서버에 연결되면 실시간 순위가 표시됩니다.";
       mySchoolInfoList.innerHTML = `
         <div class="info-item"><strong>누적 점수</strong> · —</div>
@@ -1523,36 +1083,33 @@
           : `${API_BASE}/api/rankings?limit=30`;
         const res = await fetch(url);
         if (!res.ok) throw new Error("rankings failed");
-
         const data = await res.json();
-        const rows = (data.rankings || []).map((r) => ({
-          university: r.university,
-          score: r.score,
-          animal: r.animal
-        }));
-
-        rankingData = rows;
-
+        rankingData = (data.rankings || []).map(r => ({ university: r.university, score: r.score, animal: r.animal }));
         renderTop3();
         renderFullRanking();
-
         if (data.mySchool) {
           const m = data.mySchool;
-          mySchoolAnimal.textContent = m.animal || "🦝";
-          mySchoolSub.textContent = `현재 ${m.rank}위 · 누적 ${m.score}점`;
-          const an = m.animalName || animalTitle[m.animal] || "대표 동물";
+          const myRank = m.rank || 99;
+          const src = resolveAnimalImgSrc(m.animal, myRank);
+          const anName = resolveAnimalName(m.animal, myRank);
+          mySchoolAnimal.innerHTML = animalImg(src, anName);
+          mySchoolSub.textContent = `현재 ${myRank}위 · 누적 ${m.score}점`;
           mySchoolInfoList.innerHTML = `
             <div class="info-item"><strong>누적 점수</strong> · ${m.score}점</div>
-            <div class="info-item"><strong>대표 동물</strong> · ${an} ${m.animal || ""}</div>
+            <div class="info-item"><strong>대표 동물</strong> · ${anName}</div>
             <div class="info-item"><strong>플레이 횟수</strong> · ${m.playCount ?? 0}회</div>
             <div class="info-item"><strong>안내</strong> · 게임 점수가 학교 이름으로 합산됩니다</div>
           `;
+          // 내 순위에 맞는 동물로 응원 멘트 갱신
+          myCurrentAnimalKey = getAnimalKey(myRank);
+          renderRandomCheer(myCurrentAnimalKey);
         } else if (school) {
-          mySchoolAnimal.textContent = "🦝";
+          // 이 학교 기록 없음 → 앵무새(기본)
+          setMySchoolAnimalImg(99);
           mySchoolSub.textContent = "아직 이 학교의 기록이 없어요. 게임을 플레이해 보세요!";
           mySchoolInfoList.innerHTML = `
             <div class="info-item"><strong>누적 점수</strong> · 0점</div>
-            <div class="info-item"><strong>대표 동물</strong> · 너구리 🦝</div>
+            <div class="info-item"><strong>대표 동물</strong> · 앵무새</div>
             <div class="info-item"><strong>플레이 횟수</strong> · 0회</div>
             <div class="info-item"><strong>안내</strong> · 첫 플레이 후 랭킹에 올라갑니다</div>
           `;
@@ -1571,7 +1128,6 @@
       clearTimeout(storyTimer);
       introPhaseSchool.classList.add("hidden");
       introPhaseStory.classList.remove("hidden");
-      enterLobbyBtn.textContent = "로비 입장";
       storyIndex = 0;
       introText.textContent = "";
       enterLobbyBtn.style.display = "none";
@@ -1589,9 +1145,7 @@
 
     function applySchoolToLobby() {
       const name = localStorage.getItem(STORAGE_SCHOOL);
-      if (name) {
-        mySchoolName.textContent = name;
-      }
+      if (name) mySchoolName.textContent = name;
     }
 
     function showNextStory() {
@@ -1621,11 +1175,7 @@
 
     function confirmSchoolAndEnter() {
       const name = schoolNameInput.value.trim();
-      if (!name) {
-        alert("학교 이름을 입력해 주세요.");
-        schoolNameInput.focus();
-        return;
-      }
+      if (!name) { alert("학교 이름을 입력해 주세요."); schoolNameInput.focus(); return; }
       localStorage.setItem(STORAGE_SCHOOL, name);
       showLobby();
     }
@@ -1636,65 +1186,34 @@
       startStory();
     }
 
-    fullRankingBtn.addEventListener("click", () => {
-      refreshRankingsFromApi();
-      rankingModal.style.display = "flex";
-    });
-
-    closeRankingBtn.addEventListener("click", () => {
-      rankingModal.style.display = "none";
-    });
-
-    rankingModal.addEventListener("click", (e) => {
-      if (e.target === rankingModal) {
-        rankingModal.style.display = "none";
-      }
-    });
-
-    window.addEventListener("resize", () => {
-      requestAnimationFrame(syncGamePanelHeightToLeft);
-    });
-
+    fullRankingBtn.addEventListener("click", () => { refreshRankingsFromApi(); rankingModal.style.display = "flex"; });
+    closeRankingBtn.addEventListener("click", () => { rankingModal.style.display = "none"; });
+    rankingModal.addEventListener("click", e => { if (e.target === rankingModal) rankingModal.style.display = "none"; });
+    window.addEventListener("resize", () => { requestAnimationFrame(syncGamePanelHeightToLeft); });
     enterLobbyBtn.addEventListener("click", openSchoolPhase);
     skipStoryBtn.addEventListener("click", openSchoolPhase);
     confirmSchoolBtn.addEventListener("click", confirmSchoolAndEnter);
-    schoolNameInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") confirmSchoolAndEnter();
-    });
-    backToStoryBtn.addEventListener("click", () => {
-      introPhaseSchool.classList.add("hidden");
-      introPhaseStory.classList.remove("hidden");
-      startStory();
-    });
+    schoolNameInput.addEventListener("keydown", e => { if (e.key === "Enter") confirmSchoolAndEnter(); });
+    backToStoryBtn.addEventListener("click", () => { introPhaseSchool.classList.add("hidden"); introPhaseStory.classList.remove("hidden"); startStory(); });
     storyReplayBtn.addEventListener("click", showIntroAgain);
 
     function wantsLobbyFromQuery() {
-      const p = new URLSearchParams(window.location.search);
-      const v = (p.get("lobby") || "").toLowerCase();
+      const v = (new URLSearchParams(window.location.search).get("lobby") || "").toLowerCase();
       return v === "1" || v === "true" || v === "yes";
     }
 
     function stripLobbyQuery() {
       try {
         const url = new URL(window.location.href);
-        url.searchParams.delete("lobby");
-        url.searchParams.delete("school");
-        const next = url.pathname + url.search + url.hash;
-        window.history.replaceState({}, "", next || url.pathname);
-      } catch {
-        /* file:// 등 일부 환경 */
-      }
+        url.searchParams.delete("lobby"); url.searchParams.delete("school");
+        window.history.replaceState({}, "", url.pathname + url.search + url.hash || url.pathname);
+      } catch {}
     }
 
     function schoolFromUrlQuery() {
-      try {
-        return (new URLSearchParams(window.location.search).get("school") || "").trim();
-      } catch {
-        return "";
-      }
+      try { return (new URLSearchParams(window.location.search).get("school") || "").trim(); } catch { return ""; }
     }
 
-    /** 로비에 저장된 학교가 있으면 각 미니게임 플레이 링크에 ?school= 붙임 */
     function updateGamePlayLinks() {
       const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
       const q = school ? `?school=${encodeURIComponent(school)}` : "";
@@ -1712,29 +1231,15 @@
       renderRankingsLoading();
       renderRandomCheer();
       requestAnimationFrame(syncGamePanelHeightToLeft);
-
       if (wantsLobbyFromQuery()) {
         const fromUrl = schoolFromUrlQuery();
-        if (fromUrl) {
-          try {
-            localStorage.setItem(STORAGE_SCHOOL, fromUrl);
-          } catch {
-            /* 저장 불가 환경 */
-          }
-        }
+        if (fromUrl) { try { localStorage.setItem(STORAGE_SCHOOL, fromUrl); } catch {} }
         stripLobbyQuery();
         clearTimeout(storyTimer);
         const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
-        if (school) {
-          showLobby();
-        } else {
-          introScreen.classList.remove("hidden");
-          lobbyScreen.classList.add("hidden");
-          openSchoolPhase();
-        }
+        if (school) { showLobby(); } else { introScreen.classList.remove("hidden"); lobbyScreen.classList.add("hidden"); openSchoolPhase(); }
         return;
       }
-
       startStory();
     }
 

@@ -1455,13 +1455,20 @@
     /** 리그 서버에 점수 제출(학교 없으면 생략, 실패는 무시) */
     function submitScoreToLeague(game, value) {
       const school = getLeagueSchool();
-      if (!school) return;
+      if (!school) {
+        if (!window.__leagueSchoolMissingWarned) {
+          window.__leagueSchoolMissingWarned = true;
+          alert("학교 정보가 없어 점수를 저장할 수 없습니다. 로비에서 학교를 먼저 입력해 주세요.");
+        }
+        return;
+      }
 
       const score = Math.round(Number(value));
       if (!Number.isFinite(score)) return;
 
       fetch(`${API_BASE}/api/scores`, {
         method: "POST",
+        keepalive: true,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ school, game, score })
       }).catch(() => {});
@@ -1477,6 +1484,7 @@
     let hasPass = false;
     /** 전체 런 누적 점수 (5스테이지 클리어 시 서버 제출) */
     let runEscapeScore = 0;
+    let runScoreSubmitted = false;
 
     /* 플레이어 위치(논리 픽셀) */
     let playerX = 42;
@@ -1534,28 +1542,35 @@
 
     /**
      * 전체 화면 오버레이 표시
-     * @param {"start"|"clear"|"end"} mode 시작 준비 / 스테이지 클리어 / 전체 종료
+     * @param {"init"|"start"|"clear"|"end"} mode
+     *   init  = 첫 진입 (시작 버튼만)
+     *   start = 실패 후 재도전 (시작 + 다시 준비)
+     *   clear = 스테이지 클리어 (다시 준비 + 다음 단계)
+     *   end   = 전체 종료·게임 오버 (다시 준비 + 카카오 공유)
      */
     function showOverlay(title, desc, mode = "start") {
       overlayTitle.textContent = title;
-      overlayDesc.textContent = desc;
+      overlayDesc.innerHTML = desc;
       overlay.style.display = "flex";
 
       hideKakaoShareButton();
 
-      /* 스테이지 중간 클리어: 다음 단계 버튼 노출 */
       if (mode === "clear") {
         overlayStartBtn.style.display = "none";
         overlayRestartBtn.style.display = "inline-block";
         nextStageBtn.style.display = "inline-block";
       } else if (mode === "end") {
-        /* 5단계 전부 클리어: 카카오 공유 버튼 */
         overlayStartBtn.style.display = "none";
         overlayRestartBtn.style.display = "inline-block";
         nextStageBtn.style.display = "none";
         showKakaoShareButton();
+      } else if (mode === "init") {
+        /* 첫 진입: 시작 버튼만 표시 */
+        overlayStartBtn.style.display = "inline-block";
+        overlayRestartBtn.style.display = "none";
+        nextStageBtn.style.display = "none";
       } else {
-        /* 처음·실패 후 재도전: 시작 + 다시 준비 */
+        /* 실패 후 재도전: 시작 + 다시 준비 */
         overlayStartBtn.style.display = "inline-block";
         overlayRestartBtn.style.display = "inline-block";
         nextStageBtn.style.display = "none";
@@ -1711,6 +1726,7 @@
       /* 전체 런 점수는 1단계 시작 시에만 초기화 */
       if (currentStage === 0) {
         runEscapeScore = 0;
+        runScoreSubmitted = false;
       }
 
       const config = stageConfigs[currentStage];
@@ -1772,11 +1788,12 @@
       if (currentStage === 4) {
         lastClassroomEscapeTotalScore = runEscapeScore;
         submitScoreToLeague("classroom-escape", runEscapeScore);
+        runScoreSubmitted = true;
         runEscapeScore = 0;
 
         showOverlay(
           "🏆 전체 클리어!",
-          `1단계부터 5단계까지 모두 탈출 성공! 누적 점수 ${lastClassroomEscapeTotalScore}점 · 게임이 끝났습니다.`,
+          `1단계부터 5단계까지 모두 탈출 성공!<br />누적 점수 <strong style="color:#304b68;font-size:22px">${lastClassroomEscapeTotalScore}</strong>점`,
           "end"
         );
 
@@ -1801,11 +1818,19 @@
     function failStage(title, desc) {
       clearInterval(timerInterval);
       cancelAnimationFrame(loopId);
+      const failedScore = runEscapeScore;
+      if (!runScoreSubmitted && failedScore > 0) {
+        submitScoreToLeague("classroom-escape", failedScore);
+        runScoreSubmitted = true;
+      }
       runEscapeScore = 0;
       gameEnded = true;
       gameStarted = false;
       stateText.textContent = "실패";
-      showOverlay(title, desc, "start");
+      const scoreNote = failedScore > 0
+        ? `<br />누적 점수 <strong style="color:#304b68;font-size:20px">${failedScore}</strong>점`
+        : "";
+      showOverlay(title, desc + scoreNote, "end");
       setMessage("게임 오버");
     }
 
@@ -2027,9 +2052,9 @@
       requestAnimationFrame(updateGameViewportScale);
     });
     showOverlay(
-      "게임 준비",
-      "오버레이의 시작 버튼을 눌러 1단계를 시작하세요. 학생증을 챙기고 교수님을 피해 탈출하면 됩니다.",
-      "start"
+      "🏫 교수님 몰래 강의실 탈출",
+      "학생증을 먼저 챙기고 문으로 탈출하세요.<br />단계가 올라갈수록 교수님의 동선이 더 복잡해집니다.",
+      "init"
     );
   </script>
 </body>
