@@ -61,6 +61,36 @@
     .hidden { display: none !important; }
     .bg-deco { display: none; }
 
+    /* ── 동물 이미지 공통 ── */
+    .animal-img {
+      object-fit: contain;
+      display: inline-block;
+    }
+
+    /* TOP3 카드 내 동물 이미지 */
+    .podium-animal .animal-img {
+      width: 36px;
+      height: 36px;
+    }
+
+    /* 내 대학 아이콘 */
+    .my-animal .animal-img {
+      width: 38px;
+      height: 38px;
+    }
+
+    /* 랭킹 테이블 */
+    .animal-cell .animal-img {
+      width: 32px;
+      height: 32px;
+    }
+
+    /* 응원 멘트 */
+    .cheer-emoji .animal-img {
+      width: 52px;
+      height: 52px;
+    }
+
     /* ── INTRO ── */
     #introScreen {
       min-height: 100vh;
@@ -142,7 +172,6 @@
       flex-wrap: wrap;
     }
 
-    /* 연한 노란색 버튼 통일 */
     #enterLobbyBtn {
       padding: 16px 34px;
       border-radius: 999px;
@@ -264,7 +293,6 @@
       margin: 0 auto;
     }
 
-    /* 헤더 — 베이지 카드 */
     .lobby-header {
       background: rgba(245, 238, 220, 0.93);
       border: 3px solid #e0d3b0;
@@ -292,7 +320,6 @@
 
     .header-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
-    /* 나무 표지판 버튼 */
     .header-btn {
       padding: 9px 16px;
       border-radius: 12px;
@@ -310,7 +337,6 @@
       box-shadow: 0 2px 0 #b08a4a, 0 4px 8px rgba(0,0,0,0.10);
     }
 
-    /* 메인 그리드 */
     .lobby-main {
       display: grid;
       grid-template-columns: 1fr 1.15fr;
@@ -326,7 +352,6 @@
       gap: 12px;
     }
 
-    /* 데스크탑 고정 레이아웃 (팀원 코드 유지) */
     @media (min-width: 1121px) {
       .lobby-main {
         grid-template-columns: 553.78px 636.84px;
@@ -353,7 +378,6 @@
       }
     }
 
-    /* 공통 패널 — 베이지 카드 */
     .panel {
       background: rgba(245, 238, 220, 0.93);
       border: 3px solid #e0d3b0;
@@ -387,7 +411,6 @@
     .panel-title span { color: #9a8a72; font-size: 12px; }
     .small-panel-title { margin: 0 0 12px; font-size: 15px; color: #4a3728; }
 
-    /* TOP 3 — 팀원 가로 한 줄 스타일 유지 */
     .podium { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
 
     .rankings-loading,
@@ -411,7 +434,6 @@
       color: #7a6a55; font-size: 14px; border: none !important;
     }
 
-    /* rank-card — 팀원 가로 스타일 + 내 베이지 색상 */
     .rank-card {
       display: flex;
       flex-direction: row;
@@ -430,20 +452,19 @@
     .rank-card.third  { background: rgba(240, 220, 200, 0.75); border-color: #c8a880; }
 
     .podium-medal { flex-shrink: 0; width: 34px; text-align: center; font-size: 22px; line-height: 1; }
-    .podium-animal { flex-shrink: 0; width: 40px; text-align: center; font-size: 28px; line-height: 1; }
+    .podium-animal { flex-shrink: 0; width: 40px; text-align: center; line-height: 1; display: flex; align-items: center; justify-content: center; }
     .podium-uni { flex: 1; min-width: 0; font-size: 15px; color: #4a3728; word-break: break-word; line-height: 1.35; }
     .podium-score { flex-shrink: 0; font-size: 14px; color: #5a4a38; white-space: nowrap; }
 
-    /* 내 대학 */
     .my-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
 
     .my-animal {
       width: 50px; height: 50px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 26px;
       background: rgba(255,240,180,0.8);
       border: 3px solid #d4b86a;
       flex-shrink: 0;
+      overflow: hidden;
     }
 
     .my-meta h3 { margin: 0; color: #4a3728; font-size: 15px; }
@@ -461,7 +482,6 @@
 
     .info-item strong { color: #4a3728; }
 
-    /* 응원 패널 */
     .cheer-panel {
       display: flex;
       flex-direction: column;
@@ -480,13 +500,18 @@
       gap: 8px;
     }
 
-    .cheer-emoji { font-size: 38px; }
+    .cheer-emoji {
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
     .cheer-text { font-size: 14px; line-height: 1.75; color: #5a4020; word-break: keep-all; }
 
     .mini-note { font-size: 11px; color: #9a8a60; margin-top: 10px; }
 
-    /* 게임 그리드 */
     .game-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -530,7 +555,6 @@
 
     .game-card p { margin: 0 0 14px; font-size: 12px; color: #7a6a55; line-height: 1.5; }
 
-    /* 플레이 버튼 — 나무 표지판 */
     .play-btn {
       display: inline-block;
       padding: 7px 13px;
@@ -559,7 +583,6 @@
 
     .coming:hover { transform: none; box-shadow: 0 3px 0 #a89980; }
 
-    /* 랭킹 모달 */
     .modal {
       position: fixed; inset: 0;
       background: rgba(30, 20, 10, 0.45);
@@ -648,7 +671,8 @@
       .podium { gap: 6px; }
       .rank-card { padding: 9px 10px; gap: 8px; }
       .podium-medal { width: 30px; font-size: 20px; }
-      .podium-animal { width: 36px; font-size: 24px; }
+      .podium-animal { width: 36px; }
+      .podium-animal .animal-img { width: 30px; height: 30px; }
       .podium-uni { font-size: 14px; }
       .podium-score { font-size: 13px; }
       .game-card h3 { font-size: 20px; }
@@ -660,7 +684,7 @@
       .modal-head h2 { font-size: 20px; }
       .ranking-scroll { padding: 12px 12px 20px; }
       thead th, tbody td { font-size: 13px; padding: 10px 6px; }
-      .animal-cell { font-size: 22px; }
+      .animal-cell .animal-img { width: 26px; height: 26px; }
     }
   </style>
 </head>
@@ -729,7 +753,9 @@
             <div class="panel equal-height-panel">
               <h3 class="small-panel-title">🏫 내 대학 정보</h3>
               <div class="my-card-top">
-                <div class="my-animal" id="mySchoolAnimal">🐱</div>
+                <div class="my-animal" id="mySchoolAnimal">
+                  <img class="animal-img" src="./assets/images/a_5.png" alt="대표 동물" />
+                </div>
                 <div class="my-meta">
                   <h3 id="mySchoolName">성균관대학교</h3>
                   <p id="mySchoolSub">서버에 연결되면 실시간 순위가 표시됩니다.</p>
@@ -746,7 +772,9 @@
             <div class="panel equal-height-panel cheer-panel">
               <h3 class="small-panel-title">💬 왕국 응원 멘트</h3>
               <div class="cheer-main">
-                <div class="cheer-emoji" id="cheerEmoji">🐯</div>
+                <div class="cheer-emoji" id="cheerEmoji">
+                  <img class="animal-img" src="./assets/images/a_1.png" alt="응원 동물" />
+                </div>
                 <div class="cheer-text" id="cheerText">왕의 자리는 단 하나! 지금 바로 점수를 올려봐!</div>
               </div>
               <div class="mini-note">로비에 들어올 때마다 응원 멘트가 바뀝니다.</div>
@@ -830,18 +858,53 @@
 
     let rankingData = [];
 
-    const animalTitle = {
-      "🐯":"호랑이","🐴":"말","🦜":"앵무새","🐱":"고양이","🐿️":"다람쥐",
-      "🐰":"토끼","🦊":"여우","🐻":"곰","🦌":"사슴","🐼":"판다",
-      "🦉":"부엉이","🐨":"코알라","🐹":"햄스터","🦝":"너구리"
+    // ── 순위 → 동물 이미지 매핑 ──
+    // 1등: 사자(a_1), 2등: 말(a_2), 3등: 고양이(a_3), 4등: 다람쥐(a_4), 5등 이하: 앵무새(a_5)
+    const ANIMAL_NAMES = {
+      "a_1": "사자",
+      "a_2": "말",
+      "a_3": "고양이",
+      "a_4": "다람쥐",
+      "a_5": "앵무새"
     };
 
+    function getAnimalKey(rank) {
+      if (rank === 1) return "a_1";
+      if (rank === 2) return "a_2";
+      if (rank === 3) return "a_3";
+      if (rank === 4) return "a_4";
+      return "a_5";
+    }
+
+    function getAnimalImgSrc(rank) {
+      return `./assets/images/${getAnimalKey(rank)}.png`;
+    }
+
+    function getAnimalName(rank) {
+      return ANIMAL_NAMES[getAnimalKey(rank)];
+    }
+
+    // 기존 animal 필드(이모지 문자열 등)를 받아 이름 반환 — 서버 데이터 호환
+    function resolveAnimalName(animalField, rank) {
+      if (animalField && ANIMAL_NAMES[animalField]) return ANIMAL_NAMES[animalField];
+      return getAnimalName(rank);
+    }
+
+    function resolveAnimalImgSrc(animalField, rank) {
+      if (animalField && ANIMAL_NAMES[animalField]) return `./assets/images/${animalField}.png`;
+      return getAnimalImgSrc(rank);
+    }
+
+    function animalImg(src, alt, extraClass) {
+      return `<img class="animal-img${extraClass ? ' ' + extraClass : ''}" src="${src}" alt="${alt}" />`;
+    }
+
     const cheerMessages = [
-      { emoji: "🐯", text: "왕의 자리는 단 하나! 지금 바로 점수를 올려봐!" },
-      { emoji: "🦜", text: "조금만 더 날아오르면 상위권도 충분히 가능해!" },
-      { emoji: "🐱", text: "차분하게 플레이하면 순위는 반드시 오른다!" },
-      { emoji: "🐿️", text: "작아 보여도 방심 금지! 역전은 언제든 가능해!" },
-      { emoji: "🐴", text: "지금은 달릴 시간! 한 번에 순위를 끌어올려봐!" }
+      { animalKey: "a_1", text: "왕의 자리는 단 하나! 지금 바로 점수를 올려봐!" },
+      { animalKey: "a_5", text: "조금만 더 날아오르면 상위권도 충분히 가능해!" },
+      { animalKey: "a_3", text: "차분하게 플레이하면 순위는 반드시 오른다!" },
+      { animalKey: "a_4", text: "작아 보여도 방심 금지! 역전은 언제든 가능해!" },
+      { animalKey: "a_2", text: "지금은 달릴 시간! 한 번에 순위를 끌어올려봐!" }
     ];
 
     const STORAGE_SCHOOL = "animalLeagueSchool";
@@ -920,20 +983,24 @@
         return;
       }
       const top3 = rankingData.slice(0, 3);
-      while (top3.length < 3) top3.push({ university: "—", score: 0, animal: "🌱" });
+      while (top3.length < 3) top3.push({ university: "—", score: 0, animal: null });
       const rows = [
-        { item: top3[0], medal: "🥇", cls: "first" },
-        { item: top3[1], medal: "🥈", cls: "second" },
-        { item: top3[2], medal: "🥉", cls: "third" }
+        { item: top3[0], rank: 1, medal: "🥇", cls: "first" },
+        { item: top3[1], rank: 2, medal: "🥈", cls: "second" },
+        { item: top3[2], rank: 3, medal: "🥉", cls: "third" }
       ];
-      top3Container.innerHTML = rows.map(({ item, medal, cls }) => `
-        <div class="rank-card ${cls}">
-          <span class="podium-medal">${medal}</span>
-          <span class="podium-animal" title="${animalTitle[item.animal] || "대표 동물"}">${item.animal}</span>
-          <span class="podium-uni">${item.university}</span>
-          <span class="podium-score">${item.score}점</span>
-        </div>
-      `).join("");
+      top3Container.innerHTML = rows.map(({ item, rank, medal, cls }) => {
+        const src = resolveAnimalImgSrc(item.animal, rank);
+        const name = resolveAnimalName(item.animal, rank);
+        return `
+          <div class="rank-card ${cls}">
+            <span class="podium-medal">${medal}</span>
+            <span class="podium-animal">${animalImg(src, name)}</span>
+            <span class="podium-uni">${item.university}</span>
+            <span class="podium-score">${item.score}점</span>
+          </div>
+        `;
+      }).join("");
     }
 
     function renderFullRanking() {
@@ -941,24 +1008,37 @@
         rankingTableBody.innerHTML = `<tr class="ranking-table-loading"><td colspan="4">등록된 랭킹이 없습니다.</td></tr>`;
         return;
       }
-      rankingTableBody.innerHTML = rankingData.map((item, i) => `
-        <tr>
-          <td><span class="rank-badge">${i + 1}</span></td>
-          <td class="uni-cell">${item.university}</td>
-          <td>${item.score}</td>
-          <td class="animal-cell">${item.animal}</td>
-        </tr>
-      `).join("");
+      rankingTableBody.innerHTML = rankingData.map((item, i) => {
+        const rank = i + 1;
+        const src = resolveAnimalImgSrc(item.animal, rank);
+        const name = resolveAnimalName(item.animal, rank);
+        return `
+          <tr>
+            <td><span class="rank-badge">${rank}</span></td>
+            <td class="uni-cell">${item.university}</td>
+            <td>${item.score}</td>
+            <td class="animal-cell">${animalImg(src, name)}</td>
+          </tr>
+        `;
+      }).join("");
     }
 
     function renderRandomCheer() {
       const pick = cheerMessages[Math.floor(Math.random() * cheerMessages.length)];
-      cheerEmoji.textContent = pick.emoji;
+      const src = `./assets/images/${pick.animalKey}.png`;
+      const name = ANIMAL_NAMES[pick.animalKey];
+      cheerEmoji.innerHTML = animalImg(src, name);
       cheerText.textContent = pick.text;
     }
 
+    function setMySchoolAnimalImg(rank) {
+      const src = getAnimalImgSrc(rank || 99);
+      mySchoolAnimal.innerHTML = animalImg(src, getAnimalName(rank || 99));
+    }
+
     function setMySchoolPanelDemo() {
-      mySchoolAnimal.textContent = "🐱";
+      // 데모 상태: 앵무새(5등 이하 기본값)
+      setMySchoolAnimalImg(99);
       mySchoolSub.textContent = "서버에 연결되면 실시간 순위가 표시됩니다.";
       mySchoolInfoList.innerHTML = `
         <div class="info-item"><strong>누적 점수</strong> · —</div>
@@ -983,21 +1063,25 @@
         renderFullRanking();
         if (data.mySchool) {
           const m = data.mySchool;
-          mySchoolAnimal.textContent = m.animal || "🦝";
-          mySchoolSub.textContent = `현재 ${m.rank}위 · 누적 ${m.score}점`;
-          const an = m.animalName || animalTitle[m.animal] || "대표 동물";
+          const myRank = m.rank || 99;
+          // 서버가 a_1 등 키를 내려주면 그대로 사용, 아니면 rank로 결정
+          const src = resolveAnimalImgSrc(m.animal, myRank);
+          const anName = resolveAnimalName(m.animal, myRank);
+          mySchoolAnimal.innerHTML = animalImg(src, anName);
+          mySchoolSub.textContent = `현재 ${myRank}위 · 누적 ${m.score}점`;
           mySchoolInfoList.innerHTML = `
             <div class="info-item"><strong>누적 점수</strong> · ${m.score}점</div>
-            <div class="info-item"><strong>대표 동물</strong> · ${an} ${m.animal || ""}</div>
+            <div class="info-item"><strong>대표 동물</strong> · ${anName}</div>
             <div class="info-item"><strong>플레이 횟수</strong> · ${m.playCount ?? 0}회</div>
             <div class="info-item"><strong>안내</strong> · 게임 점수가 학교 이름으로 합산됩니다</div>
           `;
         } else if (school) {
-          mySchoolAnimal.textContent = "🦝";
+          // 이 학교 기록 없음 → 앵무새(기본)
+          setMySchoolAnimalImg(99);
           mySchoolSub.textContent = "아직 이 학교의 기록이 없어요. 게임을 플레이해 보세요!";
           mySchoolInfoList.innerHTML = `
             <div class="info-item"><strong>누적 점수</strong> · 0점</div>
-            <div class="info-item"><strong>대표 동물</strong> · 너구리 🦝</div>
+            <div class="info-item"><strong>대표 동물</strong> · 앵무새</div>
             <div class="info-item"><strong>플레이 횟수</strong> · 0회</div>
             <div class="info-item"><strong>안내</strong> · 첫 플레이 후 랭킹에 올라갑니다</div>
           `;
