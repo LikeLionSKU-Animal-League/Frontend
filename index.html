@@ -899,13 +899,37 @@
       return `<img class="animal-img${extraClass ? ' ' + extraClass : ''}" src="${src}" alt="${alt}" />`;
     }
 
-    const cheerMessages = [
-      { animalKey: "a_1", text: "왕의 자리는 단 하나! 지금 바로 점수를 올려봐!" },
-      { animalKey: "a_5", text: "조금만 더 날아오르면 상위권도 충분히 가능해!" },
-      { animalKey: "a_3", text: "차분하게 플레이하면 순위는 반드시 오른다!" },
-      { animalKey: "a_4", text: "작아 보여도 방심 금지! 역전은 언제든 가능해!" },
-      { animalKey: "a_2", text: "지금은 달릴 시간! 한 번에 순위를 끌어올려봐!" }
-    ];
+    // 동물별 응원 멘트 (순위에 따라 해당 동물 멘트 중 랜덤 표시)
+    const cheerMessages = {
+      "a_1": [
+        "왕국은 고요하다. 도전자가 없으니, 오늘도 왕좌는 내 것이다.",
+        "사자는 뛰지 않는다. 그저 존재만으로도 1등이다.",
+        "정상에서 내려다보는 풍경, 다른 학교들은 아직도 올려다보고 있군."
+      ],
+      "a_2": [
+        "사자의 숨소리가 들린다. 조금만 더 달리면 왕좌가 보인다!",
+        "2등은 1등의 그림자. 지금이 역전의 순간이다!",
+        "말은 멈추지 않는다. 결승선은 바로 저기!"
+      ],
+      "a_3": [
+        "3등도 충분히 강하다. 하지만 더 올라갈 수 있어!",
+        "고양이는 조용히, 그러나 반드시 위로 올라간다.",
+        "두 계단만 더. 왕좌가 비어있진 않지만, 도전은 계속된다!"
+      ],
+      "a_4": [
+        "작은 다람쥐도 도토리를 모으면 겨울을 난다. 점수를 모아라!",
+        "4등은 아직 중간. 위도 아래도 노려볼 수 있는 자리다!",
+        "다람쥐의 발은 빠르다. 지금 바로 뛰어올라!"
+      ],
+      "a_5": [
+        "앵무새는 말만 잘한다고? 이번엔 점수로 증명할 차례!",
+        "꼴찌도 게임 한 판이면 역전이 가능하다. 지금 당장 시작해!",
+        "날개가 있으면 날아야지. 순위는 지금부터 올라간다!"
+      ]
+    };
+
+    // 현재 내 학교 순위에 맞는 animalKey 저장 (API 응답 후 갱신)
+    let myCurrentAnimalKey = "a_5";
 
     const STORAGE_SCHOOL = "animalLeagueSchool";
     const API_BASE =
@@ -1023,12 +1047,14 @@
       }).join("");
     }
 
-    function renderRandomCheer() {
-      const pick = cheerMessages[Math.floor(Math.random() * cheerMessages.length)];
-      const src = `./assets/images/${pick.animalKey}.png`;
-      const name = ANIMAL_NAMES[pick.animalKey];
+    function renderRandomCheer(animalKey) {
+      const key = animalKey || myCurrentAnimalKey || "a_5";
+      const messages = cheerMessages[key];
+      const text = messages[Math.floor(Math.random() * messages.length)];
+      const src = `./assets/images/${key}.png`;
+      const name = ANIMAL_NAMES[key];
       cheerEmoji.innerHTML = animalImg(src, name);
-      cheerText.textContent = pick.text;
+      cheerText.textContent = text;
     }
 
     function setMySchoolAnimalImg(rank) {
@@ -1064,7 +1090,6 @@
         if (data.mySchool) {
           const m = data.mySchool;
           const myRank = m.rank || 99;
-          // 서버가 a_1 등 키를 내려주면 그대로 사용, 아니면 rank로 결정
           const src = resolveAnimalImgSrc(m.animal, myRank);
           const anName = resolveAnimalName(m.animal, myRank);
           mySchoolAnimal.innerHTML = animalImg(src, anName);
@@ -1075,6 +1100,9 @@
             <div class="info-item"><strong>플레이 횟수</strong> · ${m.playCount ?? 0}회</div>
             <div class="info-item"><strong>안내</strong> · 게임 점수가 학교 이름으로 합산됩니다</div>
           `;
+          // 내 순위에 맞는 동물로 응원 멘트 갱신
+          myCurrentAnimalKey = getAnimalKey(myRank);
+          renderRandomCheer(myCurrentAnimalKey);
         } else if (school) {
           // 이 학교 기록 없음 → 앵무새(기본)
           setMySchoolAnimalImg(99);
