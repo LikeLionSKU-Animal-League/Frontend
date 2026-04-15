@@ -303,7 +303,7 @@
     /* 칠판 */
     .board {
       position: absolute;
-      left: 350px;
+      left: calc(50% - 235px);
       top: 34px;
       width: 470px;
       height: 120px;
@@ -370,7 +370,7 @@
     /* 교탁 */
     .teacher-desk {
       position: absolute;
-      left: 445px;
+      left: calc(50% - 140px);
       top: 178px;
       width: 280px;
       height: 48px;
@@ -429,6 +429,7 @@
       align-items: center;
       font-size: 20px;
       box-shadow: 0 10px 16px rgba(226, 180, 60, 0.28);
+      animation: ce-float-bob 1.8s ease-in-out infinite;
     }
 
     /* 학생증 이모지 */
@@ -464,8 +465,8 @@
     /* 플레이어(학생) 원형 마커 */
     #player {
       position: absolute;
-      width: 32px;
-      height: 32px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       background: linear-gradient(180deg, #76c8ff 0%, #4599df 100%);
       border: 3px solid white;
@@ -474,7 +475,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 17px;
+      font-size: 20px;
     }
 
     #player::after { content: "🎓"; }
@@ -482,8 +483,8 @@
     /* 교수 캐릭터 이미지 */
     .professor {
       position: absolute;
-      width: 70px;
-      height: 70px;
+      width: 80px;
+      height: 80px;
       object-fit: contain;
       z-index: 9;
       pointer-events: none;
@@ -493,8 +494,8 @@
     /* 교수 발밑 그림자 */
     .prof-shadow {
       position: absolute;
-      width: 54px;
-      height: 12px;
+      width: 62px;
+      height: 14px;
       border-radius: 50%;
       background: rgba(0,0,0,0.15);
       z-index: 4;
@@ -532,12 +533,20 @@
     .overlay {
       position: absolute;
       inset: 0;
-      display: none;
+      display: flex;
       align-items: center;
       justify-content: center;
       background: rgba(17, 24, 33, 0.44);
       backdrop-filter: blur(3px);
       z-index: 30;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease;
+    }
+
+    .overlay.is-visible {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     /* 오버레이 안 흰 카드 */
@@ -549,6 +558,12 @@
       border: 3px solid #e8f0f6;
       box-shadow: 0 22px 36px rgba(0,0,0,0.18);
       text-align: center;
+      transform: scale(0.94);
+      transition: transform 0.22s ease;
+    }
+
+    .overlay.is-visible .overlay-card {
+      transform: scale(1);
     }
 
     /* 오버레이 제목 */
@@ -903,6 +918,87 @@
         display: none !important;
       }
     }
+
+    /* ===== Game Juice Animations ===== */
+
+    /* 학생증 둥실거리는 bob */
+    @keyframes ce-float-bob {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* 픽업 파티클 버스트 */
+    @keyframes ce-pickup-burst {
+      0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+    }
+
+    /* 획득 텍스트 라이즈 페이드 */
+    @keyframes ce-rise-fade {
+      0%   { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-60px); opacity: 0; }
+    }
+
+    /* 문 잠금 해제 팝인 바운스 */
+    @keyframes ce-pop-in {
+      0%   { transform: scale(0.5); }
+      60%  { transform: scale(1.35); }
+      80%  { transform: scale(0.9); }
+      100% { transform: scale(1); }
+    }
+    .ce-pop-in { animation: ce-pop-in 0.45s ease-out !important; }
+
+    /* 화면 플래시 페이드아웃 */
+    @keyframes ce-flash-fade {
+      0%   { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    /* 타임 압박 펄스 */
+    @keyframes ce-time-pulse {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.12); }
+    }
+
+    /* 시간 12초 이하: 주황 */
+    .time-urgent { color: #e07b20 !important; }
+
+    /* 시간 5초 이하: 붉은 + 펄스 */
+    .time-critical {
+      color: #d02020 !important;
+      animation: ce-time-pulse 0.5s ease-in-out infinite !important;
+    }
+
+    /* 최종 클리어 컨펫티 낙하 */
+    @keyframes ce-confetti-fall {
+      0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(var(--fall-y)) rotate(var(--rotate)); opacity: 0; }
+    }
+
+    /* 분필 투척체 */
+    .chalk-proj {
+      position: absolute;
+      width: 24px; height: 10px;
+      background: linear-gradient(90deg, #f0f0e8, #d4d4c8);
+      border-radius: 3px;
+      z-index: 8;
+      pointer-events: none;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.18);
+    }
+    /* 교수 경보 표시 */
+    .prof-alert {
+      position: absolute;
+      z-index: 22;
+      font-size: 24px;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+    }
+    @keyframes ce-alert-pop {
+      0%   { transform: scale(0) translateY(8px); opacity:0; }
+      60%  { transform: scale(1.3) translateY(-4px); }
+      100% { transform: scale(1) translateY(0); opacity:1; }
+    }
+    .prof-alert.is-new { animation: ce-alert-pop 0.3s ease-out; }
   </style>
 </head>
 <body>
@@ -947,6 +1043,10 @@
           <div class="status-box">
             <div class="status-label">남은 시간</div>
             <div class="status-value" id="timeText">35</div>
+          </div>
+          <div class="status-box">
+            <div class="status-label">목숨</div>
+            <div class="status-value" id="lives-display">❤️❤️❤️</div>
           </div>
           <div class="status-box">
             <div class="status-label">상태</div>
@@ -1134,6 +1234,7 @@
       const scaleByW = innerW / gameWorldWidth;
       const scaleByH = innerH / GAME_HEIGHT;
       const scale = Math.min(scaleByW, scaleByH);
+      currentGameScale = scale; /* 흔들림 복원용 동기화 */
       const scaledW = gameWorldWidth * scale;
       const scaledH = GAME_HEIGHT * scale;
       const transform = `scale(${scale})`;
@@ -1233,8 +1334,8 @@
     })();
 
     /* ===== 플레이어·아이템 상수 ===== */
-    const PLAYER_SIZE = 32;
-    const PLAYER_SPEED = 5.0;
+    const PLAYER_SIZE = 50;
+    const PLAYER_SPEED = 10.0;
     const PASS_SIZE = 40;
 
     /* ===== 자주 쓰는 DOM 참조 ===== */
@@ -1339,73 +1440,164 @@
       return desks;
     }
 
-    /* 3열 패턴의 넓은 강의실 책상 배치 */
-    const wideDeskLayout = makeDeskGrid(
-      [
-        [110, 280, 450, 620, 790, 960],
-        [195, 365, 535, 705, 875],
-        [110, 280, 450, 620, 790, 960]
-      ],
-      [305, 435, 565]
-    );
+    /* 책상 열·행 비율 — 고정 px 배열 대신 비율로 정의, buildStage에서 calc() 변환
+     * DESK_COL6: 폭을 7등분해 1~6 지점에 센터 (6칸 행)
+     * DESK_COL5: 폭을 6등분해 1~5 지점에 센터 (5칸 행, 지그재그 엇갈림)
+     * DESK_ROW_Y: 높이 기준 행 y 비율 */
+    const DESK_COL6  = [1, 2, 3, 4, 5, 6].map(n => n / 7);
+    const DESK_COL5  = [1, 2, 3, 4, 5].map(n => n / 6);
+    const DESK_ROW_Y = [270 / GAME_HEIGHT, 435 / GAME_HEIGHT, 600 / GAME_HEIGHT];
 
     /* 5단계: 제한 시간·학생증 위치·교수 웨이포인트·시야 크기 */
     const stageConfigs = [
       {
         time: 35,
         pass: { x: 955, y: 575 },
-        desks: wideDeskLayout,
         professor: {
-          x: 160, y: 150, speed: 2.0, vision: 165, visionWidth: 86,
-          waypoints: [{x:160,y:150},{x:950,y:150}]
-        }
+          x: 160, y: 150, speed: 4.6, vision: 175, visionWidth: 90,
+          waypoints: [{x:160,y:150},{x:950,y:150},{x:950,y:435},{x:160,y:435}]
+        },
+        extraProfessors: [
+          {
+            x: 950, y: 580, speed: 4.6, vision: 175, visionWidth: 90,
+            waypoints: [{x:950,y:580},{x:160,y:580}]
+          }
+        ]
       },
       {
-        time: 31,
+        time: 33,
         pass: { x: 180, y: 575 },
-        desks: wideDeskLayout,
         professor: {
-          x: 160, y: 150, speed: 2.4, vision: 175, visionWidth: 90,
-          waypoints: [{x:160,y:150},{x:950,y:150},{x:950,y:270},{x:160,y:270}]
-        }
+          x: 160, y: 150, speed: 5.8, vision: 185, visionWidth: 95,
+          waypoints: [{x:160,y:150},{x:950,y:150},{x:950,y:530},{x:160,y:530},{x:160,y:270}]
+        },
+        extraProfessors: [
+          {
+            x: 950, y: 530, speed: 5.8, vision: 185, visionWidth: 95,
+            waypoints: [{x:950,y:530},{x:160,y:530},{x:160,y:360},{x:950,y:360}]
+          },
+          {
+            x: 535, y: 200, speed: 5.8, vision: 185, visionWidth: 95,
+            waypoints: [{x:535,y:200},{x:535,y:580},{x:160,y:410},{x:950,y:410}]
+          },
+          {
+            x: 350, y: 150, speed: 5.8, vision: 185, visionWidth: 95,
+            waypoints: [{x:350,y:150},{x:350,y:580},{x:750,y:580},{x:750,y:150}]
+          }
+        ]
       },
       {
-        time: 28,
+        time: 32,
         pass: { x: 955, y: 315 },
-        desks: wideDeskLayout,
         professor: {
-          x: 160, y: 150, speed: 2.7, vision: 185, visionWidth: 94,
+          x: 160, y: 150, speed: 6.7, vision: 195, visionWidth: 100,
           waypoints: [
             {x:160,y:150},{x:950,y:150},{x:950,y:310},
             {x:780,y:610},{x:250,y:610},{x:160,y:360}
           ]
-        }
+        },
+        extraProfessors: [
+          {
+            x: 950, y: 610, speed: 6.7, vision: 195, visionWidth: 100,
+            waypoints: [{x:950,y:610},{x:160,y:610},{x:160,y:420},{x:730,y:310},{x:950,y:420}]
+          },
+          {
+            x: 550, y: 150, speed: 6.7, vision: 195, visionWidth: 100,
+            waypoints: [{x:550,y:150},{x:950,y:420},{x:550,y:610},{x:160,y:300}]
+          },
+          {
+            x: 160, y: 310, speed: 6.7, vision: 195, visionWidth: 100,
+            waypoints: [{x:160,y:310},{x:950,y:310},{x:950,y:500},{x:160,y:500}]
+          },
+          {
+            x: 950, y: 200, speed: 6.7, vision: 195, visionWidth: 100,
+            waypoints: [{x:950,y:200},{x:160,y:200},{x:160,y:580},{x:550,y:400}]
+          },
+          {
+            x: 350, y: 610, speed: 6.7, vision: 195, visionWidth: 100,
+            waypoints: [{x:350,y:610},{x:350,y:150},{x:750,y:430},{x:750,y:610}]
+          }
+        ]
       },
       {
-        time: 25,
+        time: 30,
         pass: { x: 535, y: 435 },
-        desks: wideDeskLayout,
         professor: {
-          x: 160, y: 150, speed: 3.0, vision: 195, visionWidth: 98,
+          x: 160, y: 150, speed: 7.7, vision: 205, visionWidth: 105,
           waypoints: [
             {x:160,y:150},{x:950,y:150},{x:950,y:330},
             {x:1020,y:610},{x:730,y:610},{x:410,y:330},
             {x:160,y:610},{x:160,y:260}
           ]
-        }
+        },
+        extraProfessors: [
+          {
+            x: 535, y: 435, speed: 7.7, vision: 205, visionWidth: 105,
+            waypoints: [{x:535,y:435},{x:950,y:435},{x:950,y:610},{x:160,y:610},{x:160,y:435},{x:535,y:250}]
+          },
+          {
+            x: 160, y: 420, speed: 7.7, vision: 205, visionWidth: 105,
+            waypoints: [{x:160,y:420},{x:950,y:420},{x:950,y:610},{x:160,y:610}]
+          },
+          {
+            x: 550, y: 300, speed: 7.7, vision: 205, visionWidth: 105,
+            waypoints: [{x:550,y:300},{x:950,y:300},{x:950,y:150},{x:550,y:150},{x:160,y:300}]
+          },
+          {
+            x: 350, y: 150, speed: 7.7, vision: 205, visionWidth: 105,
+            waypoints: [{x:350,y:150},{x:350,y:610},{x:950,y:250},{x:160,y:250}]
+          },
+          {
+            x: 750, y: 610, speed: 7.7, vision: 205, visionWidth: 105,
+            waypoints: [{x:750,y:610},{x:750,y:150},{x:160,y:500},{x:950,y:500}]
+          },
+          {
+            x: 950, y: 350, speed: 7.7, vision: 205, visionWidth: 105,
+            waypoints: [{x:950,y:350},{x:160,y:350},{x:550,y:200},{x:550,y:610}]
+          }
+        ]
       },
       {
-        time: 22,
+        time: 28,
         pass: { x: 955, y: 575 },
-        desks: wideDeskLayout,
         professor: {
-          x: 160, y: 150, speed: 3.4, vision: 210, visionWidth: 105,
+          x: 160, y: 150, speed: 8.8, vision: 220, visionWidth: 112,
           waypoints: [
             {x:160,y:150},{x:950,y:150},{x:1000,y:320},
             {x:1030,y:610},{x:760,y:610},{x:535,y:435},
             {x:250,y:610},{x:110,y:420},{x:160,y:260}
           ]
-        }
+        },
+        extraProfessors: [
+          {
+            x: 950, y: 610, speed: 8.8, vision: 220, visionWidth: 112,
+            waypoints: [{x:950,y:610},{x:160,y:610},{x:160,y:430},{x:535,y:310},{x:950,y:310},{x:950,y:150}]
+          },
+          {
+            x: 550, y: 420, speed: 8.8, vision: 220, visionWidth: 112,
+            waypoints: [{x:550,y:420},{x:160,y:250},{x:160,y:610},{x:950,y:420},{x:550,y:150}]
+          },
+          {
+            x: 160, y: 420, speed: 8.8, vision: 220, visionWidth: 112,
+            waypoints: [{x:160,y:420},{x:950,y:420},{x:550,y:610},{x:160,y:610}]
+          },
+          {
+            x: 550, y: 200, speed: 8.8, vision: 220, visionWidth: 112,
+            waypoints: [{x:550,y:200},{x:950,y:200},{x:950,y:420},{x:550,y:610},{x:160,y:310}]
+          },
+          {
+            x: 350, y: 150, speed: 8.8, vision: 220, visionWidth: 112,
+            waypoints: [{x:350,y:150},{x:350,y:610},{x:750,y:310},{x:750,y:610}]
+          },
+          {
+            x: 750, y: 150, speed: 8.8, vision: 220, visionWidth: 112,
+            waypoints: [{x:750,y:150},{x:160,y:380},{x:950,y:380},{x:750,y:610}]
+          },
+          {
+            x: 550, y: 380, speed: 8.8, vision: 220, visionWidth: 112,
+            waypoints: [{x:550,y:380},{x:160,y:150},{x:950,y:150},{x:550,y:610},{x:160,y:460}]
+          }
+        ]
       }
     ];
 
@@ -1476,11 +1668,150 @@
 
     setLobbyBackLink();
 
+    /* ===== 사운드 시스템 ===== */
+    const S = {};
+    const SDIR = '../assets/sounds/';
+    [
+      ['pickup',  'powerUp2.mp3'],
+      ['caught',  'phaserDown1.mp3'],
+      ['clear',   'jingles_PIZZI13.mp3'],
+      ['timeout', 'lowDown.mp3'],
+      ['step',    'footstep_carpet_000.mp3'],
+      ['danger',  'phaserUp1.mp3'],
+      ['win',     'jingles_SAX00.mp3'],
+      ['chalk',   'mouserelease1.mp3'],
+    ].forEach(([k, f]) => {
+      const a = new Audio(SDIR + f); a.preload = 'auto'; S[k] = a;
+    });
+    function play(key, vol = 0.5) {
+      try { const c = S[key].cloneNode(); c.volume = vol; c.play().catch(() => {}); } catch (_) {}
+    }
+
+    /* ===== 화면 흔들림 ===== */
+    let shake = { dur: 0, intensity: 0, startTime: 0 };
+    let currentGameScale = 1;
+
+    function triggerShake(durationMs, intensity) {
+      shake.dur = durationMs;
+      shake.intensity = intensity;
+      shake.startTime = performance.now();
+      _runShake();
+    }
+
+    function _runShake() {
+      const gameEl = document.getElementById('game');
+      if (shake.dur <= 0) return;
+      const elapsed = performance.now() - shake.startTime;
+      const t = Math.max(0, 1 - elapsed / shake.dur);
+      if (t > 0) {
+        const x = (Math.random() - 0.5) * shake.intensity * t;
+        const y = (Math.random() - 0.5) * shake.intensity * t;
+        gameEl.style.transform = `translate(${x}px,${y}px) scale(${currentGameScale})`;
+        requestAnimationFrame(_runShake);
+      } else {
+        shake.dur = 0;
+        gameEl.style.transform = `scale(${currentGameScale})`;
+      }
+    }
+
+    /* ===== 화면 플래시 ===== */
+    function triggerFlash(color, durationMs) {
+      const gameEl = document.getElementById('game');
+      const flash = document.createElement('div');
+      flash.style.cssText = `position:absolute;inset:0;background:${color};z-index:50;pointer-events:none;animation:ce-flash-fade ${durationMs}ms ease-out forwards;`;
+      gameEl.appendChild(flash);
+      setTimeout(() => flash.remove(), durationMs + 100);
+    }
+
+    /* ===== 학생증 픽업 파티클 ===== */
+    function spawnPickupParticles(x, y) {
+      const gameEl = document.getElementById('game');
+      for (let i = 0; i < 10; i++) {
+        const angle = (Math.PI * 2 * i) / 10;
+        const tx = Math.round(Math.cos(angle) * 44);
+        const ty = Math.round(Math.sin(angle) * 44);
+        const p = document.createElement('div');
+        p.style.cssText = `position:absolute;left:${x + 15}px;top:${y + 15}px;width:8px;height:8px;border-radius:50%;background:hsl(${40 + i * 18},90%,60%);z-index:20;pointer-events:none;--tx:${tx}px;--ty:${ty}px;animation:ce-pickup-burst 0.5s ease-out forwards;`;
+        gameEl.appendChild(p);
+        setTimeout(() => p.remove(), 650);
+      }
+      const txt = document.createElement('div');
+      txt.textContent = '학생증 획득!';
+      txt.style.cssText = `position:absolute;left:${x - 30}px;top:${y - 20}px;font-size:14px;font-weight:800;color:#f0a500;z-index:25;pointer-events:none;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,0.3);animation:ce-rise-fade 1.2s ease-out forwards;`;
+      gameEl.appendChild(txt);
+      setTimeout(() => txt.remove(), 1350);
+    }
+
+    /* ===== 최종 클리어 컨펫티 ===== */
+    function spawnConfetti() {
+      const gameEl = document.getElementById('game');
+      const colors = ['#f44336','#ff9800','#ffeb3b','#4caf50','#2196f3','#9c27b0','#e91e63'];
+      for (let i = 0; i < 40; i++) {
+        const c = document.createElement('div');
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const px = Math.random() * gameWorldWidth;
+        const duration = (1.5 + Math.random() * 1.5).toFixed(2);
+        const delay = (Math.random() * 0.9).toFixed(2);
+        const rotate = Math.round(Math.random() * 720 - 360);
+        const size = Math.round(8 + Math.random() * 8);
+        c.style.cssText = `position:absolute;left:${Math.round(px)}px;top:-20px;width:${size}px;height:${size}px;background:${color};border-radius:${Math.random() > 0.5 ? '50%' : '2px'};z-index:35;pointer-events:none;--fall-y:${GAME_HEIGHT + 40}px;--rotate:${rotate}deg;animation:ce-confetti-fall ${duration}s ${delay}s ease-in forwards;`;
+        gameEl.appendChild(c);
+        setTimeout(() => c.remove(), (parseFloat(duration) + parseFloat(delay)) * 1000 + 200);
+      }
+    }
+
+    /* ===== 교수 근접 위험 피드백 ===== */
+    let dangerSoundLastTime = 0;
+    function updateProximityFeedback() {
+      if (!gameStarted || gameEnded || professors.length === 0) {
+        player.style.boxShadow = '0 8px 14px rgba(33, 87, 147, 0.24)';
+        return;
+      }
+      const playerCenterX = playerX + PLAYER_SIZE / 2;
+      const playerCenterY = playerY + PLAYER_SIZE / 2;
+      let maxProx = 0;
+      for (const p of professors) {
+        const profCenterX = p.x + 40;
+        const profCenterY = p.y + 40;
+        const dx = playerCenterX - profCenterX;
+        const dy = playerCenterY - profCenterY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const ratio = Math.max(0, 1 - dist / (p.vision * 1.6));
+        if (ratio > maxProx) maxProx = ratio;
+        // 시야 콘 색상: 가까울수록 더 붉고 진하게
+        const alpha = (0.30 + ratio * 0.45).toFixed(2);
+        const g = Math.round(72 - ratio * 72);
+        p.cone.style.background = `linear-gradient(90deg, rgba(255,${g},${g},${alpha}), rgba(255,72,72,0.04))`;
+      }
+      // 플레이어 박스 섀도: 위험 근접 시 붉은 글로
+      if (maxProx > 0.15) {
+        const glow = Math.round(maxProx * 20);
+        const alpha = (maxProx * 0.75).toFixed(2);
+        player.style.boxShadow = `0 8px 14px rgba(33,87,147,0.24), 0 0 ${glow}px rgba(220,30,30,${alpha})`;
+      } else {
+        player.style.boxShadow = '0 8px 14px rgba(33, 87, 147, 0.24)';
+      }
+      // 위험 사운드
+      if (maxProx > 0.45) {
+        const now = performance.now();
+        if (now - dangerSoundLastTime > 900) {
+          dangerSoundLastTime = now;
+          play('danger', maxProx * 0.4);
+        }
+      }
+    }
+
+    /* ===== 발소리 프레임 카운터 + 스쿼시&스트레치 타이머 ===== */
+    let stepFrame = 0;
+    let playerStretchTimer = 0;
+
     /* ===== 게임 상태 변수 ===== */
     let currentStage = 0;
     let remainingTime = stageConfigs[0].time;
     let gameStarted = false;
     let gameEnded = false;
+    let lives = 3;
+    const MAX_LIVES = 3;
     let hasPass = false;
     /** 전체 런 누적 점수 (5스테이지 클리어 시 서버 제출) */
     let runEscapeScore = 0;
@@ -1491,11 +1822,13 @@
     let playerY = 655;
 
     let desks = [];
-    let professor = null;
+    let professors = [];
+    let chalks = [];
 
     /* 1초 타이머·게임 루프 requestAnimationFrame id */
     let timerInterval = null;
     let loopId = null;
+    let lastTimestamp = 0;
 
     /* 키보드(및 가상 패드가 같은 이름으로 세팅) 눌림 상태 */
     const keys = {
@@ -1551,7 +1884,6 @@
     function showOverlay(title, desc, mode = "start") {
       overlayTitle.textContent = title;
       overlayDesc.innerHTML = desc;
-      overlay.style.display = "flex";
 
       hideKakaoShareButton();
 
@@ -1575,11 +1907,13 @@
         overlayRestartBtn.style.display = "inline-block";
         nextStageBtn.style.display = "none";
       }
+
+      overlay.classList.add('is-visible');
     }
 
     /** 오버레이 숨김 */
     function hideOverlay() {
-      overlay.style.display = "none";
+      overlay.classList.remove('is-visible');
     }
 
     /** 충돌 검사용 사각형 {left,top,right,bottom} */
@@ -1604,8 +1938,13 @@
     function clearStageObjects() {
       deskLayer.innerHTML = "";
       profLayer.innerHTML = "";
+      // 분필 정리
+      chalks.forEach(c => { try { c.el.remove(); } catch(_){} });
+      chalks = [];
+      // 경보 표시 정리
+      professors.forEach(p => { if (p.alertEl) { p.alertEl.remove(); p.alertEl = null; } });
       desks = [];
-      professor = null;
+      professors = [];
     }
 
     /**
@@ -1621,49 +1960,82 @@
       timeText.textContent = remainingTime;
       stateText.textContent = "대기";
 
-      /* 책상 DOM 생성 + 충돌용 사각형 목록 */
-      config.desks.forEach((d) => {
-        const el = document.createElement("div");
-        el.className = "desk";
-        el.style.left = `${d.x}px`;
-        el.style.top = `${d.y}px`;
-        deskLayer.appendChild(el);
+      /* 책상 DOM 생성 + 충돌용 사각형 목록 — 비율 기반 calc() 배치
+       * left: calc(colFrac*100% - 32px) → gameWorldWidth에 비례한 정중앙 분산
+       * 충돌 x는 gameWorldWidth * colFrac - 32 로 CSS와 동일한 픽셀값 */
+      [DESK_COL6, DESK_COL5, DESK_COL6].forEach((cols, rowIdx) => {
+        const y = Math.round(GAME_HEIGHT * DESK_ROW_Y[rowIdx]);
+        cols.forEach(colFrac => {
+          const el = document.createElement("div");
+          el.className = "desk";
+          el.style.left = `calc(${(colFrac * 100).toFixed(4)}% - 32px)`;
+          el.style.top = `${y}px`;
+          deskLayer.appendChild(el);
 
-        desks.push({
-          x: d.x,
-          y: d.y,
-          w: 64,
-          h: 44
+          desks.push({
+            x: Math.round(gameWorldWidth * colFrac - 32),
+            y,
+            w: 64,
+            h: 44
+          });
         });
       });
 
-      /* 시야 콘·그림자·교수 이미지 */
-      const cone = document.createElement("div");
-      cone.className = "vision";
+      /* 교수 DOM + 런타임 객체 생성 헬퍼 */
+      function createProfessor(cfg) {
+        const cone = document.createElement("div");
+        cone.className = "vision";
 
-      const shadow = document.createElement("div");
-      shadow.className = "prof-shadow";
+        const shadow = document.createElement("div");
+        shadow.className = "prof-shadow";
 
-      const img = document.createElement("img");
-      img.className = "professor";
-      img.src = "../assets/professor.svg";
-      img.alt = "교수님";
+        const img = document.createElement("img");
+        img.className = "professor";
+        img.src = "../assets/professor.svg";
+        img.alt = "교수님";
 
-      profLayer.appendChild(cone);
-      profLayer.appendChild(shadow);
-      profLayer.appendChild(img);
+        profLayer.appendChild(cone);
+        profLayer.appendChild(shadow);
+        profLayer.appendChild(img);
 
-      /* 설정 복사 후 런타임 전용 필드 부착 */
-      professor = {
-        ...JSON.parse(JSON.stringify(config.professor)),
-        el: img,
-        cone,
-        shadow,
-        currentWaypoint: 1,
-        directionX: 1,
-        directionY: 0,
-        angleDeg: 0
-      };
+        return {
+          ...JSON.parse(JSON.stringify(cfg)),
+          el: img,
+          cone,
+          shadow,
+          currentWaypoint: 1,
+          directionX: 1,
+          directionY: 0,
+          angleDeg: 0,
+          // 분필
+          chalkCooldown: 180 + Math.floor(Math.random() * 120),
+          chalkCooldownMax: cfg.chalkCooldownMax || 420,
+          // 감지·추격
+          alertRange: cfg.alertRange || 150,
+          chaseDuration: cfg.chaseDuration || 165,
+          isAlerted: false, alertTimer: 0,
+          isChasing: false, chaseTimer: 0,
+          alertCooldown: 0,
+          alertEl: null,
+        };
+      }
+
+      /* 교수 cfg x 좌표를 gameWorldWidth 비율로 스케일링 (y는 고정 높이라 불필요) */
+      function scaleProfCfg(cfg) {
+        const sx = gameWorldWidth / BASE_STAGE_WIDTH;
+        const c = JSON.parse(JSON.stringify(cfg));
+        c.x = Math.round(c.x * sx);
+        c.waypoints = c.waypoints.map(wp => ({ x: Math.round(wp.x * sx), y: wp.y }));
+        return c;
+      }
+
+      /* 주 교수 + 추가 교수 생성 */
+      professors = [createProfessor(scaleProfCfg(config.professor))];
+      if (config.extraProfessors) {
+        for (const cfg of config.extraProfessors) {
+          professors.push(createProfessor(scaleProfCfg(cfg)));
+        }
+      }
 
       hasPass = false;
 
@@ -1673,6 +2045,7 @@
       passItem.style.top = `${safePass.y}px`;
       passItem.style.display = "flex";
       doorLock.textContent = "🔒";
+      doorLock.classList.remove('ce-pop-in');
 
       setPlayerPosition(42, 655);
       updateProfessorVisual();
@@ -1680,25 +2053,25 @@
 
     /** 교수 이미지·그림자·시야 콘 위치/회전/크기를 현재 논리 좌표에 맞춤 */
     function updateProfessorVisual() {
-      if (!professor) return;
+      for (const p of professors) {
+        p.el.style.left = `${p.x}px`;
+        p.el.style.top = `${p.y}px`;
 
-      professor.el.style.left = `${professor.x}px`;
-      professor.el.style.top = `${professor.y}px`;
+        p.shadow.style.left = `${p.x + 9}px`;
+        p.shadow.style.top = `${p.y + 64}px`;
 
-      professor.shadow.style.left = `${professor.x + 8}px`;
-      professor.shadow.style.top = `${professor.y + 56}px`;
+        p.el.style.transform = `rotate(${p.angleDeg}deg)`;
 
-      professor.el.style.transform = `rotate(${professor.angleDeg}deg)`;
+        p.cone.style.width = `${p.vision}px`;
+        p.cone.style.height = `${p.visionWidth}px`;
 
-      professor.cone.style.width = `${professor.vision}px`;
-      professor.cone.style.height = `${professor.visionWidth}px`;
+        const centerX = p.x + 40;
+        const centerY = p.y + 40;
 
-      const centerX = professor.x + 35;
-      const centerY = professor.y + 35;
-
-      professor.cone.style.left = `${centerX - 8}px`;
-      professor.cone.style.top = `${centerY - professor.visionWidth / 2}px`;
-      professor.cone.style.transform = `rotate(${professor.angleDeg}deg)`;
+        p.cone.style.left = `${centerX - 9}px`;
+        p.cone.style.top = `${centerY - p.visionWidth / 2}px`;
+        p.cone.style.transform = `rotate(${p.angleDeg}deg)`;
+      }
     }
 
     /** 타이머·루프 정지 후 같은 단계 준비 화면(오버레이) */
@@ -1707,6 +2080,12 @@
       cancelAnimationFrame(loopId);
       gameStarted = false;
       gameEnded = false;
+
+      // 주스 상태 초기화
+      timeText.classList.remove('time-urgent', 'time-critical');
+      player.style.transform = '';
+      player.style.boxShadow = '0 8px 14px rgba(33, 87, 147, 0.24)';
+      playerStretchTimer = 0;
 
       buildStage(currentStage);
       requestAnimationFrame(updateGameViewportScale);
@@ -1727,6 +2106,8 @@
       if (currentStage === 0) {
         runEscapeScore = 0;
         runScoreSubmitted = false;
+        lives = MAX_LIVES;
+        updateLivesDisplay();
       }
 
       const config = stageConfigs[currentStage];
@@ -1740,13 +2121,36 @@
       doorLock.textContent = "🔒";
       setPlayerPosition(42, 655);
 
-      professor.x = config.professor.x;
-      professor.y = config.professor.y;
-      professor.currentWaypoint = 1;
-      professor.directionX = 1;
-      professor.directionY = 0;
-      professor.angleDeg = 0;
+      // 분필 잔재물 정리
+      chalks.forEach(c => { try { c.el.remove(); } catch(_){} });
+      chalks = [];
+
+      const sx = gameWorldWidth / BASE_STAGE_WIDTH;
+      const allProfCfgs = [config.professor, ...(config.extraProfessors || [])];
+      professors.forEach((p, i) => {
+        const cfg = allProfCfgs[i];
+        p.x = Math.round(cfg.x * sx);
+        p.y = cfg.y;
+        p.currentWaypoint = 1;
+        p.directionX = 1;
+        p.directionY = 0;
+        p.angleDeg = 0;
+        // chalk/alert 상태 초기화
+        p.chalkCooldown = 180 + Math.floor(Math.random() * 120);
+        p.isAlerted = false; p.alertTimer = 0;
+        p.isChasing = false; p.chaseTimer = 0;
+        p.alertCooldown = 0;
+        if (p.alertEl) { p.alertEl.remove(); p.alertEl = null; }
+      });
       updateProfessorVisual();
+
+      // 주스 상태 초기화
+      dangerSoundLastTime = 0;
+      stepFrame = 0;
+      playerStretchTimer = 0;
+      player.style.transform = '';
+      player.style.boxShadow = '0 8px 14px rgba(33, 87, 147, 0.24)';
+      timeText.classList.remove('time-urgent', 'time-critical');
 
       hideOverlay();
       setMessage(`스테이지 ${currentStage + 1} 시작! 학생증부터 챙기세요.`);
@@ -1757,12 +2161,27 @@
         remainingTime--;
         timeText.textContent = remainingTime;
 
+        /* 타임 압박 시각화 */
+        if (remainingTime <= 5) {
+          timeText.classList.remove('time-urgent');
+          timeText.classList.add('time-critical');
+          play('danger', 0.3);
+          triggerFlash('rgba(200,20,20,0.08)', 400);
+        } else if (remainingTime <= 12) {
+          timeText.classList.remove('time-critical');
+          timeText.classList.add('time-urgent');
+        } else {
+          timeText.classList.remove('time-urgent', 'time-critical');
+        }
+
         if (remainingTime <= 0) {
-          failStage("⏰ 시간 초과!", "제한 시간 안에 강의실을 빠져나가지 못했어요.");
+          gameEnded = true;
+          loseLife("⏰ 시간 초과!");
         }
       }, 1000);
 
-      loop();
+      lastTimestamp = 0;
+      loopId = requestAnimationFrame(loop);
     }
 
     /** 중간 클리어 후 다음 단계 준비로 */
@@ -1777,6 +2196,18 @@
     function completeStage() {
       clearInterval(timerInterval);
       cancelAnimationFrame(loopId);
+
+      // 시각 상태 초기화
+      player.style.boxShadow = '0 8px 14px rgba(33, 87, 147, 0.24)';
+      player.style.transform = '';
+      playerStretchTimer = 0;
+      timeText.classList.remove('time-urgent', 'time-critical');
+      for (const p of professors) {
+        p.cone.style.background = 'linear-gradient(90deg, rgba(255, 72, 72, 0.30), rgba(255, 72, 72, 0.04))';
+      }
+
+      // 클리어 사운드
+      play(currentStage === 4 ? 'win' : 'clear', 0.7);
 
       gameEnded = true;
       gameStarted = false;
@@ -1796,7 +2227,7 @@
           `1단계부터 5단계까지 모두 탈출 성공!<br />누적 점수 <strong style="color:#304b68;font-size:22px">${lastClassroomEscapeTotalScore}</strong>점`,
           "end"
         );
-
+        spawnConfetti();
         setMessage("전체 스테이지 클리어!");
       } else {
         /* 아직 남은 단계: 다음 단계 버튼 노출은 showOverlay(clear)에서 처리 */
@@ -1814,10 +2245,40 @@
       }
     }
 
+    function updateLivesDisplay() {
+      const el = document.getElementById('lives-display');
+      if (!el) return;
+      el.textContent = '❤️'.repeat(lives) + '🖤'.repeat(MAX_LIVES - lives);
+    }
+
+    function loseLife(reason) {
+      lives--;
+      updateLivesDisplay();
+      clearInterval(timerInterval);
+      cancelAnimationFrame(loopId);
+
+      if (lives <= 0) {
+        failStage(reason, "목숨을 모두 잃었어요.");
+      } else {
+        triggerFlash('rgba(220,20,20,0.45)', 350);
+        triggerShake(400, 14);
+        play('caught', 0.8);
+        setTimeout(() => startStage(currentStage), 1000);
+      }
+    }
+
     /** 시간 초과·들킴 등 실패 공통 처리 */
     function failStage(title, desc) {
       clearInterval(timerInterval);
       cancelAnimationFrame(loopId);
+      // 시각 상태 초기화
+      player.style.boxShadow = '0 8px 14px rgba(33, 87, 147, 0.24)';
+      player.style.transform = '';
+      playerStretchTimer = 0;
+      timeText.classList.remove('time-urgent', 'time-critical');
+      for (const p of professors) {
+        p.cone.style.background = 'linear-gradient(90deg, rgba(255, 72, 72, 0.30), rgba(255, 72, 72, 0.04))';
+      }
       const failedScore = runEscapeScore;
       if (!runScoreSubmitted && failedScore > 0) {
         submitScoreToLeague("classroom-escape", failedScore);
@@ -1835,7 +2296,7 @@
     }
 
     /** 방향키 입력에 따라 이동, 책상과 겹치면 해당 축만 막음 */
-    function movePlayer() {
+    function movePlayer(dt) {
       let dx = 0;
       let dy = 0;
 
@@ -1845,6 +2306,21 @@
       if (keys.ArrowRight) dx += PLAYER_SPEED;
 
       if (dx === 0 && dy === 0) return;
+
+      dx *= dt;
+      dy *= dt;
+
+      /* 발소리: 14프레임마다 한 번 */
+      stepFrame++;
+      if (stepFrame >= 14) { stepFrame = 0; play('step', 0.15); }
+
+      /* 스쿼시&스트레치: 이동 방향 기준으로 눌리고 늘어남 */
+      if (Math.abs(dx) >= Math.abs(dy)) {
+        player.style.transform = 'scaleX(1.18) scaleY(0.85)';
+      } else {
+        player.style.transform = 'scaleX(0.85) scaleY(1.18)';
+      }
+      playerStretchTimer = 6;
 
       /* 월드 폭·높이 안에서만 이동 */
       let nextX = Math.max(0, Math.min(gameWorldWidth - PLAYER_SIZE, playerX + dx));
@@ -1894,16 +2370,9 @@
           exitDoor.offsetHeight + 80
         );
 
-        const profRect = getRect(
-          professor.x - 50,
-          professor.y - 50,
-          170,
-          170
-        );
-
         if (rectOverlapsDesk(passRect)) continue;
         if (rectsIntersect(passRect, doorRect)) continue;
-        if (rectsIntersect(passRect, profRect)) continue;
+        if (professors.some(p => rectsIntersect(passRect, getRect(p.x - 50, p.y - 50, 170, 170)))) continue;
 
         return { x, y };
       }
@@ -1911,60 +2380,200 @@
       return { x: 180, y: 260 };
     }
 
-    /** 웨이포인트를 따라 교수 이동, 방향·각도 갱신 */
-    function moveProfessor() {
-      const target = professor.waypoints[professor.currentWaypoint];
-      const dx = target.x - professor.x;
-      const dy = target.y - professor.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
+    /** 웨이포인트를 따라 교수 이동, 방향·각도 갱신 (추격 모드 지원) */
+    function moveProfessor(dt) {
+      const pcx = playerX + PLAYER_SIZE / 2;
+      const pcy = playerY + PLAYER_SIZE / 2;
+      for (const p of professors) {
+        let tx, ty, speedMult = 1;
+        if (p.isChasing) {
+          tx = pcx - 88; ty = pcy - 88; speedMult = 1.55;
+        } else {
+          const wp = p.waypoints[p.currentWaypoint];
+          tx = wp.x; ty = wp.y;
+        }
+        const dx = tx - p.x, dy = ty - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
 
-      /* 목표에 거의 도달하면 스냅 후 다음 웨이포인트 */
-      if (distance < professor.speed + 1) {
-        professor.x = target.x;
-        professor.y = target.y;
-        professor.currentWaypoint = (professor.currentWaypoint + 1) % professor.waypoints.length;
-      } else {
-        const nx = dx / distance;
-        const ny = dy / distance;
-
-        professor.x += nx * professor.speed;
-        professor.y += ny * professor.speed;
-        professor.directionX = nx;
-        professor.directionY = ny;
-        professor.angleDeg = Math.atan2(ny, nx) * (180 / Math.PI);
+        if (!p.isChasing && dist < p.speed * dt + 1) {
+          p.x = tx; p.y = ty;
+          p.currentWaypoint = (p.currentWaypoint + 1) % p.waypoints.length;
+        } else if (dist > 0.5) {
+          const nx = dx / dist, ny = dy / dist;
+          p.x += nx * p.speed * speedMult * dt;
+          p.y += ny * p.speed * speedMult * dt;
+          p.directionX = nx; p.directionY = ny;
+          p.angleDeg = Math.atan2(ny, nx) * (180 / Math.PI);
+        }
       }
 
       updateProfessorVisual();
     }
 
-    /** 교수가 바라보는 부채꼴 시야 안에 플레이어 중심이 있는지 */
+    /** 교수 위에 ❗ DOM 요소 표시 */
+    function showAlertEl(p) {
+      if (p.alertEl) return;
+      const gameEl = document.getElementById('game');
+      const el = document.createElement('div');
+      el.className = 'prof-alert is-new';
+      el.textContent = '❗';
+      el.style.left = `${p.x + 70}px`;
+      el.style.top = `${p.y - 30}px`;
+      gameEl.appendChild(el);
+      p.alertEl = el;
+      setTimeout(() => { if (p.alertEl === el) el.classList.remove('is-new'); }, 350);
+    }
+
+    /** 교수 ❗ DOM 요소 제거 */
+    function hideAlertEl(p) {
+      if (!p.alertEl) return;
+      p.alertEl.remove();
+      p.alertEl = null;
+    }
+
+    /** 교수 center에서 랜덤 방향으로 분필 발사 */
+    function throwChalk(p) {
+      const gameEl = document.getElementById('game');
+      const sx = p.x + 40, sy = p.y + 40;
+
+      for (let i = 0; i < 8; i++) {
+        const angle = Math.random() * 2 * Math.PI;
+        const nx = Math.cos(angle), ny = Math.sin(angle);
+        const angleDeg = angle * (180 / Math.PI);
+
+        const el = document.createElement('div');
+        el.className = 'chalk-proj';
+        el.style.left = `${sx}px`;
+        el.style.top = `${sy - 3}px`;
+        el.style.transform = `rotate(${angleDeg}deg)`;
+        el.style.transformOrigin = 'left center';
+        gameEl.appendChild(el);
+
+        chalks.push({ el, x: sx, y: sy, vx: nx * 4, vy: ny * 4, lifetime: 120 });
+      }
+    }
+
+    /** 매 프레임 분필 위치 갱신 및 충돌 검사 */
+    function updateChalks() {
+      const pcx = playerX + PLAYER_SIZE / 2;
+      const pcy = playerY + PLAYER_SIZE / 2;
+      for (let i = chalks.length - 1; i >= 0; i--) {
+        if (gameEnded) break;
+        const c = chalks[i];
+        c.x += c.vx;
+        c.y += c.vy;
+        c.lifetime--;
+        c.el.style.left = `${c.x}px`;
+        c.el.style.top = `${c.y - 3}px`;
+
+        // 범위 이탈 또는 수명 종료 시 제거
+        if (c.lifetime <= 0 || c.x < -20 || c.x > gameWorldWidth + 20 || c.y < -20 || c.y > GAME_HEIGHT + 20) {
+          c.el.remove();
+          chalks.splice(i, 1);
+          continue;
+        }
+
+        // 플레이어 충돌 (7px 반경 근사)
+        const chalkCenterX = c.x + 12;
+        const chalkCenterY = c.y;
+        if (
+          chalkCenterX > playerX && chalkCenterX < playerX + PLAYER_SIZE &&
+          chalkCenterY > playerY && chalkCenterY < playerY + PLAYER_SIZE
+        ) {
+          c.el.remove();
+          chalks.splice(i, 1);
+          gameEnded = true;
+          loseLife("🖍️ 분필에 맞았어요!");
+          break;
+        }
+      }
+    }
+
+    /** 매 프레임 교수 AI 상태머신 (분필 투척 + 감지·추격) */
+    function updateProfessorAI() {
+      const pcx = playerX + PLAYER_SIZE / 2;
+      const pcy = playerY + PLAYER_SIZE / 2;
+      for (const p of professors) {
+        const profCx = p.x + 40;
+        const profCy = p.y + 40;
+        const dx = pcx - profCx, dy = pcy - profCy;
+        const distToPlayer = Math.sqrt(dx * dx + dy * dy);
+
+        // 1. 분필 쿨다운 처리
+        if (p.chalkCooldown > 0) {
+          p.chalkCooldown--;
+        } else if (distToPlayer <= 540) {
+          throwChalk(p);
+          play('chalk', 0.25);
+          p.chalkCooldown = p.chalkCooldownMax;
+        }
+
+        // 2. 추격 상태 머신
+        if (p.isChasing) {
+          p.chaseTimer--;
+          if (p.chaseTimer <= 0) {
+            p.isChasing = false;
+            p.alertCooldown = 180;
+            hideAlertEl(p);
+          }
+        } else if (p.isAlerted) {
+          p.alertTimer--;
+          if (p.alertTimer <= 0) {
+            p.isAlerted = false;
+            p.isChasing = true;
+            p.chaseTimer = p.chaseDuration;
+            play('danger', 0.55);
+          }
+        } else {
+          if (p.alertCooldown > 0) { p.alertCooldown--; }
+          else if (distToPlayer <= p.alertRange) {
+            p.isAlerted = true;
+            p.alertTimer = 35;
+            showAlertEl(p);
+            play('danger', 0.35);
+          }
+        }
+
+        // 3. alertEl 위치 동기화
+        if (p.alertEl) {
+          p.alertEl.style.left = `${p.x + 70}px`;
+          p.alertEl.style.top = `${p.y - 30}px`;
+        }
+      }
+    }
+
+    /** 교수가 바라보는 부채꼴 시야 안에 플레이어 중심이 있는지 (한 명이라도 감지하면 true) */
     function isPlayerInVision() {
       const playerCenterX = playerX + PLAYER_SIZE / 2;
       const playerCenterY = playerY + PLAYER_SIZE / 2;
-      const profCenterX = professor.x + 35;
-      const profCenterY = professor.y + 35;
 
-      const dx = playerCenterX - profCenterX;
-      const dy = playerCenterY - profCenterY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
+      return professors.some(p => {
+        const profCenterX = p.x + 40;
+        const profCenterY = p.y + 40;
 
-      /* 시야 깊이(반경) 밖이면 false */
-      if (distance > professor.vision) return false;
+        const dx = playerCenterX - profCenterX;
+        const dy = playerCenterY - profCenterY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
 
-      const facingAngle = Math.atan2(professor.directionY, professor.directionX);
-      const targetAngle = Math.atan2(dy, dx);
+        if (distance > p.vision) return false;
 
-      let diff = Math.abs(facingAngle - targetAngle);
-      if (diff > Math.PI) diff = (Math.PI * 2) - diff;
+        const facingAngle = Math.atan2(p.directionY, p.directionX);
+        const targetAngle = Math.atan2(dy, dx);
 
-      const halfFov = Math.atan2(professor.visionWidth / 2, professor.vision);
-      return diff <= halfFov;
+        let diff = Math.abs(facingAngle - targetAngle);
+        if (diff > Math.PI) diff = (Math.PI * 2) - diff;
+
+        const halfFov = Math.atan2(p.visionWidth / 2, p.vision);
+        return diff <= halfFov;
+      });
     }
 
     /** 시야 안이면 게임 오버 */
     function checkCaught() {
+      if (gameEnded) return false; // chalk가 먼저 끝냈을 때
       if (isPlayerInVision()) {
-        failStage("🚨 교수님에게 들켰어요!", "교수님은 이제 모든 방향으로 움직입니다. 동선을 잘 보고 다시 도전해보세요.");
+        gameEnded = true;
+        loseLife("🚨 교수님에게 들켰어요!");
         return true;
       }
       return false;
@@ -1984,8 +2593,18 @@
 
       if (rectsIntersect(playerRect, passRect)) {
         hasPass = true;
+        const passX = parseFloat(passItem.style.left);
+        const passY = parseFloat(passItem.style.top);
         passItem.style.display = "none";
         doorLock.textContent = "🔓";
+        // 문 잠금 해제 팝 애니메이션
+        doorLock.classList.remove('ce-pop-in');
+        void doorLock.offsetWidth;
+        doorLock.classList.add('ce-pop-in');
+        setTimeout(() => doorLock.classList.remove('ce-pop-in'), 500);
+        // 사운드 + 파티클
+        play('pickup', 0.6);
+        spawnPickupParticles(passX, passY);
         setMessage("학생증 획득! 이제 문으로 탈출할 수 있어요.");
       }
     }
@@ -2006,11 +2625,26 @@
     }
 
     /** 매 프레임: 이동·교수·학생증·들킴·탈출 검사 */
-    function loop() {
+    function loop(ts) {
       if (gameEnded) return;
 
-      movePlayer();
-      moveProfessor();
+      const dt = lastTimestamp ? Math.min((ts - lastTimestamp) / (1000 / 60), 3) : 1;
+      lastTimestamp = ts;
+
+      movePlayer(dt);
+
+      /* 스쿼시&스트레치 타이머 복원 */
+      if (playerStretchTimer > 0) {
+        playerStretchTimer--;
+        if (playerStretchTimer === 0) player.style.transform = '';
+      }
+
+      moveProfessor(dt);
+      updateProfessorAI();
+      updateChalks();
+      if (gameEnded) return; // chalk 충돌 가드
+
+      updateProximityFeedback();
       checkPassPickup();
 
       if (checkCaught()) return;
@@ -2040,8 +2674,18 @@
     });
 
     /* UI 버튼·초기 빌드 */
-    restartBtn.addEventListener("click", prepareStage);
-    overlayRestartBtn.addEventListener("click", prepareStage);
+    restartBtn.addEventListener("click", () => {
+      if (lives <= 0) return;
+      prepareStage();
+    });
+    overlayRestartBtn.addEventListener("click", () => {
+      if (lives <= 0) {
+        currentStage = 0;
+        lives = MAX_LIVES;
+        updateLivesDisplay();
+      }
+      prepareStage();
+    });
     overlayStartBtn.addEventListener("click", startStage);
     nextStageBtn.addEventListener("click", goToNextStage);
 

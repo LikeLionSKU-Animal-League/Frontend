@@ -694,6 +694,27 @@
         ? "http://localhost:3000"
         : "https://backend-m5wz.onrender.com");
 
+    const S = {};
+    const SDIR = '../assets/sounds/';
+    [
+      ['correct',  'powerUp2.mp3'],
+      ['wrong',    'phaserDown1.mp3'],
+      ['combo',    'jingles_PIZZI13.mp3'],
+      ['gameover', 'lowDown.mp3'],
+    ].forEach(([k, f]) => {
+      const a = new Audio(SDIR + f);
+      a.preload = 'auto';
+      S[k] = a;
+    });
+
+    function play(key, vol = 0.5) {
+      try {
+        const c = S[key].cloneNode();
+        c.volume = vol;
+        c.play().catch(() => {});
+      } catch (_) {}
+    }
+
     const GAME_DURATION_SEC = 15;
     const MAX_LIVES = 3;
     const SLOT_COUNT = 5;
@@ -936,7 +957,9 @@
       const frontEl = queueLayer.querySelector(`[data-id="${front.id}"]`);
 
       if (correct) {
+        play('correct', 0.6);
         combo += 1;
+        if (combo % 5 === 0) play('combo', 0.5);
         const gain = 1;
         score += gain;
         scoreEl.textContent = String(score);
@@ -979,6 +1002,7 @@
           incomingEl.style.top = `${getTopForIndex(queue.length - 1)}px`;
         });
       } else {
+        play('wrong', 0.7);
         combo = 0;
         comboEl.textContent = "0";
         lives = Math.max(0, lives - 1);
@@ -1030,6 +1054,7 @@
     }
 
     function endGame(title = "시간 종료!", desc = "다시 도전해 보세요.") {
+      play('gameover', 0.7);
       playing = false;
       startBtn.disabled = false;
       if (timerId) clearInterval(timerId);
