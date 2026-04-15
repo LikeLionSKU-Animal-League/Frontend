@@ -192,7 +192,7 @@
       overflow: hidden;
       border-radius: 30px;
       border: 4px solid #8ec18f;
-      background-image: url('../assets/images/Home.jpg');
+      background-image: url('../assets/images/hunt_home.png');
       background-size: cover;
       background-position: center bottom;
       background-repeat: no-repeat;
@@ -291,8 +291,6 @@
       user-select: none;
       cursor: pointer;
       z-index: 2;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
       border: 3px solid rgba(255,255,255,0.95);
       box-shadow: 0 10px 22px rgba(0,0,0,0.18);
       animation: popIn 0.24s ease, floaty 1.6s ease-in-out infinite alternate;
@@ -945,7 +943,6 @@
       bubble.style.left = `${pos.x}px`;
       bubble.style.top  = `${pos.y}px`;
 
-      bubble.addEventListener('touchstart', (e) => { e.preventDefault(); bubble.click(); }, { passive: false });
       bubble.onclick = () => {
         if (!isPlaying) return;
         bubble.classList.add("popping");
@@ -997,7 +994,6 @@
       bubble.style.left = `${pos.x}px`;
       bubble.style.top  = `${pos.y}px`;
 
-      bubble.addEventListener('touchstart', (e) => { e.preventDefault(); bubble.click(); }, { passive: false });
       bubble.onclick = () => {
         if (!isPlaying) return;
         bubble.classList.add("popping");
@@ -1029,7 +1025,6 @@
       bubble.style.left = `${pos.x}px`;
       bubble.style.top  = `${pos.y}px`;
 
-      bubble.addEventListener('touchstart', (e) => { e.preventDefault(); bubble.click(); }, { passive: false });
       bubble.onclick = () => {
         if (!isPlaying) return;
         bubble.classList.add("popping");
