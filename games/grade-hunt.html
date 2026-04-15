@@ -5,11 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>동물의 왕국 : 학점 사냥</title>
   <style>
+    @font-face {
+      font-family: "neodgm";
+      src: url("../assets/fonts/neodgm.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+    }
+
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: "Trebuchet MS", "맑은 고딕", sans-serif;
+      font-family: "neodgm", "맑은 고딕", sans-serif;
       background: linear-gradient(180deg, #bfe9ff 0%, #dff7d8 45%, #fdf4d8 100%);
       min-height: 100vh;
       min-height: 100dvh;
@@ -30,6 +37,7 @@
     button, .lobby-link, .start-btn, .kakao-share-result-btn {
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
+      font-family: "neodgm", "맑은 고딕", sans-serif;
     }
 
     .shell {
@@ -74,14 +82,14 @@
 
     .title h1 {
       margin: 0;
-      font-size: clamp(20px, 4.2vw, 30px);
+      font-size: clamp(18px, 3.8vw, 28px);
       color: #4f7b55;
       letter-spacing: -1px;
     }
 
     .title p {
       margin: 4px 0 0;
-      font-size: 13px;
+      font-size: 12px;
       color: #738476;
     }
 
@@ -89,14 +97,13 @@
       border: none;
       border-radius: 999px;
       padding: 12px 18px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 800;
       cursor: pointer;
       color: #4f4a2b;
       background: linear-gradient(135deg, #ffe18a, #ffcd67);
       box-shadow: 0 10px 22px rgba(216, 170, 58, 0.22);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
-      font-family: inherit;
       white-space: nowrap;
     }
     .start-btn:hover  { transform: translateY(-2px); box-shadow: 0 14px 26px rgba(235,188,70,0.35); }
@@ -123,8 +130,8 @@
       border: 2px solid #e4f1df;
       color: #5a6f5f;
       font-weight: 700;
-      font-size: 13px;
-      line-height: 1.4;
+      font-size: 12px;
+      line-height: 1.5;
       margin: 0;
       transition: background 0.3s, border-color 0.3s, color 0.3s;
     }
@@ -238,7 +245,7 @@
       transform: translateX(-50%) scale(0.8);
       background: linear-gradient(135deg, #ffe640, #ffb300);
       color: #5a3c00;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 900;
       padding: 7px 18px;
       border-radius: 999px;
@@ -251,6 +258,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      font-family: "neodgm", "맑은 고딕", sans-serif;
     }
 
     #feverBanner.show {
@@ -271,7 +279,6 @@
       to   { transform: translateX(-50%) scale(1.05); box-shadow: 0 8px 28px rgba(255,180,0,0.6); }
     }
 
-    /* ====== 동물 버블 ====== */
     .grade {
       position: absolute;
       width: 88px;
@@ -289,6 +296,7 @@
       animation: popIn 0.24s ease, floaty 1.6s ease-in-out infinite alternate;
       transition: transform 0.12s ease;
       backdrop-filter: blur(3px);
+      font-family: "neodgm", "맑은 고딕", sans-serif;
     }
     .grade:hover  { transform: scale(1.08); }
     .grade:active { transform: scale(0.95); }
@@ -366,7 +374,6 @@
       filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
     }
 
-    /* 황금·폭탄 버블 이미지는 조금 더 크게 */
     .special-img {
       width: 52px;
       height: 52px;
@@ -375,8 +382,8 @@
       filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
     }
 
-    .grade-text { font-size: 16px; font-weight: 900; line-height: 1; }
-    .grade-subtext { font-size: 12px; font-weight: 800; line-height: 1; margin-top: 2px; }
+    .grade-text    { font-size: 14px; font-weight: 900; line-height: 1; }
+    .grade-subtext { font-size: 11px; font-weight: 800; line-height: 1; margin-top: 2px; }
 
     .grade.good  { background: linear-gradient(135deg, rgba(223,248,204,0.92), rgba(245,255,233,0.92)); color: #3e7d43; }
     .grade.mid   { background: linear-gradient(135deg, rgba(232,242,255,0.92), rgba(247,251,255,0.92)); color: #446a95; }
@@ -388,13 +395,14 @@
       position: absolute;
       z-index: 15;
       pointer-events: none;
-      font-size: 19px;
+      font-size: 16px;
       font-weight: 900;
+      font-family: "neodgm", "맑은 고딕", sans-serif;
       animation: riseFade 0.7s ease forwards;
       text-shadow: 0 1px 4px rgba(0,0,0,0.18);
     }
 
-    .hit-effect.big { font-size: 24px; }
+    .hit-effect.big { font-size: 20px; }
 
     .guide {
       position: relative;
@@ -402,8 +410,8 @@
       margin-top: 12px;
       text-align: center;
       color: #7b9180;
-      font-size: 14px;
-      line-height: 1.6;
+      font-size: 12px;
+      line-height: 1.8;
     }
 
     @keyframes popIn {
@@ -424,13 +432,14 @@
       align-items: center;
       padding: 10px 18px;
       border-radius: 999px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 800;
       color: #4f7b55;
       background: #e8f5e9;
       border: 2px solid #c8e6c9;
       text-decoration: none;
       margin-bottom: 14px;
+      font-family: "neodgm", "맑은 고딕", sans-serif;
     }
     .lobby-link:hover { background: #dcf2de; }
 
@@ -438,12 +447,11 @@
       border: none;
       border-radius: 999px;
       padding: 12px 22px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 800;
       color: #191919;
       background: #fee500;
       cursor: pointer;
-      font-family: inherit;
       box-shadow: 0 8px 20px rgba(0,0,0,0.1);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
@@ -453,16 +461,17 @@
     @media (max-width: 700px) {
       .wrap { padding: 14px 10px; }
       .controls { flex-direction: column; align-items: stretch; }
-      .start-btn { width: 100%; min-height: 48px; font-size: 16px; }
-      #result { font-size: 12px; min-height: auto; padding: 10px 12px; }
+      .start-btn { width: 100%; min-height: 48px; font-size: 14px; }
+      #result { font-size: 11px; min-height: auto; padding: 10px 12px; }
       #gameArea { height: min(70vh, 600px); min-height: 360px; }
       .grade { width: 72px; height: 72px; }
       .animal-img { width: 38px; height: 38px; }
       .special-img { width: 42px; height: 42px; }
-      .grade-text { font-size: 14px; }
-      .kakao-share-result-btn { width: 100%; min-height: 48px; font-size: 16px; }
+      .grade-text { font-size: 12px; }
+      .kakao-share-result-btn { width: 100%; min-height: 48px; font-size: 14px; }
     }
 
+    /* ===== 오버레이 ===== */
     .overlay {
       position: fixed;
       inset: 0;
@@ -482,15 +491,27 @@
       background: #fff;
       border-radius: 24px;
       padding: 28px 24px;
-      max-width: 380px;
+      max-width: 400px;
       width: 100%;
       text-align: center;
       border: 3px solid #e4f1df;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
     }
 
-    .overlay-card h2 { margin: 0 0 10px; font-size: 24px; color: #4f7b55; }
-    .overlay-card p  { margin: 0 0 20px; color: #5a6f5f; font-size: 15px; line-height: 1.65; }
+    .overlay-card h2 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      color: #4f7b55;
+      font-family: "neodgm", "맑은 고딕", sans-serif;
+    }
+
+    .overlay-card p {
+      margin: 0 0 20px;
+      color: #5a6f5f;
+      font-size: 14px;
+      line-height: 1.75;
+      font-family: "neodgm", "맑은 고딕", sans-serif;
+    }
 
     .overlay-actions {
       display: flex;
@@ -503,16 +524,33 @@
       border: none;
       border-radius: 999px;
       padding: 12px 28px;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 800;
       cursor: pointer;
       color: #fff;
       background: linear-gradient(135deg, #71c3ff, #4a9fe3);
       box-shadow: 0 10px 22px rgba(60, 148, 225, 0.24);
-      font-family: inherit;
+      font-family: "neodgm", "맑은 고딕", sans-serif;
       transition: transform 0.15s ease;
     }
     #overlayActionBtn:hover { transform: translateY(-1px); }
+
+    /* 로비 버튼 (오버레이 안) */
+    #overlayLobbyBtn {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 28px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      color: #4f7b55;
+      background: #e8f5e9;
+      border: 2px solid #c8e6c9;
+      font-family: "neodgm", "맑은 고딕", sans-serif;
+      transition: transform 0.15s ease, background 0.15s;
+    }
+    #overlayLobbyBtn:hover { background: #dcf2de; transform: translateY(-1px); }
+    #overlayLobbyBtn.hidden { display: none !important; }
   </style>
 </head>
 <body>
@@ -568,12 +606,14 @@
     </div>
   </div>
 
+  <!-- 시작·종료 오버레이 -->
   <div class="overlay show" id="overlay">
     <div class="overlay-card">
       <h2 id="overlayTitle">🐾 동물의 왕국 : 학점 사냥</h2>
       <p id="overlayDesc">짧은 시간 안에 높은 학점을 많이 잡고, 함정 학점은 피하세요!</p>
       <div class="overlay-actions">
         <button type="button" id="overlayActionBtn">게임 시작</button>
+        <button type="button" id="overlayLobbyBtn" class="hidden" onclick="goToLobby()">🏠 로비로</button>
         <button
           type="button"
           id="kakaoShareResultBtn"
@@ -610,6 +650,15 @@
       if (!a) return;
       const school = getLeagueSchool();
       a.setAttribute("href", school ? `../index.html?lobby=1&school=${encodeURIComponent(school)}` : "../index.html?lobby=1");
+    }
+
+    function getLobbyUrl() {
+      const school = getLeagueSchool();
+      return school ? `../index.html?lobby=1&school=${encodeURIComponent(school)}` : "../index.html?lobby=1";
+    }
+
+    function goToLobby() {
+      window.location.href = getLobbyUrl();
     }
 
     function submitScoreToLeague(game, value) {
@@ -730,6 +779,7 @@
     const overlayTitle     = document.getElementById("overlayTitle");
     const overlayDesc      = document.getElementById("overlayDesc");
     const overlayActionBtn = document.getElementById("overlayActionBtn");
+    const overlayLobbyBtn  = document.getElementById("overlayLobbyBtn");
     overlayActionBtn.addEventListener("click", startGame);
 
     /* ====== 피버 ====== */
@@ -766,6 +816,7 @@
 
     function startGame() {
       overlay.classList.remove("show");
+      overlayLobbyBtn.classList.add("hidden");
       clearInterval(gameInterval);
       clearInterval(spawnInterval);
       clearTimeout(hardModeInterval);
@@ -812,6 +863,7 @@
       overlayTitle.textContent = "🎯 게임 종료!";
       overlayDesc.innerHTML = `최종 점수 <strong style="color:#4f7b55;font-size:22px">${score}</strong>점<br />${message}`;
       overlayActionBtn.textContent = "다시 하기";
+      overlayLobbyBtn.classList.remove("hidden"); // 게임 끝날 때만 로비 버튼 표시
       showKakaoShareButton();
       overlay.classList.add("show");
 
