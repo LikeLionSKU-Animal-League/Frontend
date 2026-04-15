@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>교수님 퇴장 정렬 — 뺨 터치</title>
   <style>
     * { box-sizing: border-box; }
@@ -24,7 +24,10 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      padding: 10px 12px 12px;
+      padding: calc(10px + env(safe-area-inset-top, 0px))
+               calc(12px + env(safe-area-inset-right, 0px))
+               calc(12px + env(safe-area-inset-bottom, 0px))
+               calc(12px + env(safe-area-inset-left, 0px));
       position: relative;
     }
 
