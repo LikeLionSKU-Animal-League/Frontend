@@ -126,6 +126,13 @@
       font-size: 13px;
       line-height: 1.4;
       margin: 0;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
+    }
+
+    #result.fever {
+      background: linear-gradient(135deg, #fff3a0, #ffe066);
+      border-color: #f5c800;
+      color: #7a5a00;
     }
 
     .status {
@@ -145,6 +152,12 @@
       border-radius: 12px;
       padding: 6px 8px;
       text-align: center;
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    .status-box.fever-box {
+      background: linear-gradient(180deg, #fff8cc, #fff0a0);
+      border-color: #f5c800;
     }
 
     .status-label {
@@ -176,6 +189,18 @@
       background-size: cover;
       background-position: center bottom;
       background-repeat: no-repeat;
+      transition: border-color 0.3s;
+    }
+
+    #gameArea.fever-area {
+      border-color: #f5c800;
+      box-shadow: 0 0 0 3px rgba(245,200,0,0.3), inset 0 0 40px rgba(255,230,0,0.08);
+      animation: feverBorder 0.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes feverBorder {
+      from { border-color: #f5c800; box-shadow: 0 0 0 3px rgba(245,200,0,0.25); }
+      to   { border-color: #ffaa00; box-shadow: 0 0 0 5px rgba(255,170,0,0.4); }
     }
 
     #gameArea::before {
@@ -186,6 +211,64 @@
       border-radius: 26px;
       z-index: 0;
       pointer-events: none;
+    }
+
+    #feverOverlay {
+      position: absolute;
+      inset: 0;
+      border-radius: 26px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      background: radial-gradient(ellipse at center, rgba(255,230,50,0.18) 0%, transparent 70%);
+      transition: opacity 0.4s;
+    }
+
+    #feverOverlay.show { opacity: 1; animation: feverGlow 1s ease-in-out infinite alternate; }
+
+    @keyframes feverGlow {
+      from { opacity: 0.6; }
+      to   { opacity: 1; }
+    }
+
+    #feverBanner {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.8);
+      background: linear-gradient(135deg, #ffe640, #ffb300);
+      color: #5a3c00;
+      font-size: 15px;
+      font-weight: 900;
+      padding: 7px 18px;
+      border-radius: 999px;
+      z-index: 20;
+      pointer-events: none;
+      white-space: nowrap;
+      box-shadow: 0 6px 20px rgba(255,180,0,0.4);
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #feverBanner.show {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+      animation: feverBannerPulse 0.6s ease-in-out infinite alternate;
+    }
+
+    #feverBanner img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+    }
+
+    @keyframes feverBannerPulse {
+      from { transform: translateX(-50%) scale(1);    box-shadow: 0 6px 20px rgba(255,180,0,0.4); }
+      to   { transform: translateX(-50%) scale(1.05); box-shadow: 0 8px 28px rgba(255,180,0,0.6); }
     }
 
     /* ====== 동물 버블 ====== */
@@ -210,7 +293,6 @@
     .grade:hover  { transform: scale(1.08); }
     .grade:active { transform: scale(0.95); }
 
-    /* 물방울 터지는 애니메이션 */
     .grade.popping {
       animation: bubblePop 0.32s ease forwards !important;
       pointer-events: none;
@@ -222,7 +304,46 @@
       100% { transform: scale(0.05); opacity: 0; filter: blur(8px); }
     }
 
-    /* 물방울 파티클 */
+    .grade.golden {
+      background: linear-gradient(135deg, rgba(255,230,80,0.95), rgba(255,200,30,0.95)) !important;
+      color: #5a3c00 !important;
+      border: 3px solid rgba(255,255,180,0.95) !important;
+      animation: popIn 0.24s ease, goldenPulse 0.9s ease-in-out infinite alternate !important;
+    }
+
+    @keyframes goldenPulse {
+      from { box-shadow: 0 0 0 3px rgba(255,210,0,0.4), 0 10px 22px rgba(0,0,0,0.18); }
+      to   { box-shadow: 0 0 0 7px rgba(255,210,0,0.15), 0 12px 28px rgba(0,0,0,0.2); }
+    }
+
+    .grade.bomb {
+      background: linear-gradient(135deg, rgba(60,60,60,0.93), rgba(30,30,30,0.93)) !important;
+      color: #fff !important;
+      border: 3px solid rgba(180,180,180,0.8) !important;
+      box-shadow: 0 0 0 3px rgba(200,50,50,0.4), 0 10px 22px rgba(0,0,0,0.25) !important;
+      animation: popIn 0.24s ease, bombWobble 0.5s ease-in-out infinite alternate !important;
+    }
+
+    @keyframes bombWobble {
+      from { transform: rotate(-4deg) scale(1); }
+      to   { transform: rotate(4deg)  scale(1.04); }
+    }
+
+    .bomb-blast {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 8;
+      background: radial-gradient(circle, rgba(255,100,30,0.7) 0%, rgba(255,50,0,0.3) 50%, transparent 70%);
+      animation: blastExpand 0.45s ease-out forwards;
+    }
+
+    @keyframes blastExpand {
+      0%   { transform: scale(0);   opacity: 1; }
+      60%  { transform: scale(1);   opacity: 0.8; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+
     .droplet {
       position: absolute;
       border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
@@ -245,7 +366,17 @@
       filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
     }
 
+    /* 황금·폭탄 버블 이미지는 조금 더 크게 */
+    .special-img {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+
     .grade-text { font-size: 16px; font-weight: 900; line-height: 1; }
+    .grade-subtext { font-size: 12px; font-weight: 800; line-height: 1; margin-top: 2px; }
 
     .grade.good  { background: linear-gradient(135deg, rgba(223,248,204,0.92), rgba(245,255,233,0.92)); color: #3e7d43; }
     .grade.mid   { background: linear-gradient(135deg, rgba(232,242,255,0.92), rgba(247,251,255,0.92)); color: #446a95; }
@@ -255,13 +386,15 @@
 
     .hit-effect {
       position: absolute;
-      z-index: 5;
+      z-index: 15;
       pointer-events: none;
       font-size: 19px;
       font-weight: 900;
       animation: riseFade 0.7s ease forwards;
       text-shadow: 0 1px 4px rgba(0,0,0,0.18);
     }
+
+    .hit-effect.big { font-size: 24px; }
 
     .guide {
       position: relative;
@@ -283,7 +416,7 @@
     }
     @keyframes riseFade {
       0%   { opacity: 1; transform: translateY(0);    }
-      100% { opacity: 0; transform: translateY(-26px); }
+      100% { opacity: 0; transform: translateY(-32px); }
     }
 
     .lobby-link {
@@ -325,6 +458,7 @@
       #gameArea { height: min(70vh, 600px); min-height: 360px; }
       .grade { width: 72px; height: 72px; }
       .animal-img { width: 38px; height: 38px; }
+      .special-img { width: 42px; height: 42px; }
       .grade-text { font-size: 14px; }
       .kakao-share-result-btn { width: 100%; min-height: 48px; font-size: 16px; }
     }
@@ -400,7 +534,7 @@
           <p>짧은 시간 안에 높은 학점을 많이 잡고, 함정 학점은 피하세요!</p>
         </div>
         <div class="status">
-          <div class="status-box">
+          <div class="status-box" id="scoreBox">
             <div class="status-label">점수</div>
             <div class="status-value" id="score">0</div>
           </div>
@@ -420,10 +554,16 @@
         <div id="result">시작 버튼을 누르면 귀여운 동물 학점들이 숲속에 나타나요!</div>
       </div>
 
-      <div id="gameArea"></div>
+      <div id="gameArea">
+        <div id="feverOverlay"></div>
+        <div id="feverBanner">
+          <img src="../assets/images/hunt/fever.png" alt="피버" />
+          🔥 FEVER TIME! 점수 2배!
+        </div>
+      </div>
 
       <div class="guide">
-        A+ / A는 고득점 · B 계열은 무난 · D와 F는 감점이에요!
+        A+ / A는 고득점 · B 계열은 무난 · D·F는 감점 · 황금버블 = 시간+3초 · 폭탄 = 주의!
       </div>
     </div>
   </div>
@@ -481,18 +621,18 @@
         }
         return;
       }
-      const score = Math.round(Number(value));
-      if (!Number.isFinite(score)) return;
+      const s = Math.round(Number(value));
+      if (!Number.isFinite(s)) return;
       fetch(`${API_BASE}/api/scores`, {
         method: "POST", keepalive: true,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ school, game, score })
+        body: JSON.stringify({ school, game, score: s })
       }).catch(() => {});
     }
 
     setLobbyBackLink();
 
-    const KAKAO_JS_APP_KEY = "fa75c82718597e9124f913d174cd92a2";
+    const KAKAO_JS_APP_KEY  = "fa75c82718597e9124f913d174cd92a2";
     const SHARE_SITE_ORIGIN = "https://campus-animal-battle.vercel.app";
     const SHARE_FEED_IMAGE_URL = `${SHARE_SITE_ORIGIN}/assets/game-preview.png`;
 
@@ -507,18 +647,11 @@
       if (!Kakao.isInitialized()) Kakao.init(KAKAO_JS_APP_KEY);
     })();
 
-    function hideKakaoShareButton() {
-      const btn = document.getElementById("kakaoShareResultBtn");
-      if (btn) btn.classList.add("hidden");
-    }
-
-    function showKakaoShareButton() {
-      const btn = document.getElementById("kakaoShareResultBtn");
-      if (btn) btn.classList.remove("hidden");
-    }
+    function hideKakaoShareButton() { document.getElementById("kakaoShareResultBtn")?.classList.add("hidden"); }
+    function showKakaoShareButton() { document.getElementById("kakaoShareResultBtn")?.classList.remove("hidden"); }
 
     function shareToKakao() {
-      if (!window.Kakao || !Kakao.isInitialized()) { alert("카카오 SDK를 불러오지 못했거나 초기화되지 않았습니다."); return; }
+      if (!window.Kakao || !Kakao.isInitialized()) { alert("카카오 SDK를 불러오지 못했습니다."); return; }
       const u = buildShareLobbyUrl();
       Kakao.Share.sendDefault({
         objectType: "feed",
@@ -532,17 +665,29 @@
       });
     }
 
-    /* ====== 사운드 (경로는 직접 수정해주세요) ====== */
-    const soundGood = new Audio("../assets/sounds/powerUp2.mp3");
-    const soundBad  = new Audio("../assets/sounds/lowRandom.mp3");
-    soundGood.volume = 0.6;
-    soundBad.volume  = 0.6;
+    /* ====== 사운드 ====== */
+    const sounds = {
+      good:   new Audio("../assets/sounds/powerUp2.mp3"),
+      bad:    new Audio("../assets/sounds/lowRandom.mp3"),
+      golden: new Audio("../assets/sounds/impactMetal_medium_000.mp3"),
+      bomb:   new Audio("../assets/sounds/impactPunch_heavy_000.mp3"),
+      fever:  new Audio("../assets/sounds/jingles_NES03.mp3"),
+    };
+    Object.values(sounds).forEach(s => s.volume = 0.6);
 
-    function playSound(isGood) {
-      const snd = isGood ? soundGood : soundBad;
+    function playSound(key) {
+      const snd = sounds[key];
+      if (!snd) return;
       snd.currentTime = 0;
       snd.play().catch(() => {});
     }
+
+    /* ====== 이미지 경로 ====== */
+    const IMG = {
+      golden: "../assets/images/hunt/golden.png",
+      bomb:   "../assets/images/hunt/bomb.png",
+      fever:  "../assets/images/hunt/fever.png",
+    };
 
     /* ====== 등급 정의 ====== */
     const grades = [
@@ -556,31 +701,63 @@
       { g: "F",  score: -10,type: "worst", img: "../assets/images/a_5.png" }
     ];
 
-    /* 등급 타입별 물방울 색상 */
     const dropletColors = {
-      good:  ["#6ee87a", "#a8f5b0", "#ffffff"],
-      mid:   ["#7ab8f5", "#aad4ff", "#ffffff"],
-      low:   ["#f5d87a", "#ffe4a0", "#ffffff"],
-      bad:   ["#f5a87a", "#ffcaaa", "#ffffff"],
-      worst: ["#e8c87a", "#f5daa0", "#ffffff"]
+      good:   ["#6ee87a", "#a8f5b0", "#ffffff"],
+      mid:    ["#7ab8f5", "#aad4ff", "#ffffff"],
+      low:    ["#f5d87a", "#ffe4a0", "#ffffff"],
+      bad:    ["#f5a87a", "#ffcaaa", "#ffffff"],
+      worst:  ["#e8c87a", "#f5daa0", "#ffffff"],
+      golden: ["#ffe640", "#ffd000", "#fff8c0"],
+      bomb:   ["#ff6030", "#ff3300", "#ffcc00"]
     };
 
+    /* ====== 상태 ====== */
     let score = 0, combo = 0, time = 15;
     let gameInterval = null, spawnInterval = null, hardModeInterval = null;
     let isPlaying = false;
+    let isFever = false, feverTimeout = null;
 
-    const scoreEl  = document.getElementById("score");
-    const comboEl  = document.getElementById("combo");
-    const timeEl   = document.getElementById("time");
-    const resultEl = document.getElementById("result");
-    const gameArea = document.getElementById("gameArea");
-
+    /* ====== DOM ====== */
+    const scoreEl          = document.getElementById("score");
+    const comboEl          = document.getElementById("combo");
+    const timeEl           = document.getElementById("time");
+    const resultEl         = document.getElementById("result");
+    const scoreBox         = document.getElementById("scoreBox");
+    const gameArea         = document.getElementById("gameArea");
+    const feverOverlay     = document.getElementById("feverOverlay");
+    const feverBanner      = document.getElementById("feverBanner");
     const overlay          = document.getElementById("overlay");
     const overlayTitle     = document.getElementById("overlayTitle");
     const overlayDesc      = document.getElementById("overlayDesc");
     const overlayActionBtn = document.getElementById("overlayActionBtn");
     overlayActionBtn.addEventListener("click", startGame);
 
+    /* ====== 피버 ====== */
+    function startFever() {
+      if (isFever) return;
+      isFever = true;
+      playSound("fever");
+      gameArea.classList.add("fever-area");
+      feverOverlay.classList.add("show");
+      feverBanner.classList.add("show");
+      resultEl.classList.add("fever");
+      scoreBox.classList.add("fever-box");
+      resultEl.textContent = "🔥 FEVER TIME! 10초간 점수 2배!";
+      clearTimeout(feverTimeout);
+      feverTimeout = setTimeout(endFever, 10000);
+    }
+
+    function endFever() {
+      isFever = false;
+      gameArea.classList.remove("fever-area");
+      feverOverlay.classList.remove("show");
+      feverBanner.classList.remove("show");
+      resultEl.classList.remove("fever");
+      scoreBox.classList.remove("fever-box");
+      if (isPlaying) resultEl.textContent = "피버 종료! 계속 콤보를 이어가세요!";
+    }
+
+    /* ====== 게임 흐름 ====== */
     function resetUI() {
       scoreEl.textContent = score;
       comboEl.textContent = combo;
@@ -592,19 +769,21 @@
       clearInterval(gameInterval);
       clearInterval(spawnInterval);
       clearTimeout(hardModeInterval);
+      clearTimeout(feverTimeout);
+      endFever();
 
       score = 0; combo = 0; time = 15;
       isPlaying = true;
 
-      gameArea.innerHTML = "";
+      Array.from(gameArea.children).forEach(el => { if (!el.id) el.remove(); });
       resetUI();
       resultEl.textContent = "게임 시작! 좋은 학점을 빠르게 잡아보세요!";
       hideKakaoShareButton();
 
-      spawnInterval = setInterval(spawnGrade, 700);
+      spawnInterval = setInterval(spawnBubble, 700);
       hardModeInterval = setTimeout(() => {
         clearInterval(spawnInterval);
-        spawnInterval = setInterval(spawnGrade, 500);
+        spawnInterval = setInterval(spawnBubble, 500);
       }, 7000);
 
       gameInterval = setInterval(() => {
@@ -614,138 +793,14 @@
       }, 1000);
     }
 
-    function clearGameArea() { gameArea.innerHTML = ""; }
-
-    function getNonOverlappingPosition(size, areaWidth, areaHeight) {
-      const existingGrades = Array.from(gameArea.querySelectorAll(".grade"));
-      const maxTries = 50;
-      const minDistance = 90;
-
-      for (let i = 0; i < maxTries; i++) {
-        const x = Math.random() * (areaWidth - size);
-        const y = Math.random() * (areaHeight - size - 70);
-        let overlapped = false;
-        for (const g of existingGrades) {
-          const dx = x - parseFloat(g.style.left);
-          const dy = y - parseFloat(g.style.top);
-          if (Math.sqrt(dx*dx + dy*dy) < minDistance) { overlapped = true; break; }
-        }
-        if (!overlapped) return { x, y };
-      }
-      return null;
-    }
-
-    /* ====== 물방울 파티클 ====== */
-    function spawnDroplets(cx, cy, type) {
-      const colors = dropletColors[type] || dropletColors.good;
-      const count  = 12;
-
-      for (let i = 0; i < count; i++) {
-        const drop  = document.createElement("div");
-        drop.className = "droplet";
-
-        const angle = (360 / count) * i + (Math.random() * 18 - 9);
-        const dist  = 38 + Math.random() * 50;
-        const rad   = angle * Math.PI / 180;
-        const dx    = Math.cos(rad) * dist;
-        const dy    = Math.sin(rad) * dist;
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        const w     = 7 + Math.random() * 7;
-        const h     = w * 1.3;
-        const dur   = 0.35 + Math.random() * 0.2;
-
-        drop.style.cssText = `
-          left: ${cx - w / 2}px;
-          top: ${cy - h / 2}px;
-          width: ${w}px;
-          height: ${h}px;
-          background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.8), ${color});
-          --dx: ${dx}px;
-          --dy: ${dy}px;
-          animation: dropletFly ${dur}s ease-out forwards;
-          box-shadow: 0 1px 4px rgba(0,0,0,0.10);
-        `;
-
-        gameArea.appendChild(drop);
-        setTimeout(() => drop.remove(), dur * 1000 + 50);
-      }
-    }
-
-    function spawnGrade() {
-      if (!isPlaying) return;
-
-      const item   = grades[Math.floor(Math.random() * grades.length)];
-      const bubble = document.createElement("div");
-      bubble.className = `grade ${item.type}`;
-
-      bubble.innerHTML = `
-        <img class="animal-img" src="${item.img}" alt="${item.g}" />
-        <div class="grade-text">${item.g}</div>
-      `;
-
-      const areaWidth  = gameArea.clientWidth;
-      const areaHeight = gameArea.clientHeight;
-      const size = 88;
-
-      const pos = getNonOverlappingPosition(size, areaWidth, areaHeight);
-      if (!pos) return;
-
-      bubble.style.left = `${pos.x}px`;
-      bubble.style.top  = `${pos.y}px`;
-
-      bubble.onclick = () => {
-        if (!isPlaying) return;
-
-        /* 터지는 애니메이션 + 파티클 */
-        bubble.classList.add("popping");
-        spawnDroplets(pos.x + size / 2, pos.y + size / 2, item.type);
-
-        /* 소리 */
-        playSound(item.score > 0);
-
-        /* 점수 계산 */
-        score += item.score;
-
-        if (item.score > 0) {
-          combo++;
-          if (combo >= 3) {
-            score += 5;
-            showEffect(pos.x + 15, pos.y, "콤보 +5!", "#418554");
-          } else {
-            showEffect(pos.x + 24, pos.y, `+${item.score}`, "#418554");
-          }
-        } else {
-          combo = 0;
-          showEffect(pos.x + 24, pos.y, `${item.score}`, "#b35a60");
-        }
-
-        scoreEl.textContent = score;
-        comboEl.textContent = combo;
-
-        setTimeout(() => bubble.remove(), 350);
-      };
-
-      gameArea.appendChild(bubble);
-      setTimeout(() => { if (bubble.parentNode) bubble.remove(); }, 2200);
-    }
-
-    function showEffect(x, y, text, color) {
-      const fx = document.createElement("div");
-      fx.className   = "hit-effect";
-      fx.textContent = text;
-      fx.style.left  = `${x}px`;
-      fx.style.top   = `${y}px`;
-      fx.style.color = color;
-      gameArea.appendChild(fx);
-      setTimeout(() => fx.remove(), 700);
-    }
-
     function endGame() {
       clearInterval(gameInterval);
       clearInterval(spawnInterval);
       clearTimeout(hardModeInterval);
+      clearTimeout(feverTimeout);
       isPlaying = false;
-      clearGameArea();
+      endFever();
+      Array.from(gameArea.children).forEach(el => { if (!el.id) el.remove(); });
 
       let message = "";
       if      (score >= 90) message = "완벽한 학점 사냥! 엄청난 실력이에요.";
@@ -762,6 +817,200 @@
 
       resultEl.textContent = `최종 점수 ${score}점 · ${message}`;
       submitScoreToLeague("grade-hunt", score);
+    }
+
+    /* ====== 위치 계산 ====== */
+    function getNonOverlappingPosition(size) {
+      const existing = Array.from(gameArea.querySelectorAll(".grade"));
+      const w = gameArea.clientWidth, h = gameArea.clientHeight;
+      for (let i = 0; i < 50; i++) {
+        const x = Math.random() * (w - size);
+        const y = Math.random() * (h - size - 70);
+        let ok = true;
+        for (const g of existing) {
+          const dx = x - parseFloat(g.style.left);
+          const dy = y - parseFloat(g.style.top);
+          if (Math.sqrt(dx*dx + dy*dy) < 90) { ok = false; break; }
+        }
+        if (ok) return { x, y };
+      }
+      return null;
+    }
+
+    /* ====== 파티클 ====== */
+    function spawnDroplets(cx, cy, colorKey) {
+      const colors = dropletColors[colorKey] || dropletColors.good;
+      const count  = colorKey === "bomb" ? 16 : 12;
+      for (let i = 0; i < count; i++) {
+        const drop  = document.createElement("div");
+        drop.className = "droplet";
+        const angle = (360 / count) * i + (Math.random() * 18 - 9);
+        const dist  = (colorKey === "bomb" ? 55 : 38) + Math.random() * 50;
+        const rad   = angle * Math.PI / 180;
+        const dx    = Math.cos(rad) * dist;
+        const dy    = Math.sin(rad) * dist;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const w     = 7 + Math.random() * 7;
+        const h     = w * 1.3;
+        const dur   = 0.35 + Math.random() * 0.2;
+        drop.style.cssText = `
+          left:${cx - w/2}px; top:${cy - h/2}px;
+          width:${w}px; height:${h}px;
+          background:radial-gradient(circle at 35% 35%, rgba(255,255,255,0.8), ${color});
+          --dx:${dx}px; --dy:${dy}px;
+          animation:dropletFly ${dur}s ease-out forwards;
+          box-shadow:0 1px 4px rgba(0,0,0,0.10);
+        `;
+        gameArea.appendChild(drop);
+        setTimeout(() => drop.remove(), dur * 1000 + 50);
+      }
+    }
+
+    /* ====== 버블 분기 ====== */
+    function spawnBubble() {
+      if (!isPlaying) return;
+      const rnd = Math.random();
+      if      (rnd < 0.10) spawnGolden();
+      else if (rnd < 0.18) spawnBomb();
+      else                 spawnGrade();
+    }
+
+    /* ── 일반 학점 ── */
+    function spawnGrade() {
+      const item   = grades[Math.floor(Math.random() * grades.length)];
+      const bubble = document.createElement("div");
+      bubble.className = `grade ${item.type}`;
+      bubble.innerHTML = `
+        <img class="animal-img" src="${item.img}" alt="${item.g}" />
+        <div class="grade-text">${item.g}</div>
+      `;
+
+      const size = 88;
+      const pos  = getNonOverlappingPosition(size);
+      if (!pos) return;
+      bubble.style.left = `${pos.x}px`;
+      bubble.style.top  = `${pos.y}px`;
+
+      bubble.onclick = () => {
+        if (!isPlaying) return;
+        bubble.classList.add("popping");
+        spawnDroplets(pos.x + size/2, pos.y + size/2, item.type);
+        playSound(item.score > 0 ? "good" : "bad");
+
+        let gained = item.score;
+        if (isFever && gained > 0) gained *= 2;
+        score += gained;
+
+        if (gained > 0) {
+          combo++;
+          const label = isFever ? `+${gained} 🔥` : `+${gained}`;
+          if (combo === 5 && !isFever) {
+            startFever();
+            showEffect(pos.x, pos.y - 20, "🔥 FEVER!", "#c87f00", true);
+          } else if (combo >= 3) {
+            showEffect(pos.x + 15, pos.y, `콤보 ${combo}! ${label}`, "#418554");
+          } else {
+            showEffect(pos.x + 24, pos.y, label, "#418554");
+          }
+        } else {
+          combo = 0;
+          if (isFever) endFever();
+          showEffect(pos.x + 24, pos.y, `${gained}`, "#b35a60");
+        }
+
+        scoreEl.textContent = score;
+        comboEl.textContent = combo;
+        setTimeout(() => bubble.remove(), 350);
+      };
+
+      gameArea.appendChild(bubble);
+      setTimeout(() => { if (bubble.parentNode) bubble.remove(); }, 2200);
+    }
+
+    /* ── 황금 버블 ── */
+    function spawnGolden() {
+      const bubble = document.createElement("div");
+      bubble.className = "grade golden";
+      bubble.innerHTML = `
+        <img class="special-img" src="${IMG.golden}" alt="황금버블" />
+        <div class="grade-subtext" style="color:#5a3c00">+3초</div>
+      `;
+
+      const size = 88;
+      const pos  = getNonOverlappingPosition(size);
+      if (!pos) return;
+      bubble.style.left = `${pos.x}px`;
+      bubble.style.top  = `${pos.y}px`;
+
+      bubble.onclick = () => {
+        if (!isPlaying) return;
+        bubble.classList.add("popping");
+        spawnDroplets(pos.x + size/2, pos.y + size/2, "golden");
+        playSound("golden");
+
+        time += 3;
+        timeEl.textContent = time;
+        showEffect(pos.x + 10, pos.y, "+3초!", "#b08000", true);
+        setTimeout(() => bubble.remove(), 350);
+      };
+
+      gameArea.appendChild(bubble);
+      setTimeout(() => { if (bubble.parentNode) bubble.remove(); }, 2500);
+    }
+
+    /* ── 폭탄 버블 ── */
+    function spawnBomb() {
+      const bubble = document.createElement("div");
+      bubble.className = "grade bomb";
+      bubble.innerHTML = `
+        <img class="special-img" src="${IMG.bomb}" alt="폭탄" />
+        <div class="grade-subtext" style="color:#ff9999">위험!</div>
+      `;
+
+      const size = 88;
+      const pos  = getNonOverlappingPosition(size);
+      if (!pos) return;
+      bubble.style.left = `${pos.x}px`;
+      bubble.style.top  = `${pos.y}px`;
+
+      bubble.onclick = () => {
+        if (!isPlaying) return;
+        bubble.classList.add("popping");
+        playSound("bomb");
+
+        const blast = document.createElement("div");
+        blast.className = "bomb-blast";
+        blast.style.cssText = `left:${pos.x - 44}px; top:${pos.y - 44}px; width:176px; height:176px;`;
+        gameArea.appendChild(blast);
+        setTimeout(() => blast.remove(), 500);
+
+        spawnDroplets(pos.x + size/2, pos.y + size/2, "bomb");
+        Array.from(gameArea.querySelectorAll(".grade:not(.popping)")).forEach(b => b.remove());
+
+        score = Math.max(0, score - 15);
+        combo = 0;
+        if (isFever) endFever();
+
+        scoreEl.textContent = score;
+        comboEl.textContent = combo;
+        showEffect(pos.x, pos.y, "💣 -15점!", "#cc2200", true);
+        setTimeout(() => bubble.remove(), 350);
+      };
+
+      gameArea.appendChild(bubble);
+      setTimeout(() => { if (bubble.parentNode) bubble.remove(); }, 2000);
+    }
+
+    /* ====== 이펙트 ====== */
+    function showEffect(x, y, text, color, big = false) {
+      const fx = document.createElement("div");
+      fx.className   = big ? "hit-effect big" : "hit-effect";
+      fx.textContent = text;
+      fx.style.left  = `${Math.max(0, x)}px`;
+      fx.style.top   = `${Math.max(0, y)}px`;
+      fx.style.color = color;
+      gameArea.appendChild(fx);
+      setTimeout(() => fx.remove(), 750);
     }
   </script>
 </body>
