@@ -1,21 +1,16 @@
 <!DOCTYPE html>
-<!-- 학점 사냥: 제한 시간 안에 학점 버블을 탭해 점수를 모으는 미니게임 (단일 HTML) -->
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>동물의 왕국 : 학점 사냥</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    /* 전체 페이지: 그라데이션 배경·중앙 정렬·가로 스크롤 숨김 */
     body {
       margin: 0;
       font-family: "Trebuchet MS", "맑은 고딕", sans-serif;
-      background:
-        linear-gradient(180deg, #bfe9ff 0%, #dff7d8 45%, #fdf4d8 100%);
+      background: linear-gradient(180deg, #bfe9ff 0%, #dff7d8 45%, #fdf4d8 100%);
       min-height: 100vh;
       min-height: 100dvh;
       display: flex;
@@ -23,26 +18,20 @@
       align-items: center;
       color: #3d413d;
       overflow-x: hidden;
-      padding: 12px calc(12px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom))
-        calc(12px + env(safe-area-inset-left));
+      padding: 12px calc(12px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left));
     }
 
-    /* 최대 너비 컨테이너 */
     .wrap {
       width: 960px;
       max-width: 100%;
       padding: 22px;
     }
 
-    button,
-    .lobby-link,
-    .start-btn,
-    .kakao-share-result-btn {
+    button, .lobby-link, .start-btn, .kakao-share-result-btn {
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
     }
 
-    /* 메인 흰 카드 + 숲 느낌 테두리 */
     .shell {
       position: relative;
       overflow: hidden;
@@ -60,32 +49,19 @@
       z-index: 0;
     }
 
-    /* 배경 장식(구름·잎·꽃) — 클릭 불가 */
-    .cloud {
-      font-size: 42px;
-      opacity: 0.45;
-    }
+    .cloud { font-size: 42px; opacity: 0.45; }
+    .leaf  { font-size: 24px; opacity: 0.28; }
+    .flower{ font-size: 22px; opacity: 0.35; }
 
-    .leaf {
-      font-size: 24px;
-      opacity: 0.28;
-    }
-
-    .flower {
-      font-size: 22px;
-      opacity: 0.35;
-    }
-
-    .cloud1 { top: 12px; left: 24px; }
-    .cloud2 { top: 30px; right: 90px; }
-    .leaf1 { top: 92px; left: 14px; transform: rotate(-12deg); }
-    .leaf2 { top: 80px; right: 24px; transform: rotate(16deg); }
-    .leaf3 { bottom: 32px; left: 120px; transform: rotate(-8deg); }
-    .leaf4 { bottom: 22px; right: 145px; transform: rotate(10deg); }
+    .cloud1  { top: 12px;   left: 24px;  }
+    .cloud2  { top: 30px;   right: 90px; }
+    .leaf1   { top: 92px;   left: 14px;  transform: rotate(-12deg); }
+    .leaf2   { top: 80px;   right: 24px; transform: rotate(16deg);  }
+    .leaf3   { bottom: 32px; left: 120px; transform: rotate(-8deg); }
+    .leaf4   { bottom: 22px; right: 145px; transform: rotate(10deg); }
     .flower1 { bottom: 24px; left: 42px; }
     .flower2 { bottom: 18px; right: 44px; }
 
-    /* 상단: 제목·정보 */
     .topbar {
       position: relative;
       z-index: 1;
@@ -96,7 +72,6 @@
       margin-bottom: 10px;
     }
 
-    /* 제목 블록 */
     .title h1 {
       margin: 0;
       font-size: clamp(20px, 4.2vw, 30px);
@@ -110,7 +85,6 @@
       color: #738476;
     }
 
-    /* 게임 시작 (전역 startGame 호출) */
     .start-btn {
       border: none;
       border-radius: 999px;
@@ -125,16 +99,9 @@
       font-family: inherit;
       white-space: nowrap;
     }
+    .start-btn:hover  { transform: translateY(-2px); box-shadow: 0 14px 26px rgba(235,188,70,0.35); }
+    .start-btn:active { transform: scale(0.97); }
 
-    .start-btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .start-btn:active {
-      transform: scale(0.97);
-    }
-
-    /* 시작 버튼 + 안내 메시지 줄 */
     .controls {
       position: relative;
       z-index: 1;
@@ -145,7 +112,6 @@
       margin-bottom: 10px;
     }
 
-    /* 안내·결과 메시지 */
     #result {
       flex: 1;
       min-height: 40px;
@@ -160,9 +126,15 @@
       font-size: 13px;
       line-height: 1.4;
       margin: 0;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
     }
 
-    /* 점수·콤보·남은 시간 한 줄 */
+    #result.fever {
+      background: linear-gradient(135deg, #fff3a0, #ffe066);
+      border-color: #f5c800;
+      color: #7a5a00;
+    }
+
     .status {
       position: relative;
       z-index: 1;
@@ -172,7 +144,6 @@
       gap: 6px;
     }
 
-    /* 정보 칸 하나 */
     .status-box {
       flex: 1 1 0;
       min-width: 0;
@@ -181,6 +152,12 @@
       border-radius: 12px;
       padding: 6px 8px;
       text-align: center;
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    .status-box.fever-box {
+      background: linear-gradient(180deg, #fff8cc, #fff0a0);
+      border-color: #f5c800;
     }
 
     .status-label {
@@ -198,7 +175,6 @@
       line-height: 1.1;
     }
 
-    /* 학점 버블이 뜨는 플레이 영역 */
     #gameArea {
       position: relative;
       z-index: 1;
@@ -209,101 +185,97 @@
       overflow: hidden;
       border-radius: 30px;
       border: 4px solid #8ec18f;
-      background:
-        radial-gradient(circle at 20% 15%, rgba(255,255,255,0.55), transparent 20%),
-        radial-gradient(circle at 80% 20%, rgba(255,250,220,0.45), transparent 18%),
-        linear-gradient(180deg, #ccf0ff 0%, #dff8d6 48%, #9dd48f 100%);
+      background-image: url('../assets/images/Home.jpg');
+      background-size: cover;
+      background-position: center bottom;
+      background-repeat: no-repeat;
+      transition: border-color 0.3s;
     }
 
-    /* 배경 태양 장식 */
-    .sun {
+    #gameArea.fever-area {
+      border-color: #f5c800;
+      box-shadow: 0 0 0 3px rgba(245,200,0,0.3), inset 0 0 40px rgba(255,230,0,0.08);
+      animation: feverBorder 0.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes feverBorder {
+      from { border-color: #f5c800; box-shadow: 0 0 0 3px rgba(245,200,0,0.25); }
+      to   { border-color: #ffaa00; box-shadow: 0 0 0 5px rgba(255,170,0,0.4); }
+    }
+
+    #gameArea::before {
+      content: '';
       position: absolute;
-      top: 28px;
-      right: 40px;
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #fff7bb 20%, #ffe27d 70%);
-      box-shadow: 0 0 24px rgba(255, 224, 111, 0.4);
+      inset: 0;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 26px;
       z-index: 0;
+      pointer-events: none;
     }
 
-    /* 언덕(둥근 타원) 레이어 */
-    .hill {
+    #feverOverlay {
       position: absolute;
-      border-radius: 50%;
-      z-index: 0;
+      inset: 0;
+      border-radius: 26px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      background: radial-gradient(ellipse at center, rgba(255,230,50,0.18) 0%, transparent 70%);
+      transition: opacity 0.4s;
     }
 
-    .hill1 {
-      width: 320px;
-      height: 140px;
-      left: -30px;
-      bottom: 36px;
-      background: #9ed48d;
+    #feverOverlay.show { opacity: 1; animation: feverGlow 1s ease-in-out infinite alternate; }
+
+    @keyframes feverGlow {
+      from { opacity: 0.6; }
+      to   { opacity: 1; }
     }
 
-    .hill2 {
-      width: 360px;
-      height: 155px;
-      left: 220px;
-      bottom: 24px;
-      background: #8fca7d;
-    }
-
-    .hill3 {
-      width: 310px;
-      height: 135px;
-      right: -20px;
-      bottom: 42px;
-      background: #a5da92;
-    }
-
-    /* 맨 아래 잔디 바닥 띠 */
-    .ground {
+    #feverBanner {
       position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 82px;
-      background: linear-gradient(180deg, #7dc36f 0%, #5b9d56 100%);
-      z-index: 0;
-      border-top: 4px solid rgba(75, 128, 69, 0.35);
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.8);
+      background: linear-gradient(135deg, #ffe640, #ffb300);
+      color: #5a3c00;
+      font-size: 15px;
+      font-weight: 900;
+      padding: 7px 18px;
+      border-radius: 999px;
+      z-index: 20;
+      pointer-events: none;
+      white-space: nowrap;
+      box-shadow: 0 6px 20px rgba(255,180,0,0.4);
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    /* 나무(줄기+수관) */
-    .tree {
-      position: absolute;
-      z-index: 0;
+    #feverBanner.show {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+      animation: feverBannerPulse 0.6s ease-in-out infinite alternate;
     }
 
-    .tree .trunk {
-      width: 20px;
-      height: 68px;
-      background: #9b6c43;
-      border-radius: 10px;
-      margin: 0 auto;
+    #feverBanner img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
     }
 
-    .tree .top {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background: #67b66d;
-      margin: 0 auto -10px;
-      box-shadow:
-        -24px 8px 0 0 #7ec97d,
-        24px 8px 0 0 #7bc37a;
+    @keyframes feverBannerPulse {
+      from { transform: translateX(-50%) scale(1);    box-shadow: 0 6px 20px rgba(255,180,0,0.4); }
+      to   { transform: translateX(-50%) scale(1.05); box-shadow: 0 8px 28px rgba(255,180,0,0.6); }
     }
 
-    .tree1 { left: 48px; bottom: 68px; }
-    .tree2 { right: 72px; bottom: 72px; transform: scale(0.95); }
-
-    /* 탭하는 학점 버블 */
+    /* ====== 동물 버블 ====== */
     .grade {
       position: absolute;
-      width: 82px;
-      height: 82px;
+      width: 88px;
+      height: 88px;
       border-radius: 50%;
       display: flex;
       flex-direction: column;
@@ -313,79 +285,117 @@
       cursor: pointer;
       z-index: 2;
       border: 3px solid rgba(255,255,255,0.95);
-      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.18);
       animation: popIn 0.24s ease, floaty 1.6s ease-in-out infinite alternate;
       transition: transform 0.12s ease;
-      backdrop-filter: blur(2px);
+      backdrop-filter: blur(3px);
+    }
+    .grade:hover  { transform: scale(1.08); }
+    .grade:active { transform: scale(0.95); }
+
+    .grade.popping {
+      animation: bubblePop 0.32s ease forwards !important;
+      pointer-events: none;
     }
 
-    .grade:hover {
-      transform: scale(1.08);
+    @keyframes bubblePop {
+      0%   { transform: scale(1);    opacity: 1; filter: blur(0px); }
+      35%  { transform: scale(1.4);  opacity: 0.7; filter: blur(2px); }
+      100% { transform: scale(0.05); opacity: 0; filter: blur(8px); }
     }
 
-    .grade:active {
-      transform: scale(0.95);
+    .grade.golden {
+      background: linear-gradient(135deg, rgba(255,230,80,0.95), rgba(255,200,30,0.95)) !important;
+      color: #5a3c00 !important;
+      border: 3px solid rgba(255,255,180,0.95) !important;
+      animation: popIn 0.24s ease, goldenPulse 0.9s ease-in-out infinite alternate !important;
     }
 
-    .animal {
-      font-size: 26px;
-      line-height: 1;
-      margin-bottom: 4px;
+    @keyframes goldenPulse {
+      from { box-shadow: 0 0 0 3px rgba(255,210,0,0.4), 0 10px 22px rgba(0,0,0,0.18); }
+      to   { box-shadow: 0 0 0 7px rgba(255,210,0,0.15), 0 12px 28px rgba(0,0,0,0.2); }
     }
 
-    .grade-text {
-      font-size: 18px;
-      font-weight: 900;
-      line-height: 1;
+    .grade.bomb {
+      background: linear-gradient(135deg, rgba(60,60,60,0.93), rgba(30,30,30,0.93)) !important;
+      color: #fff !important;
+      border: 3px solid rgba(180,180,180,0.8) !important;
+      box-shadow: 0 0 0 3px rgba(200,50,50,0.4), 0 10px 22px rgba(0,0,0,0.25) !important;
+      animation: popIn 0.24s ease, bombWobble 0.5s ease-in-out infinite alternate !important;
     }
 
-    /* 학점 등급별 색 (CSS 클래스 = grades[].type) */
-    .grade.good {
-      background: linear-gradient(135deg, #dff8cc, #f5ffe9);
-      color: #3e7d43;
+    @keyframes bombWobble {
+      from { transform: rotate(-4deg) scale(1); }
+      to   { transform: rotate(4deg)  scale(1.04); }
     }
 
-    .grade.mid {
-      background: linear-gradient(135deg, #e8f2ff, #f7fbff);
-      color: #446a95;
+    .bomb-blast {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 8;
+      background: radial-gradient(circle, rgba(255,100,30,0.7) 0%, rgba(255,50,0,0.3) 50%, transparent 70%);
+      animation: blastExpand 0.45s ease-out forwards;
     }
 
-    .grade.low {
-      background: linear-gradient(135deg, #fff2cb, #fff9e9);
-      color: #8c6f28;
+    @keyframes blastExpand {
+      0%   { transform: scale(0);   opacity: 1; }
+      60%  { transform: scale(1);   opacity: 0.8; }
+      100% { transform: scale(1.6); opacity: 0; }
     }
 
-    .grade.bad {
-      background: linear-gradient(135deg, #ffe7d1, #fff4ea);
-      color: #956334;
+    .droplet {
+      position: absolute;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      pointer-events: none;
+      z-index: 10;
     }
 
-    .grade.worst {
-      background: linear-gradient(135deg, #f5e7c9, #fff7e7);
-      color: #8b6c35;
-      box-shadow: 0 10px 18px rgba(120, 96, 50, 0.12);
+    @keyframes dropletFly {
+      0%   { opacity: 1;   transform: translate(0, 0) scale(1); }
+      70%  { opacity: 0.9; }
+      100% { opacity: 0;   transform: translate(var(--dx), var(--dy)) scale(0.2); }
     }
 
-    /* +점수 / 감점 텍스트가 떠오르는 효과 */
+    .animal-img {
+      width: 46px;
+      height: 46px;
+      object-fit: contain;
+      margin-bottom: 3px;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
+    }
+
+    /* 황금·폭탄 버블 이미지는 조금 더 크게 */
+    .special-img {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+
+    .grade-text { font-size: 16px; font-weight: 900; line-height: 1; }
+    .grade-subtext { font-size: 12px; font-weight: 800; line-height: 1; margin-top: 2px; }
+
+    .grade.good  { background: linear-gradient(135deg, rgba(223,248,204,0.92), rgba(245,255,233,0.92)); color: #3e7d43; }
+    .grade.mid   { background: linear-gradient(135deg, rgba(232,242,255,0.92), rgba(247,251,255,0.92)); color: #446a95; }
+    .grade.low   { background: linear-gradient(135deg, rgba(255,242,203,0.92), rgba(255,249,233,0.92)); color: #8c6f28; }
+    .grade.bad   { background: linear-gradient(135deg, rgba(255,231,209,0.92), rgba(255,244,234,0.92)); color: #956334; }
+    .grade.worst { background: linear-gradient(135deg, rgba(245,231,201,0.92), rgba(255,247,231,0.92)); color: #8b6c35; box-shadow: 0 10px 18px rgba(120,96,50,0.15); }
+
     .hit-effect {
       position: absolute;
-      z-index: 5;
+      z-index: 15;
       pointer-events: none;
       font-size: 19px;
       font-weight: 900;
       animation: riseFade 0.7s ease forwards;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.18);
     }
 
-    /* 카카오 공유 버튼 행 */
-    .result-card {
-      position: relative;
-      z-index: 1;
-      margin-top: 10px;
-      display: flex;
-      justify-content: center;
-    }
+    .hit-effect.big { font-size: 24px; }
 
-    /* 하단 규칙 안내 */
     .guide {
       position: relative;
       z-index: 1;
@@ -396,41 +406,19 @@
       line-height: 1.6;
     }
 
-    /* 버블 등장 */
     @keyframes popIn {
-      from {
-        transform: scale(0.45);
-        opacity: 0;
-      }
-      to {
-        transform: scale(1);
-        opacity: 1;
-      }
+      from { transform: scale(0.45); opacity: 0; }
+      to   { transform: scale(1);    opacity: 1; }
     }
-
-    /* 버블이 위아래로 살짝 떠 있음 */
     @keyframes floaty {
-      from {
-        translate: 0 0;
-      }
-      to {
-        translate: 0 -6px;
-      }
+      from { translate: 0 0; }
+      to   { translate: 0 -6px; }
     }
-
-    /* 히트 이펙트 상승 페이드 */
     @keyframes riseFade {
-      0% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(-26px);
-      }
+      0%   { opacity: 1; transform: translateY(0);    }
+      100% { opacity: 0; transform: translateY(-32px); }
     }
 
-    /* 로비 복귀 링크 */
     .lobby-link {
       display: inline-flex;
       align-items: center;
@@ -444,60 +432,8 @@
       text-decoration: none;
       margin-bottom: 14px;
     }
+    .lobby-link:hover { background: #dcf2de; }
 
-    .lobby-link:hover {
-      background: #dcf2de;
-    }
-
-    /* 태블릿·폰 */
-    @media (max-width: 700px) {
-      .wrap {
-        padding: 14px 10px;
-      }
-
-      .controls {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .start-btn {
-        width: 100%;
-        min-height: 48px;
-        font-size: 16px;
-      }
-
-      #result {
-        font-size: 12px;
-        min-height: auto;
-        padding: 10px 12px;
-      }
-
-      #gameArea {
-        height: min(70vh, 600px);
-        min-height: 360px;
-      }
-
-      .grade {
-        width: 72px;
-        height: 72px;
-      }
-
-      .animal {
-        font-size: 23px;
-      }
-
-      .grade-text {
-        font-size: 16px;
-      }
-
-      .kakao-share-result-btn {
-        width: 100%;
-        min-height: 48px;
-        font-size: 16px;
-      }
-    }
-
-    /* 종료 후 카카오 공유 */
     .kakao-share-result-btn {
       border: none;
       border-radius: 999px;
@@ -508,19 +444,25 @@
       background: #fee500;
       cursor: pointer;
       font-family: inherit;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
+    .kakao-share-result-btn:hover { transform: translateY(-2px); }
+    .kakao-share-result-btn.hidden { display: none !important; }
 
-    .kakao-share-result-btn:hover {
-      transform: translateY(-2px);
+    @media (max-width: 700px) {
+      .wrap { padding: 14px 10px; }
+      .controls { flex-direction: column; align-items: stretch; }
+      .start-btn { width: 100%; min-height: 48px; font-size: 16px; }
+      #result { font-size: 12px; min-height: auto; padding: 10px 12px; }
+      #gameArea { height: min(70vh, 600px); min-height: 360px; }
+      .grade { width: 72px; height: 72px; }
+      .animal-img { width: 38px; height: 38px; }
+      .special-img { width: 42px; height: 42px; }
+      .grade-text { font-size: 14px; }
+      .kakao-share-result-btn { width: 100%; min-height: 48px; font-size: 16px; }
     }
 
-    .kakao-share-result-btn.hidden {
-      display: none !important;
-    }
-
-    /* ===== 시작·종료 오버레이 ===== */
     .overlay {
       position: fixed;
       inset: 0;
@@ -547,18 +489,8 @@
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
     }
 
-    .overlay-card h2 {
-      margin: 0 0 10px;
-      font-size: 24px;
-      color: #4f7b55;
-    }
-
-    .overlay-card p {
-      margin: 0 0 20px;
-      color: #5a6f5f;
-      font-size: 15px;
-      line-height: 1.65;
-    }
+    .overlay-card h2 { margin: 0 0 10px; font-size: 24px; color: #4f7b55; }
+    .overlay-card p  { margin: 0 0 20px; color: #5a6f5f; font-size: 15px; line-height: 1.65; }
 
     .overlay-actions {
       display: flex;
@@ -580,7 +512,6 @@
       font-family: inherit;
       transition: transform 0.15s ease;
     }
-
     #overlayActionBtn:hover { transform: translateY(-1px); }
   </style>
 </head>
@@ -588,7 +519,6 @@
   <div class="wrap">
     <a class="lobby-link" id="lobbyBackLink" href="../index.html?lobby=1">← 로비로 돌아가기</a>
     <div class="shell">
-      <!-- 배경 장식 (이모지) -->
       <div class="cloud cloud1">☁️</div>
       <div class="cloud cloud2">☁️</div>
       <div class="leaf leaf1">🍃</div>
@@ -598,14 +528,13 @@
       <div class="flower flower1">🌼</div>
       <div class="flower flower2">🌼</div>
 
-      <!-- 제목 + 점수 -->
       <div class="topbar">
         <div class="title">
           <h1>🐾 동물의 왕국 : 학점 사냥</h1>
           <p>짧은 시간 안에 높은 학점을 많이 잡고, 함정 학점은 피하세요!</p>
         </div>
         <div class="status">
-          <div class="status-box">
+          <div class="status-box" id="scoreBox">
             <div class="status-label">점수</div>
             <div class="status-value" id="score">0</div>
           </div>
@@ -620,37 +549,25 @@
         </div>
       </div>
 
-      <!-- 시작 버튼 + 안내 메시지 -->
       <div class="controls">
         <button class="start-btn" onclick="startGame()">게임 시작</button>
         <div id="result">시작 버튼을 누르면 귀여운 동물 학점들이 숲속에 나타나요!</div>
       </div>
 
-      <!-- 플레이 영역: 배경 + 스크립트가 .grade 버블 추가 -->
       <div id="gameArea">
-        <div class="sun"></div>
-        <div class="tree tree1">
-          <div class="top"></div>
-          <div class="trunk"></div>
+        <div id="feverOverlay"></div>
+        <div id="feverBanner">
+          <img src="../assets/images/hunt/fever.png" alt="피버" />
+          🔥 FEVER TIME! 점수 2배!
         </div>
-        <div class="tree tree2">
-          <div class="top"></div>
-          <div class="trunk"></div>
-        </div>
-        <div class="hill hill1"></div>
-        <div class="hill hill2"></div>
-        <div class="hill hill3"></div>
-        <div class="ground"></div>
       </div>
 
-      <!-- 규칙 요약 -->
       <div class="guide">
-        A+ / A는 고득점 · B 계열은 무난 · D와 F는 감점이에요!
+        A+ / A는 고득점 · B 계열은 무난 · D·F는 감점 · 황금버블 = 시간+3초 · 폭탄 = 주의!
       </div>
     </div>
   </div>
 
-  <!-- 시작·종료 오버레이 -->
   <div class="overlay show" id="overlay">
     <div class="overlay-card">
       <h2 id="overlayTitle">🐾 동물의 왕국 : 학점 사냥</h2>
@@ -667,15 +584,12 @@
     </div>
   </div>
 
-  <!-- 카카오 공유 SDK -->
   <script
     src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js"
     integrity="sha384-l+xbElFSnPZ2rOaPrU//2FF5B4LB8FiX5q4fXYTlfcG4PGpMkE1vcL7kNXI6Cci0"
     crossorigin="anonymous"
   ></script>
   <script>
-    /* ========== 학점 사냥 게임 로직 ========== */
-
     const STORAGE_SCHOOL = "animalLeagueSchool";
     const API_BASE =
       window.ANIMAL_LEAGUE_API ||
@@ -683,38 +597,21 @@
         ? "http://localhost:3000"
         : "https://backend-m5wz.onrender.com");
 
-    /** URL ?school= 우선, 없으면 로컬스토리지 (로비와 출처가 다를 때 대비) */
     function getLeagueSchool() {
       try {
         const q = (new URLSearchParams(window.location.search).get("school") || "").trim();
-        if (q) {
-          try {
-            localStorage.setItem(STORAGE_SCHOOL, q);
-          } catch {
-            /* ignore */
-          }
-          return q;
-        }
-      } catch {
-        /* ignore */
-      }
+        if (q) { try { localStorage.setItem(STORAGE_SCHOOL, q); } catch {} return q; }
+      } catch {}
       return (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
     }
 
-    /** 로비 링크에 학교 쿼리 유지 */
     function setLobbyBackLink() {
       const a = document.getElementById("lobbyBackLink");
       if (!a) return;
       const school = getLeagueSchool();
-      a.setAttribute(
-        "href",
-        school
-          ? `../index.html?lobby=1&school=${encodeURIComponent(school)}`
-          : "../index.html?lobby=1"
-      );
+      a.setAttribute("href", school ? `../index.html?lobby=1&school=${encodeURIComponent(school)}` : "../index.html?lobby=1");
     }
 
-    /** 리그 서버에 점수 제출 (학교 미설정 시 생략) */
     function submitScoreToLeague(game, value) {
       const school = getLeagueSchool();
       if (!school) {
@@ -724,60 +621,37 @@
         }
         return;
       }
-
-      const score = Math.round(Number(value));
-      if (!Number.isFinite(score)) return;
-
+      const s = Math.round(Number(value));
+      if (!Number.isFinite(s)) return;
       fetch(`${API_BASE}/api/scores`, {
-        method: "POST",
-        keepalive: true,
+        method: "POST", keepalive: true,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ school, game, score })
+        body: JSON.stringify({ school, game, score: s })
       }).catch(() => {});
     }
 
     setLobbyBackLink();
 
-    /* --- 카카오 공유 --- */
-    const KAKAO_JS_APP_KEY = "fa75c82718597e9124f913d174cd92a2";
-
-    /** 공유 링크·썸네일에 쓰는 사이트 기준 URL (로컬 테스트 시에는 origin 사용) */
+    const KAKAO_JS_APP_KEY  = "fa75c82718597e9124f913d174cd92a2";
     const SHARE_SITE_ORIGIN = "https://campus-animal-battle.vercel.app";
     const SHARE_FEED_IMAGE_URL = `${SHARE_SITE_ORIGIN}/assets/game-preview.png`;
 
-    /** 인트로 생략 → 로비(또는 학교 입력)로 바로 진입. index.html `wantsLobbyFromQuery`와 동일 쿼리 규약 */
     function buildShareLobbyUrl() {
       const school = getLeagueSchool();
       const base = `${SHARE_SITE_ORIGIN}/?lobby=true`;
       return school ? `${base}&school=${encodeURIComponent(school)}` : base;
     }
 
-    /* 카카오 JS SDK 1회 초기화 */
     (function initKakaoSdk() {
       if (!window.Kakao || !KAKAO_JS_APP_KEY) return;
-      if (!Kakao.isInitialized()) {
-        Kakao.init(KAKAO_JS_APP_KEY);
-      }
+      if (!Kakao.isInitialized()) Kakao.init(KAKAO_JS_APP_KEY);
     })();
 
-    /** 플레이 중에는 공유 버튼 숨김 */
-    function hideKakaoShareButton() {
-      const btn = document.getElementById("kakaoShareResultBtn");
-      if (btn) btn.classList.add("hidden");
-    }
+    function hideKakaoShareButton() { document.getElementById("kakaoShareResultBtn")?.classList.add("hidden"); }
+    function showKakaoShareButton() { document.getElementById("kakaoShareResultBtn")?.classList.remove("hidden"); }
 
-    /** 게임 종료 후 공유 버튼 표시 */
-    function showKakaoShareButton() {
-      const btn = document.getElementById("kakaoShareResultBtn");
-      if (btn) btn.classList.remove("hidden");
-    }
-
-    /** 카카오톡 피드로 로비 링크 공유 */
     function shareToKakao() {
-      if (!window.Kakao || !Kakao.isInitialized()) {
-        alert("카카오 SDK를 불러오지 못했거나 초기화되지 않았습니다.");
-        return;
-      }
+      if (!window.Kakao || !Kakao.isInitialized()) { alert("카카오 SDK를 불러오지 못했습니다."); return; }
       const u = buildShareLobbyUrl();
       Kakao.Share.sendDefault({
         objectType: "feed",
@@ -785,258 +659,156 @@
           title: "캠퍼스 애니멀 배틀 🐾",
           description: "우리 학교를 대표해 호랑이로 진화해보자!",
           imageUrl: SHARE_FEED_IMAGE_URL,
-          link: {
-            mobileWebUrl: u,
-            webUrl: u
-          }
+          link: { mobileWebUrl: u, webUrl: u }
         },
-        buttons: [
-          {
-            title: "게임 참여하기",
-            link: {
-              mobileWebUrl: u,
-              webUrl: u
-            }
-          }
-        ]
+        buttons: [{ title: "게임 참여하기", link: { mobileWebUrl: u, webUrl: u } }]
       });
     }
 
-    /* 등급별 점수·CSS 타입·동물 이모지 */
+    /* ====== 사운드 ====== */
+    const sounds = {
+      good:   new Audio("../assets/sounds/powerUp2.mp3"),
+      bad:    new Audio("../assets/sounds/lowRandom.mp3"),
+      golden: new Audio("../assets/sounds/impactMetal_medium_000.mp3"),
+      bomb:   new Audio("../assets/sounds/impactPunch_heavy_000.mp3"),
+      fever:  new Audio("../assets/sounds/jingles_NES03.mp3"),
+    };
+    Object.values(sounds).forEach(s => s.volume = 0.6);
+
+    function playSound(key) {
+      const snd = sounds[key];
+      if (!snd) return;
+      snd.currentTime = 0;
+      snd.play().catch(() => {});
+    }
+
+    /* ====== 이미지 경로 ====== */
+    const IMG = {
+      golden: "../assets/images/hunt/golden.png",
+      bomb:   "../assets/images/hunt/bomb.png",
+      fever:  "../assets/images/hunt/fever.png",
+    };
+
+    /* ====== 등급 정의 ====== */
     const grades = [
-      { g: "A+", score: 10, type: "good", animal: "🐯" },
-      { g: "A", score: 8, type: "good", animal: "🦁" },
-      { g: "B+", score: 6, type: "mid", animal: "🐴" },
-      { g: "B", score: 5, type: "mid", animal: "🐱" },
-      { g: "C+", score: 3, type: "low", animal: "🦜" },
-      { g: "C", score: 2, type: "low", animal: "🐿️" },
-      { g: "D", score: -2, type: "bad", animal: "🐢" },
-      { g: "F", score: -10, type: "worst", animal: "🦝" }
+      { g: "A+", score: 10, type: "good",  img: "../assets/images/a_1.png" },
+      { g: "A",  score: 8,  type: "good",  img: "../assets/images/a_1.png" },
+      { g: "B+", score: 6,  type: "mid",   img: "../assets/images/a_2.png" },
+      { g: "B",  score: 5,  type: "mid",   img: "../assets/images/a_2.png" },
+      { g: "C+", score: 3,  type: "low",   img: "../assets/images/a_3.png" },
+      { g: "C",  score: 2,  type: "low",   img: "../assets/images/a_3.png" },
+      { g: "D",  score: -2, type: "bad",   img: "../assets/images/a_4.png" },
+      { g: "F",  score: -10,type: "worst", img: "../assets/images/a_5.png" }
     ];
 
-    /* --- 런타임 상태 --- */
-    let score = 0;
-    let combo = 0;
-    let time = 15;
-    let gameInterval = null;
-    let spawnInterval = null;
-    let hardModeInterval = null;
+    const dropletColors = {
+      good:   ["#6ee87a", "#a8f5b0", "#ffffff"],
+      mid:    ["#7ab8f5", "#aad4ff", "#ffffff"],
+      low:    ["#f5d87a", "#ffe4a0", "#ffffff"],
+      bad:    ["#f5a87a", "#ffcaaa", "#ffffff"],
+      worst:  ["#e8c87a", "#f5daa0", "#ffffff"],
+      golden: ["#ffe640", "#ffd000", "#fff8c0"],
+      bomb:   ["#ff6030", "#ff3300", "#ffcc00"]
+    };
+
+    /* ====== 상태 ====== */
+    let score = 0, combo = 0, time = 15;
+    let gameInterval = null, spawnInterval = null, hardModeInterval = null;
     let isPlaying = false;
+    let isFever = false, feverTimeout = null;
 
-    const scoreEl = document.getElementById("score");
-    const comboEl = document.getElementById("combo");
-    const timeEl = document.getElementById("time");
-    const resultEl = document.getElementById("result");
-    const gameArea = document.getElementById("gameArea");
-
-    /* 오버레이 요소 */
-    const overlay = document.getElementById("overlay");
-    const overlayTitle = document.getElementById("overlayTitle");
-    const overlayDesc = document.getElementById("overlayDesc");
+    /* ====== DOM ====== */
+    const scoreEl          = document.getElementById("score");
+    const comboEl          = document.getElementById("combo");
+    const timeEl           = document.getElementById("time");
+    const resultEl         = document.getElementById("result");
+    const scoreBox         = document.getElementById("scoreBox");
+    const gameArea         = document.getElementById("gameArea");
+    const feverOverlay     = document.getElementById("feverOverlay");
+    const feverBanner      = document.getElementById("feverBanner");
+    const overlay          = document.getElementById("overlay");
+    const overlayTitle     = document.getElementById("overlayTitle");
+    const overlayDesc      = document.getElementById("overlayDesc");
     const overlayActionBtn = document.getElementById("overlayActionBtn");
     overlayActionBtn.addEventListener("click", startGame);
 
-    /** 점수·콤보·시간 표시만 DOM에 반영 */
+    /* ====== 피버 ====== */
+    function startFever() {
+      if (isFever) return;
+      isFever = true;
+      playSound("fever");
+      gameArea.classList.add("fever-area");
+      feverOverlay.classList.add("show");
+      feverBanner.classList.add("show");
+      resultEl.classList.add("fever");
+      scoreBox.classList.add("fever-box");
+      resultEl.textContent = "🔥 FEVER TIME! 10초간 점수 2배!";
+      clearTimeout(feverTimeout);
+      feverTimeout = setTimeout(endFever, 10000);
+    }
+
+    function endFever() {
+      isFever = false;
+      gameArea.classList.remove("fever-area");
+      feverOverlay.classList.remove("show");
+      feverBanner.classList.remove("show");
+      resultEl.classList.remove("fever");
+      scoreBox.classList.remove("fever-box");
+      if (isPlaying) resultEl.textContent = "피버 종료! 계속 콤보를 이어가세요!";
+    }
+
+    /* ====== 게임 흐름 ====== */
     function resetUI() {
       scoreEl.textContent = score;
       comboEl.textContent = combo;
-      timeEl.textContent = time;
+      timeEl.textContent  = time;
     }
 
-    /** 게임 시작 시 배경 HTML(태양·나무·언덕·땅) 다시 채움 */
-    function restoreBackgroundObjects() {
-      gameArea.innerHTML = `
-        <div class="sun"></div>
-        <div class="tree tree1">
-          <div class="top"></div>
-          <div class="trunk"></div>
-        </div>
-        <div class="tree tree2">
-          <div class="top"></div>
-          <div class="trunk"></div>
-        </div>
-        <div class="hill hill1"></div>
-        <div class="hill hill2"></div>
-        <div class="hill hill3"></div>
-        <div class="ground"></div>
-      `;
-    }
-
-    /** 종료 시 플레이 영역 비우기 */
-    function clearGameArea() {
-      gameArea.innerHTML = "";
-    }
-
-    /**
-     * 기존 학점 버블과 겹치지 않는 (x,y) 무작위 위치
-     * @returns {{x:number,y:number}|null} 실패 시 null
-     */
-    function getNonOverlappingPosition(size, areaWidth, areaHeight) {
-      const existingGrades = Array.from(gameArea.querySelectorAll(".grade"));
-      const maxTries = 50;
-      const minDistance = 82;
-
-      for (let i = 0; i < maxTries; i++) {
-        const x = Math.random() * (areaWidth - size);
-        const y = Math.random() * (areaHeight - size - 70);
-
-        let overlapped = false;
-
-        for (const grade of existingGrades) {
-          const gx = parseFloat(grade.style.left);
-          const gy = parseFloat(grade.style.top);
-
-          const dx = x - gx;
-          const dy = y - gy;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < minDistance) {
-            overlapped = true;
-            break;
-          }
-        }
-
-        if (!overlapped) {
-          return { x, y };
-        }
-      }
-
-      return null;
-    }
-
-    /** 타이머·스폰 시작, 7초 후 스폰 간격 단축 */
     function startGame() {
-      /* 오버레이 닫기 */
       overlay.classList.remove("show");
-
       clearInterval(gameInterval);
       clearInterval(spawnInterval);
       clearTimeout(hardModeInterval);
+      clearTimeout(feverTimeout);
+      endFever();
 
-      score = 0;
-      combo = 0;
-      time = 15;
+      score = 0; combo = 0; time = 15;
       isPlaying = true;
 
-      restoreBackgroundObjects();
+      Array.from(gameArea.children).forEach(el => { if (!el.id) el.remove(); });
       resetUI();
       resultEl.textContent = "게임 시작! 좋은 학점을 빠르게 잡아보세요!";
       hideKakaoShareButton();
 
-      spawnInterval = setInterval(spawnGrade, 700);
-
+      spawnInterval = setInterval(spawnBubble, 700);
       hardModeInterval = setTimeout(() => {
         clearInterval(spawnInterval);
-        spawnInterval = setInterval(spawnGrade, 500);
+        spawnInterval = setInterval(spawnBubble, 500);
       }, 7000);
 
-      /* 1초마다 남은 시간 감소 */
       gameInterval = setInterval(() => {
         time--;
         timeEl.textContent = time;
-
-        if (time <= 0) {
-          endGame();
-        }
+        if (time <= 0) endGame();
       }, 1000);
     }
 
-    /** 무작위 등급 버블 하나 생성·클릭 처리·일정 시간 후 제거 */
-    function spawnGrade() {
-      if (!isPlaying) return;
-
-      const item = grades[Math.floor(Math.random() * grades.length)];
-      const bubble = document.createElement("div");
-      bubble.className = `grade ${item.type}`;
-      bubble.innerHTML = `
-        <div class="animal">${item.animal}</div>
-        <div class="grade-text">${item.g}</div>
-      `;
-
-      const areaWidth = gameArea.clientWidth;
-      const areaHeight = gameArea.clientHeight;
-      const size = 82;
-
-      const pos = getNonOverlappingPosition(size, areaWidth, areaHeight);
-      if (!pos) return;
-
-      const x = pos.x;
-      const y = pos.y;
-
-      bubble.style.left = `${x}px`;
-      bubble.style.top = `${y}px`;
-
-      bubble.onclick = () => {
-        if (!isPlaying) return;
-
-        score += item.score;
-
-        /* 플러스 학점: 콤보 증가, 3콤보마다 보너스 */
-        if (item.score > 0) {
-          combo++;
-          if (combo >= 3) {
-            score += 5;
-            showEffect(x + 15, y, "콤보 +5!", "#418554");
-          } else {
-            showEffect(x + 24, y, `+${item.score}`, "#418554");
-          }
-        } else {
-          /* 감점 학점: 콤보 리셋 */
-          combo = 0;
-          showEffect(x + 24, y, `${item.score}`, "#b35a60");
-        }
-
-        scoreEl.textContent = score;
-        comboEl.textContent = combo;
-        bubble.remove();
-      };
-
-      gameArea.appendChild(bubble);
-
-      /* 탭하지 않으면 자연 소멸 */
-      setTimeout(() => {
-        bubble.remove();
-      }, 2200);
-    }
-
-    /** 클릭 지점 위 떠오르는 텍스트 */
-    function showEffect(x, y, text, color) {
-      const fx = document.createElement("div");
-      fx.className = "hit-effect";
-      fx.textContent = text;
-      fx.style.left = `${x}px`;
-      fx.style.top = `${y}px`;
-      fx.style.color = color;
-      gameArea.appendChild(fx);
-
-      setTimeout(() => fx.remove(), 700);
-    }
-
-    /** 시간 종료: 인터벌 정리·결과 오버레이·서버 제출 */
     function endGame() {
       clearInterval(gameInterval);
       clearInterval(spawnInterval);
       clearTimeout(hardModeInterval);
-
+      clearTimeout(feverTimeout);
       isPlaying = false;
-      clearGameArea();
+      endFever();
+      Array.from(gameArea.children).forEach(el => { if (!el.id) el.remove(); });
 
       let message = "";
+      if      (score >= 90) message = "완벽한 학점 사냥! 엄청난 실력이에요.";
+      else if (score >= 70) message = "훌륭한 성과예요! 상위권 점수입니다.";
+      else if (score >= 50) message = "좋은 기록이에요! 조금만 더 빨라지면 돼요.";
+      else if (score >= 30) message = "나쁘지 않아요. 다음 판엔 더 집중해봐요.";
+      else                  message = "이번에는 아쉬웠어요. 다시 도전해보세요!";
 
-      /* 최종 점수 구간별 칭찬 문구 */
-      if (score >= 90) {
-        message = "완벽한 학점 사냥! 엄청난 실력이에요.";
-      } else if (score >= 70) {
-        message = "훌륭한 성과예요! 상위권 점수입니다.";
-      } else if (score >= 50) {
-        message = "좋은 기록이에요! 조금만 더 빨라지면 돼요.";
-      } else if (score >= 30) {
-        message = "나쁘지 않아요. 다음 판엔 더 집중해봐요.";
-      } else {
-        message = "이번에는 아쉬웠어요. 다시 도전해보세요!";
-      }
-
-      /* 결과 오버레이 표시 */
       overlayTitle.textContent = "🎯 게임 종료!";
       overlayDesc.innerHTML = `최종 점수 <strong style="color:#4f7b55;font-size:22px">${score}</strong>점<br />${message}`;
       overlayActionBtn.textContent = "다시 하기";
@@ -1045,6 +817,200 @@
 
       resultEl.textContent = `최종 점수 ${score}점 · ${message}`;
       submitScoreToLeague("grade-hunt", score);
+    }
+
+    /* ====== 위치 계산 ====== */
+    function getNonOverlappingPosition(size) {
+      const existing = Array.from(gameArea.querySelectorAll(".grade"));
+      const w = gameArea.clientWidth, h = gameArea.clientHeight;
+      for (let i = 0; i < 50; i++) {
+        const x = Math.random() * (w - size);
+        const y = Math.random() * (h - size - 70);
+        let ok = true;
+        for (const g of existing) {
+          const dx = x - parseFloat(g.style.left);
+          const dy = y - parseFloat(g.style.top);
+          if (Math.sqrt(dx*dx + dy*dy) < 90) { ok = false; break; }
+        }
+        if (ok) return { x, y };
+      }
+      return null;
+    }
+
+    /* ====== 파티클 ====== */
+    function spawnDroplets(cx, cy, colorKey) {
+      const colors = dropletColors[colorKey] || dropletColors.good;
+      const count  = colorKey === "bomb" ? 16 : 12;
+      for (let i = 0; i < count; i++) {
+        const drop  = document.createElement("div");
+        drop.className = "droplet";
+        const angle = (360 / count) * i + (Math.random() * 18 - 9);
+        const dist  = (colorKey === "bomb" ? 55 : 38) + Math.random() * 50;
+        const rad   = angle * Math.PI / 180;
+        const dx    = Math.cos(rad) * dist;
+        const dy    = Math.sin(rad) * dist;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const w     = 7 + Math.random() * 7;
+        const h     = w * 1.3;
+        const dur   = 0.35 + Math.random() * 0.2;
+        drop.style.cssText = `
+          left:${cx - w/2}px; top:${cy - h/2}px;
+          width:${w}px; height:${h}px;
+          background:radial-gradient(circle at 35% 35%, rgba(255,255,255,0.8), ${color});
+          --dx:${dx}px; --dy:${dy}px;
+          animation:dropletFly ${dur}s ease-out forwards;
+          box-shadow:0 1px 4px rgba(0,0,0,0.10);
+        `;
+        gameArea.appendChild(drop);
+        setTimeout(() => drop.remove(), dur * 1000 + 50);
+      }
+    }
+
+    /* ====== 버블 분기 ====== */
+    function spawnBubble() {
+      if (!isPlaying) return;
+      const rnd = Math.random();
+      if      (rnd < 0.10) spawnGolden();
+      else if (rnd < 0.18) spawnBomb();
+      else                 spawnGrade();
+    }
+
+    /* ── 일반 학점 ── */
+    function spawnGrade() {
+      const item   = grades[Math.floor(Math.random() * grades.length)];
+      const bubble = document.createElement("div");
+      bubble.className = `grade ${item.type}`;
+      bubble.innerHTML = `
+        <img class="animal-img" src="${item.img}" alt="${item.g}" />
+        <div class="grade-text">${item.g}</div>
+      `;
+
+      const size = 88;
+      const pos  = getNonOverlappingPosition(size);
+      if (!pos) return;
+      bubble.style.left = `${pos.x}px`;
+      bubble.style.top  = `${pos.y}px`;
+
+      bubble.onclick = () => {
+        if (!isPlaying) return;
+        bubble.classList.add("popping");
+        spawnDroplets(pos.x + size/2, pos.y + size/2, item.type);
+        playSound(item.score > 0 ? "good" : "bad");
+
+        let gained = item.score;
+        if (isFever && gained > 0) gained *= 2;
+        score += gained;
+
+        if (gained > 0) {
+          combo++;
+          const label = isFever ? `+${gained} 🔥` : `+${gained}`;
+          if (combo === 5 && !isFever) {
+            startFever();
+            showEffect(pos.x, pos.y - 20, "🔥 FEVER!", "#c87f00", true);
+          } else if (combo >= 3) {
+            showEffect(pos.x + 15, pos.y, `콤보 ${combo}! ${label}`, "#418554");
+          } else {
+            showEffect(pos.x + 24, pos.y, label, "#418554");
+          }
+        } else {
+          combo = 0;
+          if (isFever) endFever();
+          showEffect(pos.x + 24, pos.y, `${gained}`, "#b35a60");
+        }
+
+        scoreEl.textContent = score;
+        comboEl.textContent = combo;
+        setTimeout(() => bubble.remove(), 350);
+      };
+
+      gameArea.appendChild(bubble);
+      setTimeout(() => { if (bubble.parentNode) bubble.remove(); }, 2200);
+    }
+
+    /* ── 황금 버블 ── */
+    function spawnGolden() {
+      const bubble = document.createElement("div");
+      bubble.className = "grade golden";
+      bubble.innerHTML = `
+        <img class="special-img" src="${IMG.golden}" alt="황금버블" />
+        <div class="grade-subtext" style="color:#5a3c00">+3초</div>
+      `;
+
+      const size = 88;
+      const pos  = getNonOverlappingPosition(size);
+      if (!pos) return;
+      bubble.style.left = `${pos.x}px`;
+      bubble.style.top  = `${pos.y}px`;
+
+      bubble.onclick = () => {
+        if (!isPlaying) return;
+        bubble.classList.add("popping");
+        spawnDroplets(pos.x + size/2, pos.y + size/2, "golden");
+        playSound("golden");
+
+        time += 3;
+        timeEl.textContent = time;
+        showEffect(pos.x + 10, pos.y, "+3초!", "#b08000", true);
+        setTimeout(() => bubble.remove(), 350);
+      };
+
+      gameArea.appendChild(bubble);
+      setTimeout(() => { if (bubble.parentNode) bubble.remove(); }, 2500);
+    }
+
+    /* ── 폭탄 버블 ── */
+    function spawnBomb() {
+      const bubble = document.createElement("div");
+      bubble.className = "grade bomb";
+      bubble.innerHTML = `
+        <img class="special-img" src="${IMG.bomb}" alt="폭탄" />
+        <div class="grade-subtext" style="color:#ff9999">위험!</div>
+      `;
+
+      const size = 88;
+      const pos  = getNonOverlappingPosition(size);
+      if (!pos) return;
+      bubble.style.left = `${pos.x}px`;
+      bubble.style.top  = `${pos.y}px`;
+
+      bubble.onclick = () => {
+        if (!isPlaying) return;
+        bubble.classList.add("popping");
+        playSound("bomb");
+
+        const blast = document.createElement("div");
+        blast.className = "bomb-blast";
+        blast.style.cssText = `left:${pos.x - 44}px; top:${pos.y - 44}px; width:176px; height:176px;`;
+        gameArea.appendChild(blast);
+        setTimeout(() => blast.remove(), 500);
+
+        spawnDroplets(pos.x + size/2, pos.y + size/2, "bomb");
+        Array.from(gameArea.querySelectorAll(".grade:not(.popping)")).forEach(b => b.remove());
+
+        score = Math.max(0, score - 15);
+        combo = 0;
+        if (isFever) endFever();
+
+        scoreEl.textContent = score;
+        comboEl.textContent = combo;
+        showEffect(pos.x, pos.y, "💣 -15점!", "#cc2200", true);
+        setTimeout(() => bubble.remove(), 350);
+      };
+
+      gameArea.appendChild(bubble);
+      setTimeout(() => { if (bubble.parentNode) bubble.remove(); }, 2000);
+    }
+
+    /* ====== 이펙트 ====== */
+    function showEffect(x, y, text, color, big = false) {
+      const fx = document.createElement("div");
+      fx.className   = big ? "hit-effect big" : "hit-effect";
+      fx.textContent = text;
+      fx.style.left  = `${Math.max(0, x)}px`;
+      fx.style.top   = `${Math.max(0, y)}px`;
+      fx.style.color = color;
+      gameArea.appendChild(fx);
+      setTimeout(() => fx.remove(), 750);
     }
   </script>
 </body>
