@@ -32,13 +32,18 @@
       touch-action: manipulation;
     }
 
+<<<<<<< HEAD
     .game-card {
+=======
+    /* 메인 흰 카드 + 숲 느낌 테두리 */
+    .shell {
+>>>>>>> fd7278b54e55636e16bf6a870862fd2fe0aaf8ee
       position: relative;
       overflow: hidden;
-      border-radius: 34px;
-      padding: 24px;
-      background: rgba(255, 255, 255, 0.9);
-      border: 4px solid #eef8e7;
+      border-radius: 28px;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.97);
+      border: 3px solid #eef8e7;
       box-shadow: 0 18px 40px rgba(92, 132, 97, 0.18);
     }
 
@@ -62,6 +67,7 @@
     .flower1 { bottom: 24px; left: 42px; }
     .flower2 { bottom: 18px; right: 44px; }
 
+<<<<<<< HEAD
     .top-area {
       position: relative;
       z-index: 1;
@@ -77,54 +83,144 @@
       flex: 1 1 260px;
       min-width: 0;
       display: flex;
+=======
+    /* 상단: 제목·정보 */
+    .topbar {
+      position: relative;
+      z-index: 1;
+      display: flex;
+>>>>>>> fd7278b54e55636e16bf6a870862fd2fe0aaf8ee
       flex-direction: column;
+      align-items: stretch;
       gap: 8px;
+      margin-bottom: 10px;
     }
 
+<<<<<<< HEAD
     .title-box h1 { margin: 0; font-size: 34px; color: #4f7b55; letter-spacing: -1px; }
     .title-box p  { margin: 8px 0 0; font-size: 15px; color: #738476; }
 
+=======
+    /* 제목 블록 */
+    .title h1 {
+      margin: 0;
+      font-size: clamp(20px, 4.2vw, 30px);
+      color: #4f7b55;
+      letter-spacing: -1px;
+    }
+
+    .title p {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: #738476;
+    }
+
+    /* 게임 시작 (전역 startGame 호출) */
+>>>>>>> fd7278b54e55636e16bf6a870862fd2fe0aaf8ee
     .start-btn {
       border: none;
       border-radius: 999px;
-      padding: 12px 22px;
-      font-size: 17px;
+      padding: 12px 18px;
+      font-size: 15px;
       font-weight: 800;
       cursor: pointer;
       color: #4f4a2b;
-      background: linear-gradient(135deg, #ffe59a, #ffd57a);
-      box-shadow: 0 10px 22px rgba(235, 188, 70, 0.28);
+      background: linear-gradient(135deg, #ffe18a, #ffcd67);
+      box-shadow: 0 10px 22px rgba(216, 170, 58, 0.22);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
-      flex-shrink: 0;
-      align-self: center;
+      font-family: inherit;
+      white-space: nowrap;
     }
     .start-btn:hover  { transform: translateY(-2px); box-shadow: 0 14px 26px rgba(235,188,70,0.35); }
     .start-btn:active { transform: scale(0.97); }
 
+<<<<<<< HEAD
     .info-panel {
+=======
+    .start-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .start-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* 시작 버튼 + 안내 메시지 줄 */
+    .controls {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    /* 안내·결과 메시지 */
+    #result {
+      flex: 1;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #ffffff, #f7fff3);
+      border: 2px solid #e4f1df;
+      color: #5a6f5f;
+      font-weight: 700;
+      font-size: 13px;
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    /* 점수·콤보·남은 시간 한 줄 */
+    .status {
+>>>>>>> fd7278b54e55636e16bf6a870862fd2fe0aaf8ee
       position: relative;
       z-index: 1;
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
-      gap: 8px;
-      margin-bottom: 0;
+      gap: 6px;
     }
 
+<<<<<<< HEAD
     .info-item {
+=======
+    /* 정보 칸 하나 */
+    .status-box {
+>>>>>>> fd7278b54e55636e16bf6a870862fd2fe0aaf8ee
       flex: 1 1 0;
       min-width: 0;
       background: linear-gradient(180deg, #ffffff, #f7fff3);
       border: 2px solid #e6f4df;
-      border-radius: 14px;
-      padding: 8px 10px;
+      border-radius: 12px;
+      padding: 6px 8px;
       text-align: center;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7);
     }
     .info-item .label { font-size: 11px; color: #8aa18d; margin-bottom: 2px; font-weight: 800; letter-spacing: -0.02em; }
     .info-item .value { font-size: 22px; font-weight: 900; color: #43664a; line-height: 1.1; }
 
+<<<<<<< HEAD
     /* ====== 게임 영역: 홈 이미지를 배경으로 ====== */
+=======
+    .status-label {
+      font-size: 10px;
+      color: #8aa18d;
+      margin-bottom: 2px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .status-value {
+      font-size: 18px;
+      font-weight: 900;
+      color: #43664a;
+      line-height: 1.1;
+    }
+
+    /* 학점 버블이 뜨는 플레이 영역 */
+>>>>>>> fd7278b54e55636e16bf6a870862fd2fe0aaf8ee
     #gameArea {
       position: relative;
       z-index: 1;
@@ -204,24 +300,17 @@
       text-shadow: 0 1px 4px rgba(0,0,0,0.18);
     }
 
+<<<<<<< HEAD
     /* 결과 카드 */
+=======
+    /* 카카오 공유 버튼 행 */
+>>>>>>> fd7278b54e55636e16bf6a870862fd2fe0aaf8ee
     .result-card {
       position: relative;
       z-index: 1;
-      margin-top: 18px;
-      min-height: 84px;
-      border-radius: 24px;
-      background: linear-gradient(180deg, #ffffff, #f8fff4);
-      border: 2px solid #e4f1df;
+      margin-top: 10px;
       display: flex;
-      align-items: center;
       justify-content: center;
-      text-align: center;
-      padding: 16px;
-      color: #5a6f5f;
-      font-size: 20px;
-      font-weight: 800;
-      line-height: 1.5;
     }
 
     .result-inner {
@@ -274,7 +363,63 @@
     }
     .lobby-link:hover { background: #dcf2de; }
 
+<<<<<<< HEAD
     /* 카카오 공유 버튼 */
+=======
+    .lobby-link:hover {
+      background: #dcf2de;
+    }
+
+    /* 태블릿·폰 */
+    @media (max-width: 700px) {
+      .wrap {
+        padding: 14px 10px;
+      }
+
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .start-btn {
+        width: 100%;
+        min-height: 48px;
+        font-size: 16px;
+      }
+
+      #result {
+        font-size: 12px;
+        min-height: auto;
+        padding: 10px 12px;
+      }
+
+      #gameArea {
+        height: min(70vh, 600px);
+        min-height: 360px;
+      }
+
+      .grade {
+        width: 72px;
+        height: 72px;
+      }
+
+      .animal {
+        font-size: 23px;
+      }
+
+      .grade-text {
+        font-size: 16px;
+      }
+
+      .kakao-share-result-btn {
+        width: 100%;
+        min-height: 48px;
+        font-size: 16px;
+      }
+    }
+
+    /* 종료 후 카카오 공유 */
+>>>>>>> fd7278b54e55636e16bf6a870862fd2fe0aaf8ee
     .kakao-share-result-btn {
       border: none;
       border-radius: 999px;
@@ -310,12 +455,80 @@
       .result-card  { font-size: 16px; padding: 14px 12px; }
       .kakao-share-result-btn { width: 100%; min-height: 48px; font-size: 16px; }
     }
+
+    /* ===== 시작·종료 오버레이 ===== */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 40, 15, 0.52);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .overlay.show { display: flex; }
+
+    .overlay-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 28px 24px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      border: 3px solid #e4f1df;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+    }
+
+    .overlay-card h2 {
+      margin: 0 0 10px;
+      font-size: 24px;
+      color: #4f7b55;
+    }
+
+    .overlay-card p {
+      margin: 0 0 20px;
+      color: #5a6f5f;
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .overlay-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    #overlayActionBtn {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 28px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(135deg, #71c3ff, #4a9fe3);
+      box-shadow: 0 10px 22px rgba(60, 148, 225, 0.24);
+      font-family: inherit;
+      transition: transform 0.15s ease;
+    }
+
+    #overlayActionBtn:hover { transform: translateY(-1px); }
   </style>
 </head>
 <body>
   <div class="wrap">
     <a class="lobby-link" id="lobbyBackLink" href="../index.html?lobby=1">← 로비로 돌아가기</a>
+<<<<<<< HEAD
     <div class="game-card">
+=======
+    <div class="shell">
+      <!-- 배경 장식 (이모지) -->
+>>>>>>> fd7278b54e55636e16bf6a870862fd2fe0aaf8ee
       <div class="cloud cloud1">☁️</div>
       <div class="cloud cloud2">☁️</div>
       <div class="leaf leaf1">🍃</div>
@@ -325,33 +538,46 @@
       <div class="flower flower1">🌼</div>
       <div class="flower flower2">🌼</div>
 
+<<<<<<< HEAD
       <div class="top-area">
         <div class="head-group">
           <div class="title-box">
             <h1>🐾 동물의 왕국 : 학점 사냥</h1>
             <p>짧은 시간 안에 높은 학점을 많이 잡고, 함정 학점은 피하세요!</p>
+=======
+      <!-- 제목 + 점수 -->
+      <div class="topbar">
+        <div class="title">
+          <h1>🐾 동물의 왕국 : 학점 사냥</h1>
+          <p>짧은 시간 안에 높은 학점을 많이 잡고, 함정 학점은 피하세요!</p>
+        </div>
+        <div class="status">
+          <div class="status-box">
+            <div class="status-label">점수</div>
+            <div class="status-value" id="score">0</div>
+>>>>>>> fd7278b54e55636e16bf6a870862fd2fe0aaf8ee
           </div>
-          <div class="info-panel">
-            <div class="info-item">
-              <div class="label">점수</div>
-              <div class="value" id="score">0</div>
-            </div>
-            <div class="info-item">
-              <div class="label">콤보</div>
-              <div class="value" id="combo">0</div>
-            </div>
-            <div class="info-item">
-              <div class="label">남은 시간</div>
-              <div class="value" id="time">15</div>
-            </div>
+          <div class="status-box">
+            <div class="status-label">콤보</div>
+            <div class="status-value" id="combo">0</div>
+          </div>
+          <div class="status-box">
+            <div class="status-label">남은 시간</div>
+            <div class="status-value" id="time">15</div>
           </div>
         </div>
+      </div>
+
+      <!-- 시작 버튼 + 안내 메시지 -->
+      <div class="controls">
         <button class="start-btn" onclick="startGame()">게임 시작</button>
+        <div id="result">시작 버튼을 누르면 귀여운 동물 학점들이 숲속에 나타나요!</div>
       </div>
 
       <!-- 플레이 영역: 홈.jpg 배경, 버블만 JS로 추가 -->
       <div id="gameArea"></div>
 
+<<<<<<< HEAD
       <div class="result-card" id="resultCard">
         <div class="result-inner">
           <p id="result" style="margin:0;">시작 버튼을 누르면 귀여운 동물 학점들이 숲속에 나타나요!</p>
@@ -366,12 +592,36 @@
         </div>
       </div>
 
+=======
+      <!-- 규칙 요약 -->
+>>>>>>> fd7278b54e55636e16bf6a870862fd2fe0aaf8ee
       <div class="guide">
         A+ / A는 고득점 · B 계열은 무난 · D와 F는 감점이에요!
       </div>
     </div>
   </div>
 
+<<<<<<< HEAD
+=======
+  <!-- 시작·종료 오버레이 -->
+  <div class="overlay show" id="overlay">
+    <div class="overlay-card">
+      <h2 id="overlayTitle">🐾 동물의 왕국 : 학점 사냥</h2>
+      <p id="overlayDesc">짧은 시간 안에 높은 학점을 많이 잡고, 함정 학점은 피하세요!</p>
+      <div class="overlay-actions">
+        <button type="button" id="overlayActionBtn">게임 시작</button>
+        <button
+          type="button"
+          id="kakaoShareResultBtn"
+          class="kakao-share-result-btn hidden"
+          onclick="shareToKakao()"
+        >결과 공유하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 카카오 공유 SDK -->
+>>>>>>> fd7278b54e55636e16bf6a870862fd2fe0aaf8ee
   <script
     src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js"
     integrity="sha384-l+xbElFSnPZ2rOaPrU//2FF5B4LB8FiX5q4fXYTlfcG4PGpMkE1vcL7kNXI6Cci0"
@@ -482,6 +732,17 @@
     const resultEl = document.getElementById("result");
     const gameArea = document.getElementById("gameArea");
 
+<<<<<<< HEAD
+=======
+    /* 오버레이 요소 */
+    const overlay = document.getElementById("overlay");
+    const overlayTitle = document.getElementById("overlayTitle");
+    const overlayDesc = document.getElementById("overlayDesc");
+    const overlayActionBtn = document.getElementById("overlayActionBtn");
+    overlayActionBtn.addEventListener("click", startGame);
+
+    /** 점수·콤보·시간 표시만 DOM에 반영 */
+>>>>>>> fd7278b54e55636e16bf6a870862fd2fe0aaf8ee
     function resetUI() {
       scoreEl.textContent = score;
       comboEl.textContent = combo;
@@ -489,6 +750,9 @@
     }
 
     function startGame() {
+      /* 오버레이 닫기 */
+      overlay.classList.remove("show");
+
       clearInterval(gameInterval);
       clearInterval(spawnInterval);
       clearTimeout(hardModeInterval);
@@ -596,6 +860,10 @@
       setTimeout(() => fx.remove(), 700);
     }
 
+<<<<<<< HEAD
+=======
+    /** 시간 종료: 인터벌 정리·결과 오버레이·서버 제출 */
+>>>>>>> fd7278b54e55636e16bf6a870862fd2fe0aaf8ee
     function endGame() {
       clearInterval(gameInterval);
       clearInterval(spawnInterval);
@@ -610,8 +878,14 @@
       else if (score >= 30) message = "나쁘지 않아요. 다음 판엔 더 집중해봐요.";
       else                  message = "이번에는 아쉬웠어요. 다시 도전해보세요!";
 
-      resultEl.textContent = `최종 점수 ${score}점 · ${message}`;
+      /* 결과 오버레이 표시 */
+      overlayTitle.textContent = "🎯 게임 종료!";
+      overlayDesc.innerHTML = `최종 점수 <strong style="color:#4f7b55;font-size:22px">${score}</strong>점<br />${message}`;
+      overlayActionBtn.textContent = "다시 하기";
       showKakaoShareButton();
+      overlay.classList.add("show");
+
+      resultEl.textContent = `최종 점수 ${score}점 · ${message}`;
       submitScoreToLeague("grade-hunt", score);
     }
   </script>

@@ -49,43 +49,99 @@
       background: linear-gradient(180deg, #f1fce8, #e2f3d0);
     }
 
-    .hud {
-      flex-shrink: 0;
-      background: rgba(255, 255, 255, 0.92);
-      border-radius: 20px;
-      padding: 12px 14px 14px;
+    /* 메인 흰 카드 */
+    .shell {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.97);
+      border-radius: 28px;
+      padding: 12px 14px;
       border: 3px solid #e8f4df;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-    }
-
-    .hud-row {
+      box-shadow: 0 18px 42px rgba(62, 130, 80, 0.16);
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
     }
 
-    .hud-row .scores {
+    /* 제목 + 상태 */
+    .topbar {
       display: flex;
-      gap: 16px;
-      align-items: baseline;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
     }
 
-    .hud-row .scores span {
+    .title h1 {
+      margin: 0;
+      font-size: clamp(20px, 4.2vw, 28px);
+      color: #4a7c4f;
+      line-height: 1.2;
+    }
+
+    .title p {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: #698a72;
+    }
+
+    /* 점수·콤보·목숨 박스 한 줄 */
+    .status {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: 6px;
+    }
+
+    .status-box {
+      flex: 1 1 0;
+      min-width: 0;
+      background: linear-gradient(180deg, #ffffff, #f7fff3);
+      border: 2px solid #e4f1df;
+      border-radius: 12px;
+      padding: 6px 8px;
+      text-align: center;
+    }
+
+    .status-label {
+      font-size: 10px;
+      color: #8aa18d;
+      margin-bottom: 2px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .status-value {
+      font-size: 18px;
       font-weight: 900;
-      font-size: 15px;
-      color: #5a6d5f;
+      color: #43664a;
+      line-height: 1.1;
     }
 
-    .hud-row .scores strong {
-      color: #c9a227;
-      font-size: 22px;
-      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+    /* 시작 버튼 + 메시지 줄 */
+    .controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    #gameMessage {
+      flex: 1;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #ffffff, #f7fff3);
+      border: 2px solid #e4f1df;
+      color: #5a7060;
+      font-weight: 700;
+      font-size: 13px;
+      line-height: 1.4;
     }
 
     .time-wrap {
-      margin-top: 4px;
+      margin-top: 0;
     }
 
     .time-label {
@@ -362,23 +418,23 @@
       line-height: 1.5;
     }
 
-    .controls-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
     .start-btn {
       border: none;
       border-radius: 999px;
-      padding: 10px 20px;
+      padding: 12px 18px;
       font-size: 15px;
-      font-weight: 900;
+      font-weight: 800;
       cursor: pointer;
-      color: #fff;
-      background: linear-gradient(135deg, #6bcf7a, #3da85a);
-      box-shadow: 0 6px 16px rgba(61, 168, 90, 0.35);
+      color: #664a10;
+      background: linear-gradient(135deg, #ffe18a, #ffcd67);
+      box-shadow: 0 10px 22px rgba(216, 170, 58, 0.22);
+      font-family: inherit;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-1px);
     }
 
     .start-btn:disabled {
@@ -428,20 +484,37 @@
       border-radius: 999px;
       padding: 12px 28px;
       font-size: 16px;
-      font-weight: 900;
+      font-weight: 800;
       cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.15s ease;
+    }
+
+    .overlay-card button:hover {
+      transform: translateY(-1px);
+    }
+
+    #overlayStart {
       color: #fff;
-      background: linear-gradient(135deg, #7dcc7f, #4a9f5a);
+      background: linear-gradient(135deg, #71c3ff, #4a9fe3);
+      box-shadow: 0 10px 22px rgba(60, 148, 225, 0.24);
+    }
+
+    .overlay-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
     #kakaoShareResultBtn {
-      margin-top: 10px;
-      background: linear-gradient(135deg, #fee500, #ffd400);
-      color: #3c1e1e;
+      background: #fee500;
+      color: #191919;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
     }
 
     #kakaoShareResultBtn.hidden {
-      display: none;
+      display: none !important;
     }
 
     .float-score {
@@ -515,72 +588,96 @@
 </head>
 <body>
   <div class="wrap">
-    <a class="lobby-link" id="backToLobbyLink" href="../index.html?lobby=1">← 로비로 돌아가기</a>
-    <div class="hud">
-      <div class="controls-top">
-        <div class="scores">
-          <span>점수 <strong id="scoreEl">0</strong></span>
-          <span>콤보 <strong id="comboEl">0</strong></span>
-          <span>목숨 <strong id="lifeEl">❤️❤️❤️</strong></span>
+    <a class="lobby-link" id="lobbyBackLink" href="../index.html?lobby=1">← 로비로 돌아가기</a>
+    <div class="shell">
+      <!-- 제목 + 점수 -->
+      <div class="topbar">
+        <div class="title">
+          <h1>🎓 교수님 퇴장 정렬</h1>
+          <p>교수는 왼쪽, 학생은 오른쪽으로 넘겨 최고 점수를 노려보세요!</p>
         </div>
-        <button type="button" class="start-btn" id="startBtn">게임 시작</button>
+        <div class="status">
+          <div class="status-box">
+            <div class="status-label">점수</div>
+            <div class="status-value" id="scoreEl">0</div>
+          </div>
+          <div class="status-box">
+            <div class="status-label">콤보</div>
+            <div class="status-value" id="comboEl">0</div>
+          </div>
+          <div class="status-box">
+            <div class="status-label">목숨</div>
+            <div class="status-value" id="lifeEl">❤️❤️❤️</div>
+          </div>
+        </div>
       </div>
+
+      <!-- 시간 바 -->
       <div class="time-wrap">
         <div class="time-label">남은 시간</div>
         <div class="time-bar-outer">
           <div class="time-bar-inner" id="timeBar"></div>
         </div>
       </div>
-    </div>
 
-    <div class="playfield" id="playfield">
-      <div class="tunnel"></div>
-      <div class="path-line"></div>
-      <div class="lane-hint left"><img src="../assets/images/identify_prof/prof-face.png" alt="" />교수는 왼쪽</div>
-      <div class="lane-hint right">학생은 오른쪽<img src="../assets/images/identify_prof/student-face.png" alt="" /></div>
-      <div class="side-target left">
-        <img src="../assets/images/identify_prof/prof-face.png" alt="" />
-        <p>왼쪽<br />교수</p>
+      <!-- 시작 버튼 + 안내 -->
+      <div class="controls">
+        <button type="button" class="start-btn" id="startBtn">게임 시작</button>
+        <div id="gameMessage">오버레이의 시작 버튼을 눌러 게임을 시작하세요.</div>
       </div>
-      <div class="side-target right">
-        <img src="../assets/images/identify_prof/student-face.png" alt="" />
-        <p>오른쪽<br />학생</p>
+
+      <!-- 플레이 필드 -->
+      <div class="playfield" id="playfield">
+        <div class="tunnel"></div>
+        <div class="path-line"></div>
+        <div class="lane-hint left"><img src="../assets/images/identify_prof/prof-face.png" alt="" />교수는 왼쪽</div>
+        <div class="lane-hint right">학생은 오른쪽<img src="../assets/images/identify_prof/student-face.png" alt="" /></div>
+        <div class="side-target left">
+          <img src="../assets/images/identify_prof/prof-face.png" alt="" />
+          <p>왼쪽<br />교수</p>
+        </div>
+        <div class="side-target right">
+          <img src="../assets/images/identify_prof/student-face.png" alt="" />
+          <p>오른쪽<br />학생</p>
+        </div>
+        <div id="queueLayer"></div>
       </div>
-      <div id="queueLayer"></div>
-    </div>
 
-    <p class="legend">
-      앞줄 캐릭터를 분류하세요.<br />
-      <strong>교수 얼굴</strong>은 왼쪽, <strong>학생 얼굴</strong>은 오른쪽으로 넘깁니다.
-    </p>
+      <p class="legend">
+        앞줄 캐릭터를 분류하세요.<br />
+        <strong>교수 얼굴</strong>은 왼쪽, <strong>학생 얼굴</strong>은 오른쪽으로 넘깁니다.
+      </p>
 
-    <div class="cheeks-row">
-      <button type="button" class="cheek-btn left-cheek" id="leftCheek" aria-label="왼쪽 뺨 — 교수를 왼쪽으로">
-        <img class="target-icon" src="../assets/images/identify_prof/prof-face.png" alt="" />
-        교수
-        <span class="cheek-hint">(왼쪽으로 넘기기)</span>
-      </button>
-      <div class="face-center" aria-hidden="true">🎓</div>
-      <button type="button" class="cheek-btn right-cheek" id="rightCheek" aria-label="오른쪽 뺨 — 교수를 오른쪽으로">
-        <img class="target-icon" src="../assets/images/identify_prof/student-face.png" alt="" />
-        학생
-        <span class="cheek-hint">(오른쪽으로 넘기기)</span>
-      </button>
+      <div class="cheeks-row">
+        <button type="button" class="cheek-btn left-cheek" id="leftCheek" aria-label="왼쪽 뺨 — 교수를 왼쪽으로">
+          <img class="target-icon" src="../assets/images/identify_prof/prof-face.png" alt="" />
+          교수
+          <span class="cheek-hint">(왼쪽으로 넘기기)</span>
+        </button>
+        <div class="face-center" aria-hidden="true">🎓</div>
+        <button type="button" class="cheek-btn right-cheek" id="rightCheek" aria-label="오른쪽 뺨 — 교수를 오른쪽으로">
+          <img class="target-icon" src="../assets/images/identify_prof/student-face.png" alt="" />
+          학생
+          <span class="cheek-hint">(오른쪽으로 넘기기)</span>
+        </button>
+      </div>
     </div>
   </div>
 
   <div class="overlay show" id="overlay">
     <div class="overlay-card">
-      <h2>교수님 퇴장 정렬</h2>
+      <h2>🎓 교수님 퇴장 정렬</h2>
       <p>
         제한 시간 15초 동안 얼굴을 최대한 많이 분류하세요.<br />
         <strong>교수</strong>는 왼쪽, <strong>학생</strong>은 오른쪽으로 넘깁니다.<br />
         오답 시 목숨이 1개 줄며, 목숨 0이면 즉시 종료됩니다.
       </p>
-      <button type="button" id="overlayStart">게임 시작</button>
-      <button type="button" id="kakaoShareResultBtn" class="hidden" onclick="shareToKakao()">
-        결과 공유하기
-      </button>
+      <div class="overlay-actions">
+        <button type="button" id="overlayStart">게임 시작</button>
+        <button type="button" id="kakaoShareResultBtn" class="hidden" onclick="shareToKakao()">
+          결과 공유하기
+        </button>
+      </div>
     </div>
   </div>
 
@@ -616,7 +713,7 @@
     const overlay = document.getElementById("overlay");
     const overlayStart = document.getElementById("overlayStart");
     const kakaoShareResultBtn = document.getElementById("kakaoShareResultBtn");
-    const backToLobbyLink = document.getElementById("backToLobbyLink");
+    const lobbyBackLink = document.getElementById("lobbyBackLink");
     const KAKAO_JS_APP_KEY = "fa75c82718597e9124f913d174cd92a2";
     const SHARE_SITE_ORIGIN = "https://campus-animal-battle.vercel.app";
     const SHARE_FEED_IMAGE_URL = `${SHARE_SITE_ORIGIN}/assets/game-preview.png`;
@@ -681,7 +778,7 @@
     function updateLobbyBackLink() {
       const school = getLeagueSchool();
       const q = school ? `&school=${encodeURIComponent(school)}` : "";
-      backToLobbyLink.setAttribute("href", `../index.html?lobby=1${q}`);
+      lobbyBackLink.setAttribute("href", `../index.html?lobby=1${q}`);
     }
 
     function buildShareLobbyUrl() {
