@@ -7,13 +7,19 @@
   <style>
     * { box-sizing: border-box; }
 
+    html {
+      height: 100%;
+      overflow: hidden;
+    }
+
     body {
       margin: 0;
-      min-height: 100vh;
+      height: 100%;
       font-family: "Trebuchet MS", "맑은 고딕", sans-serif;
       background: linear-gradient(180deg, #87c8ff 0%, #b8e994 38%, #d4a574 38%, #c49a6c 100%);
       color: #2c3e32;
       overflow: hidden;
+      overscroll-behavior: none;
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
     }
@@ -21,7 +27,7 @@
     .wrap {
       max-width: 520px;
       margin: 0 auto;
-      min-height: 100vh;
+      height: 100%;
       display: flex;
       flex-direction: column;
       padding: calc(10px + env(safe-area-inset-top, 0px))
@@ -29,6 +35,7 @@
                calc(12px + env(safe-area-inset-bottom, 0px))
                calc(12px + env(safe-area-inset-left, 0px));
       position: relative;
+      overflow: hidden;
     }
 
     .lobby-link {
@@ -586,6 +593,24 @@
       0%, 100% { transform: translateX(-50%) translateX(0); }
       25% { transform: translateX(-50%) translateX(-8px); }
       75% { transform: translateX(-50%) translateX(8px); }
+    }
+
+    /* 소형 화면 (높이 680px 이하) 압축 */
+    @media (max-height: 680px) {
+      .title p { display: none; }
+      .shell { gap: 4px; padding: 8px 10px; }
+      .status-value { font-size: 15px; }
+      .time-wrap { margin-top: 0; }
+      .cheek-btn { min-height: 90px; }
+      .legend { padding-top: 2px; font-size: 10px; }
+      .lobby-link { padding: 7px 12px; font-size: 13px; margin-bottom: 4px; }
+    }
+
+    @media (max-height: 580px) {
+      .title h1 { font-size: 18px; }
+      .legend { display: none; }
+      .cheek-btn { min-height: 72px; }
+      .shell { gap: 2px; }
     }
   </style>
 </head>
