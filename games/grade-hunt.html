@@ -17,7 +17,8 @@
     body {
       margin: 0;
       font-family: "neodgm", "맑은 고딕", sans-serif;
-      background: linear-gradient(180deg, #bfe9ff 0%, #dff7d8 45%, #fdf4d8 100%);
+      /* ★ 전체 배경 이미지 */
+      background: url('../assets/images/Home.jpg') center center / cover no-repeat fixed;
       min-height: 100vh;
       min-height: 100dvh;
       display: flex;
@@ -192,7 +193,8 @@
       overflow: hidden;
       border-radius: 30px;
       border: 4px solid #8ec18f;
-      background-image: url('../assets/images/hunt_home.png');
+      /* ★ 게임 박스 배경 — hunt 폴더 없이 images 바로 아래 */
+      background-image: url('../assets/images/hunt/hunt_home.png');
       background-size: cover;
       background-position: center bottom;
       background-repeat: no-repeat;
@@ -471,7 +473,6 @@
       .kakao-share-result-btn { width: 100%; min-height: 48px; font-size: 14px; }
     }
 
-    /* ===== 오버레이 ===== */
     .overlay {
       position: fixed;
       inset: 0;
@@ -535,9 +536,8 @@
     }
     #overlayActionBtn:hover { transform: translateY(-1px); }
 
-    /* 로비 버튼 (오버레이 안) */
     #overlayLobbyBtn {
-      border: none;
+      border: 2px solid #c8e6c9;
       border-radius: 999px;
       padding: 12px 28px;
       font-size: 14px;
@@ -545,7 +545,6 @@
       cursor: pointer;
       color: #4f7b55;
       background: #e8f5e9;
-      border: 2px solid #c8e6c9;
       font-family: "neodgm", "맑은 고딕", sans-serif;
       transition: transform 0.15s ease, background 0.15s;
     }
@@ -606,7 +605,6 @@
     </div>
   </div>
 
-  <!-- 시작·종료 오버레이 -->
   <div class="overlay show" id="overlay">
     <div class="overlay-card">
       <h2 id="overlayTitle">🐾 동물의 왕국 : 학점 사냥</h2>
@@ -614,21 +612,14 @@
       <div class="overlay-actions">
         <button type="button" id="overlayActionBtn">게임 시작</button>
         <button type="button" id="overlayLobbyBtn" class="hidden" onclick="goToLobby()">🏠 로비로</button>
-        <button
-          type="button"
-          id="kakaoShareResultBtn"
-          class="kakao-share-result-btn hidden"
-          onclick="shareToKakao()"
-        >결과 공유하기</button>
+        <button type="button" id="kakaoShareResultBtn" class="kakao-share-result-btn hidden" onclick="shareToKakao()">결과 공유하기</button>
       </div>
     </div>
   </div>
 
-  <script
-    src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js"
+  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js"
     integrity="sha384-l+xbElFSnPZ2rOaPrU//2FF5B4LB8FiX5q4fXYTlfcG4PGpMkE1vcL7kNXI6Cci0"
-    crossorigin="anonymous"
-  ></script>
+    crossorigin="anonymous"></script>
   <script>
     const STORAGE_SCHOOL = "animalLeagueSchool";
     const API_BASE =
@@ -657,9 +648,7 @@
       return school ? `../index.html?lobby=1&school=${encodeURIComponent(school)}` : "../index.html?lobby=1";
     }
 
-    function goToLobby() {
-      window.location.href = getLobbyUrl();
-    }
+    function goToLobby() { window.location.href = getLobbyUrl(); }
 
     function submitScoreToLeague(game, value) {
       const school = getLeagueSchool();
@@ -714,7 +703,6 @@
       });
     }
 
-    /* ====== 사운드 ====== */
     const sounds = {
       good:   new Audio("../assets/sounds/powerUp2.mp3"),
       bad:    new Audio("../assets/sounds/lowRandom.mp3"),
@@ -731,14 +719,12 @@
       snd.play().catch(() => {});
     }
 
-    /* ====== 이미지 경로 ====== */
     const IMG = {
       golden: "../assets/images/hunt/golden.png",
       bomb:   "../assets/images/hunt/bomb.png",
       fever:  "../assets/images/hunt/fever.png",
     };
 
-    /* ====== 등급 정의 ====== */
     const grades = [
       { g: "A+", score: 10, type: "good",  img: "../assets/images/a_1.png" },
       { g: "A",  score: 8,  type: "good",  img: "../assets/images/a_1.png" },
@@ -760,13 +746,11 @@
       bomb:   ["#ff6030", "#ff3300", "#ffcc00"]
     };
 
-    /* ====== 상태 ====== */
     let score = 0, combo = 0, time = 15;
     let gameInterval = null, spawnInterval = null, hardModeInterval = null;
     let isPlaying = false;
     let isFever = false, feverTimeout = null;
 
-    /* ====== DOM ====== */
     const scoreEl          = document.getElementById("score");
     const comboEl          = document.getElementById("combo");
     const timeEl           = document.getElementById("time");
@@ -782,7 +766,6 @@
     const overlayLobbyBtn  = document.getElementById("overlayLobbyBtn");
     overlayActionBtn.addEventListener("click", startGame);
 
-    /* ====== 피버 ====== */
     function startFever() {
       if (isFever) return;
       isFever = true;
@@ -807,7 +790,6 @@
       if (isPlaying) resultEl.textContent = "피버 종료! 계속 콤보를 이어가세요!";
     }
 
-    /* ====== 게임 흐름 ====== */
     function resetUI() {
       scoreEl.textContent = score;
       comboEl.textContent = combo;
@@ -863,7 +845,7 @@
       overlayTitle.textContent = "🎯 게임 종료!";
       overlayDesc.innerHTML = `최종 점수 <strong style="color:#4f7b55;font-size:22px">${score}</strong>점<br />${message}`;
       overlayActionBtn.textContent = "다시 하기";
-      overlayLobbyBtn.classList.remove("hidden"); // 게임 끝날 때만 로비 버튼 표시
+      overlayLobbyBtn.classList.remove("hidden");
       showKakaoShareButton();
       overlay.classList.add("show");
 
@@ -871,7 +853,6 @@
       submitScoreToLeague("grade-hunt", score);
     }
 
-    /* ====== 위치 계산 ====== */
     function getNonOverlappingPosition(size) {
       const existing = Array.from(gameArea.querySelectorAll(".grade"));
       const w = gameArea.clientWidth, h = gameArea.clientHeight;
@@ -889,7 +870,6 @@
       return null;
     }
 
-    /* ====== 파티클 ====== */
     function spawnDroplets(cx, cy, colorKey) {
       const colors = dropletColors[colorKey] || dropletColors.good;
       const count  = colorKey === "bomb" ? 16 : 12;
@@ -918,7 +898,6 @@
       }
     }
 
-    /* ====== 버블 분기 ====== */
     function spawnBubble() {
       if (!isPlaying) return;
       const rnd = Math.random();
@@ -927,15 +906,11 @@
       else                 spawnGrade();
     }
 
-    /* ── 일반 학점 ── */
     function spawnGrade() {
       const item   = grades[Math.floor(Math.random() * grades.length)];
       const bubble = document.createElement("div");
       bubble.className = `grade ${item.type}`;
-      bubble.innerHTML = `
-        <img class="animal-img" src="${item.img}" alt="${item.g}" />
-        <div class="grade-text">${item.g}</div>
-      `;
+      bubble.innerHTML = `<img class="animal-img" src="${item.img}" alt="${item.g}" /><div class="grade-text">${item.g}</div>`;
 
       const size = 88;
       const pos  = getNonOverlappingPosition(size);
@@ -979,14 +954,10 @@
       setTimeout(() => { if (bubble.parentNode) bubble.remove(); }, 2200);
     }
 
-    /* ── 황금 버블 ── */
     function spawnGolden() {
       const bubble = document.createElement("div");
       bubble.className = "grade golden";
-      bubble.innerHTML = `
-        <img class="special-img" src="${IMG.golden}" alt="황금버블" />
-        <div class="grade-subtext" style="color:#5a3c00">+3초</div>
-      `;
+      bubble.innerHTML = `<img class="special-img" src="${IMG.golden}" alt="황금버블" /><div class="grade-subtext" style="color:#5a3c00">+3초</div>`;
 
       const size = 88;
       const pos  = getNonOverlappingPosition(size);
@@ -999,7 +970,6 @@
         bubble.classList.add("popping");
         spawnDroplets(pos.x + size/2, pos.y + size/2, "golden");
         playSound("golden");
-
         time += 3;
         timeEl.textContent = time;
         showEffect(pos.x + 10, pos.y, "+3초!", "#b08000", true);
@@ -1010,14 +980,10 @@
       setTimeout(() => { if (bubble.parentNode) bubble.remove(); }, 2500);
     }
 
-    /* ── 폭탄 버블 ── */
     function spawnBomb() {
       const bubble = document.createElement("div");
       bubble.className = "grade bomb";
-      bubble.innerHTML = `
-        <img class="special-img" src="${IMG.bomb}" alt="폭탄" />
-        <div class="grade-subtext" style="color:#ff9999">위험!</div>
-      `;
+      bubble.innerHTML = `<img class="special-img" src="${IMG.bomb}" alt="폭탄" /><div class="grade-subtext" style="color:#ff9999">위험!</div>`;
 
       const size = 88;
       const pos  = getNonOverlappingPosition(size);
@@ -1053,7 +1019,6 @@
       setTimeout(() => { if (bubble.parentNode) bubble.remove(); }, 2000);
     }
 
-    /* ====== 이펙트 ====== */
     function showEffect(x, y, text, color, big = false) {
       const fx = document.createElement("div");
       fx.className   = big ? "hit-effect big" : "hit-effect";
