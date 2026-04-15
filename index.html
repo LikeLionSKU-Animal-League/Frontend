@@ -365,7 +365,7 @@
       }
       .game-panel {
         width: 636.84px; min-width: 636.84px; max-width: 636.84px;
-        height: 720px; min-height: 720px; max-height: 720px;
+        height: auto; min-height: unset; max-height: unset;
       }
       .game-grid {
         grid-template-columns: repeat(2, 284.42px);
@@ -979,12 +979,13 @@
         gamePanel.style.overflow = "visible";
         return;
       }
+      const leftHeight = leftColumn.getBoundingClientRect().height;
       gamePanel.style.width = "636.84px";
       gamePanel.style.minWidth = "636.84px";
       gamePanel.style.maxWidth = "636.84px";
-      gamePanel.style.height = "720px";
-      gamePanel.style.minHeight = "720px";
-      gamePanel.style.maxHeight = "720px";
+      gamePanel.style.height = leftHeight + "px";
+      gamePanel.style.minHeight = leftHeight + "px";
+      gamePanel.style.maxHeight = leftHeight + "px";
       gamePanel.style.overflow = "hidden";
     }
 
