@@ -41,10 +41,7 @@
       padding-right: env(safe-area-inset-right);
     }
 
-    button,
-    .play-btn,
-    .header-btn,
-    .close-btn {
+    button, .play-btn, .header-btn, .close-btn {
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
     }
@@ -61,35 +58,11 @@
     .hidden { display: none !important; }
     .bg-deco { display: none; }
 
-    /* ── 동물 이미지 공통 ── */
-    .animal-img {
-      object-fit: contain;
-      display: inline-block;
-    }
-
-    /* TOP3 카드 내 동물 이미지 */
-    .podium-animal .animal-img {
-      width: 36px;
-      height: 36px;
-    }
-
-    /* 내 대학 아이콘 */
-    .my-animal .animal-img {
-      width: 38px;
-      height: 38px;
-    }
-
-    /* 랭킹 테이블 */
-    .animal-cell .animal-img {
-      width: 32px;
-      height: 32px;
-    }
-
-    /* 응원 멘트 */
-    .cheer-emoji .animal-img {
-      width: 52px;
-      height: 52px;
-    }
+    .animal-img { object-fit: contain; display: inline-block; }
+    .podium-animal .animal-img { width: 36px; height: 36px; }
+    .my-animal .animal-img    { width: 38px; height: 38px; }
+    .animal-cell .animal-img  { width: 32px; height: 32px; }
+    .cheer-emoji .animal-img  { width: 52px; height: 52px; }
 
     /* ── INTRO ── */
     #introScreen {
@@ -116,33 +89,11 @@
       align-items: center;
     }
 
-    .intro-logo {
-      width: min(560px, 90vw);
-      display: block;
-      margin: 0 auto 12px;
-    }
+    .intro-logo { width: min(560px, 90vw); display: block; margin: 0 auto 12px; }
 
-    .intro-textbox-wrap {
-      position: relative;
-      width: min(580px, 92vw);
-      margin: 0 auto;
-    }
-
-    .intro-textbox2 {
-      position: absolute;
-      top: -26px;
-      left: 2px;
-      height: 54px;
-      z-index: 2;
-    }
-
-    .intro-textbox-bg {
-      width: 100%;
-      display: block;
-      position: relative;
-      z-index: 1;
-    }
-
+    .intro-textbox-wrap { position: relative; width: min(580px, 92vw); margin: 0 auto; }
+    .intro-textbox2 { position: absolute; top: -26px; left: 2px; height: 54px; z-index: 2; }
+    .intro-textbox-bg { width: 100%; display: block; position: relative; z-index: 1; }
     .intro-textbox-inner {
       position: absolute;
       inset: 0;
@@ -196,11 +147,7 @@
     }
 
     /* ── SCHOOL SETUP ── */
-    #introPhaseSchool {
-      position: relative;
-      z-index: 1;
-      padding-top: 8px;
-    }
+    #introPhaseSchool { position: relative; z-index: 1; padding-top: 8px; }
 
     .school-setup-hint {
       margin: 0 0 22px;
@@ -211,19 +158,8 @@
       word-break: keep-all;
     }
 
-    .school-field {
-      width: min(480px, 100%);
-      margin: 0 auto 22px;
-      text-align: left;
-    }
-
-    .school-field label {
-      display: block;
-      margin-bottom: 10px;
-      font-size: 15px;
-      font-weight: 900;
-      color: #4d7c55;
-    }
+    .school-field { width: min(480px, 100%); margin: 0 auto 22px; text-align: left; }
+    .school-field label { display: block; margin-bottom: 10px; font-size: 15px; font-weight: 900; color: #4d7c55; }
 
     #schoolNameInput {
       width: 100%;
@@ -238,22 +174,14 @@
       box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7);
       transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
-
     #schoolNameInput::placeholder { color: #9aaa9c; font-weight: 600; }
-
     #schoolNameInput:focus {
       outline: none;
       border-color: #9dd9a0;
       box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7), 0 0 0 3px rgba(125,204,127,0.25);
     }
 
-    .school-actions {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      margin-top: 6px;
-    }
+    .school-actions { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 6px; }
 
     #confirmSchoolBtn {
       padding: 16px 40px;
@@ -277,21 +205,11 @@
       text-decoration: underline;
       text-underline-offset: 4px;
     }
-
     #backToStoryBtn:hover { color: #3d5a44; transform: none; opacity: 0.92; }
 
     /* ── LOBBY ── */
-    #lobbyScreen {
-      min-height: 100vh;
-      padding: 20px 16px 32px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .lobby-wrap {
-      width: min(1160px, 94vw);
-      margin: 0 auto;
-    }
+    #lobbyScreen { min-height: 100vh; padding: 20px 16px 32px; position: relative; z-index: 1; }
+    .lobby-wrap { width: min(1160px, 94vw); margin: 0 auto; }
 
     .lobby-header {
       background: rgba(245, 238, 220, 0.93);
@@ -308,18 +226,10 @@
 
     .logo-box { display: flex; align-items: center; gap: 16px; }
     .lobby-logo-img { height: 56px; }
-
-    .lobby-title-text h1 {
-      margin: 0;
-      font-size: 26px;
-      color: #4a3728;
-      letter-spacing: -0.5px;
-    }
-
-    .lobby-title-text p { margin: 6px 0 0; color: #7a6a55; font-size: 13px; }
+    .lobby-title-text h1 { margin: 0; font-size: 26px; color: #4a3728; letter-spacing: -0.5px; }
+    .lobby-title-text p  { margin: 6px 0 0; color: #7a6a55; font-size: 13px; }
 
     .header-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-
     .header-btn {
       padding: 9px 16px;
       border-radius: 12px;
@@ -331,32 +241,14 @@
       box-shadow: 0 4px 0 #b08a4a, 0 6px 12px rgba(0,0,0,0.12);
       transition: transform 0.12s ease, box-shadow 0.12s ease;
     }
+    .header-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #b08a4a, 0 4px 8px rgba(0,0,0,0.10); }
 
-    .header-btn:hover {
-      transform: translateY(2px);
-      box-shadow: 0 2px 0 #b08a4a, 0 4px 8px rgba(0,0,0,0.10);
-    }
-
-    .lobby-main {
-      display: grid;
-      grid-template-columns: 1fr 1.15fr;
-      gap: 14px;
-      align-items: start;
-    }
-
+    .lobby-main { display: grid; grid-template-columns: 1fr 1.15fr; gap: 14px; align-items: start; }
     .left-column { display: flex; flex-direction: column; gap: 12px; }
-
-    .left-bottom-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
+    .left-bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
     @media (min-width: 1121px) {
-      .lobby-main {
-        grid-template-columns: 553.78px 636.84px;
-        justify-content: center;
-      }
+      .lobby-main { grid-template-columns: 553.78px 636.84px; justify-content: center; }
       .left-column { width: 553.78px; }
       .left-bottom-row { grid-template-columns: 267.89px 267.89px; }
       .left-bottom-row > .panel.equal-height-panel {
@@ -367,14 +259,15 @@
         width: 636.84px; min-width: 636.84px; max-width: 636.84px;
         height: auto; min-height: unset; max-height: unset;
       }
+      /* ★ 카드 4개 기준 높이 축소 */
       .game-grid {
         grid-template-columns: repeat(2, 284.42px);
-        grid-auto-rows: 301px;
+        grid-auto-rows: 230px;
         justify-content: center;
       }
       .game-card {
         width: 284.42px; min-width: 284.42px; max-width: 284.42px;
-        height: 301px; min-height: 301px; max-height: 301px;
+        height: 230px; min-height: 230px; max-height: 230px;
       }
     }
 
@@ -385,137 +278,66 @@
       padding: 14px 16px;
       position: relative;
     }
-
     .panel::before { display: none; }
-
     .equal-height-panel { height: 100%; }
+    .game-panel { height: 100%; display: flex; flex-direction: column; min-height: 0; overflow: hidden; flex: 0 0 auto; }
 
-    .game-panel {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-      overflow: hidden;
-      flex: 0 0 auto;
-    }
-
-    .panel-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .panel-title h2 { margin: 0; font-size: 18px; color: #4a3728; }
+    .panel-title { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .panel-title h2  { margin: 0; font-size: 18px; color: #4a3728; }
     .panel-title span { color: #9a8a72; font-size: 12px; }
     .small-panel-title { margin: 0 0 12px; font-size: 15px; color: #4a3728; }
 
     .podium { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
 
-    .rankings-loading,
-    .rankings-empty {
+    .rankings-loading, .rankings-empty {
       min-height: 120px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 24px 16px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.45);
-      border: 2px dashed #d4c49a;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 24px 16px; border-radius: 18px;
+      background: rgba(255,255,255,0.45); border: 2px dashed #d4c49a;
     }
-
-    .rankings-loading p,
-    .rankings-empty p { margin: 0; font-size: 15px; color: #7a6a55; line-height: 1.6; word-break: keep-all; }
-
-    .ranking-table-loading td {
-      text-align: center; padding: 36px 16px !important;
-      color: #7a6a55; font-size: 14px; border: none !important;
-    }
+    .rankings-loading p, .rankings-empty p { margin: 0; font-size: 15px; color: #7a6a55; line-height: 1.6; word-break: keep-all; }
+    .ranking-table-loading td { text-align: center; padding: 36px 16px !important; color: #7a6a55; font-size: 14px; border: none !important; }
 
     .rank-card {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 16px;
-      text-align: left;
-      position: relative;
-      border: 2px solid #e0d3b0;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      display: flex; flex-direction: row; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 16px; text-align: left;
+      position: relative; border: 2px solid #e0d3b0; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
-
     .rank-card.first  { background: rgba(255, 240, 180, 0.75); border-color: #d4b86a; }
     .rank-card.second { background: rgba(220, 228, 245, 0.75); border-color: #a8b8d8; }
     .rank-card.third  { background: rgba(240, 220, 200, 0.75); border-color: #c8a880; }
 
-    .podium-medal { flex-shrink: 0; width: 34px; text-align: center; font-size: 22px; line-height: 1; }
+    .podium-medal  { flex-shrink: 0; width: 34px; text-align: center; font-size: 22px; line-height: 1; }
     .podium-animal { flex-shrink: 0; width: 40px; text-align: center; line-height: 1; display: flex; align-items: center; justify-content: center; }
-    .podium-uni { flex: 1; min-width: 0; font-size: 15px; color: #4a3728; word-break: break-word; line-height: 1.35; }
-    .podium-score { flex-shrink: 0; font-size: 14px; color: #5a4a38; white-space: nowrap; }
+    .podium-uni    { flex: 1; min-width: 0; font-size: 15px; color: #4a3728; word-break: break-word; line-height: 1.35; }
+    .podium-score  { flex-shrink: 0; font-size: 14px; color: #5a4a38; white-space: nowrap; }
 
     .my-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-
     .my-animal {
       width: 50px; height: 50px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      background: rgba(255,240,180,0.8);
-      border: 3px solid #d4b86a;
-      flex-shrink: 0;
-      overflow: hidden;
+      background: rgba(255,240,180,0.8); border: 3px solid #d4b86a; flex-shrink: 0; overflow: hidden;
     }
-
     .my-meta h3 { margin: 0; color: #4a3728; font-size: 15px; }
     .my-meta p  { margin: 4px 0 0; color: #7a6a55; font-size: 12px; }
 
     .info-item {
-      border-radius: 12px;
-      background: rgba(255,255,255,0.5);
-      border: 2px solid #e0d3b0;
-      padding: 7px 10px;
-      margin-bottom: 6px;
-      font-size: 12px;
-      color: #5a4a38;
+      border-radius: 12px; background: rgba(255,255,255,0.5); border: 2px solid #e0d3b0;
+      padding: 7px 10px; margin-bottom: 6px; font-size: 12px; color: #5a4a38;
     }
-
     .info-item strong { color: #4a3728; }
 
-    .cheer-panel {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      min-height: 160px;
-    }
+    .cheer-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 160px; }
+    .cheer-main  { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 8px; }
+    .cheer-emoji { width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; }
+    .cheer-text  { font-size: 14px; line-height: 1.75; color: #5a4020; word-break: keep-all; }
+    .mini-note   { font-size: 11px; color: #9a8a60; margin-top: 10px; }
 
-    .cheer-main {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-      gap: 8px;
-    }
-
-    .cheer-emoji {
-      width: 52px;
-      height: 52px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .cheer-text { font-size: 14px; line-height: 1.75; color: #5a4020; word-break: keep-all; }
-
-    .mini-note { font-size: 11px; color: #9a8a60; margin-top: 10px; }
-
+    /* ★ 게임 그리드 여백 축소 */
     .game-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
+      gap: 10px;
       position: relative;
       z-index: 1;
       height: 100%;
@@ -529,7 +351,6 @@
       scrollbar-color: #c9a96e #f0e6cc;
       overscroll-behavior: contain;
     }
-
     .game-grid::-webkit-scrollbar { width: 9px; }
     .game-grid::-webkit-scrollbar-track { background: #f0e6cc; border-radius: 999px; }
     .game-grid::-webkit-scrollbar-thumb {
@@ -538,28 +359,25 @@
       border: 2px solid #f0e6cc;
     }
 
+    /* ★ 카드 패딩·폰트 축소 */
     .game-card {
       border-radius: 16px;
-      padding: 14px 13px;
+      padding: 10px 12px;
       background: rgba(255,255,255,0.55);
       border: 2px solid #e0d3b0;
       text-align: left;
       transition: transform 0.15s ease;
     }
-
     .game-card:hover { transform: translateY(-3px); }
-
-    .game-emoji { font-size: 32px; margin-bottom: 6px; }
-
-    .game-card h3 { margin: 0 0 6px; font-size: 15px; color: #4a3728; }
-
-    .game-card p { margin: 0 0 14px; font-size: 12px; color: #7a6a55; line-height: 1.5; }
+    .game-emoji  { font-size: 24px; margin-bottom: 3px; }
+    .game-card h3 { margin: 0 0 3px; font-size: 14px; color: #4a3728; }
+    .game-card p  { margin: 0 0 8px; font-size: 11px; color: #7a6a55; line-height: 1.4; }
 
     .play-btn {
       display: inline-block;
-      padding: 7px 13px;
+      padding: 6px 12px;
       border-radius: 10px;
-      font-size: 13px;
+      font-size: 12px;
       font-family: 'NeoDunggeunmo', sans-serif;
       color: #4a3728;
       background: #f0e6cc;
@@ -570,17 +388,8 @@
       transition: transform 0.12s ease, box-shadow 0.12s ease;
       cursor: pointer;
     }
-
     .play-btn:hover { transform: translateY(2px); box-shadow: 0 1px 0 #b08a4a; }
-
-    .coming {
-      background: #e8e0d0;
-      border-color: #c8bca0;
-      box-shadow: 0 3px 0 #a89980;
-      color: #9a8a72;
-      cursor: default;
-    }
-
+    .coming { background: #e8e0d0; border-color: #c8bca0; box-shadow: 0 3px 0 #a89980; color: #9a8a72; cursor: default; }
     .coming:hover { transform: none; box-shadow: 0 3px 0 #a89980; }
 
     .modal {
@@ -589,47 +398,34 @@
       display: none; align-items: center; justify-content: center;
       padding: 24px; z-index: 99; backdrop-filter: blur(3px);
     }
-
     .modal-content {
       width: min(980px, 96vw); max-height: 88vh; overflow: hidden;
-      background: #f5eedc;
-      border-radius: 28px; border: 3px solid #e0d3b0;
-      box-shadow: 0 16px 40px rgba(0,0,0,0.22);
-      display: flex; flex-direction: column;
+      background: #f5eedc; border-radius: 28px; border: 3px solid #e0d3b0;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.22); display: flex; flex-direction: column;
     }
-
     .modal-head {
       padding: 20px 24px 12px;
       display: flex; justify-content: space-between; align-items: center;
       gap: 12px; border-bottom: 2px solid #e0d3b0;
     }
-
     .modal-head h2 { margin: 0; color: #4a3728; font-size: 26px; }
-
     .close-btn {
       padding: 9px 18px; border-radius: 12px; font-size: 14px;
-      font-family: 'NeoDunggeunmo', sans-serif;
-      color: #fff; background: #d4765a;
+      font-family: 'NeoDunggeunmo', sans-serif; color: #fff; background: #d4765a;
       border: 2px solid #b85a40; box-shadow: 0 3px 0 #8a4030;
     }
-
     .close-btn:hover { transform: translateY(2px); box-shadow: 0 1px 0 #8a4030; }
-
     .ranking-scroll { overflow: auto; padding: 16px 24px 24px; }
 
     table { width: 100%; border-collapse: collapse; border-radius: 14px; overflow: hidden; }
-
     thead th {
       background: rgba(255,255,255,0.5); color: #5a4a38;
       font-size: 14px; padding: 12px; text-align: center; position: sticky; top: 0;
     }
-
     tbody td {
-      padding: 11px 12px; text-align: center;
-      border-bottom: 1px solid #e0d3b0; color: #4a3728;
-      background: rgba(255,255,255,0.3);
+      padding: 11px 12px; text-align: center; border-bottom: 1px solid #e0d3b0;
+      color: #4a3728; background: rgba(255,255,255,0.3);
     }
-
     tbody tr:nth-child(even) td { background: rgba(255,255,255,0.55); }
 
     .rank-badge {
@@ -637,7 +433,6 @@
       min-width: 30px; height: 30px; border-radius: 50%;
       background: #e8d8b0; color: #5a4020;
     }
-
     .animal-cell { font-size: 26px; }
     .uni-cell { font-weight: 700; }
 
@@ -673,10 +468,10 @@
       .podium-medal { width: 30px; font-size: 20px; }
       .podium-animal { width: 36px; }
       .podium-animal .animal-img { width: 30px; height: 30px; }
-      .podium-uni { font-size: 14px; }
+      .podium-uni   { font-size: 14px; }
       .podium-score { font-size: 13px; }
-      .game-card h3 { font-size: 20px; }
-      .game-card p { font-size: 14px; margin-bottom: 14px; }
+      .game-card h3 { font-size: 16px; }
+      .game-card p  { font-size: 12px; margin-bottom: 8px; }
       .play-btn { display: block; width: 100%; min-height: 48px; line-height: 1.25; padding: 14px 16px; font-size: 16px; }
       .modal { padding: 0; align-items: flex-end; }
       .modal-content { width: 100%; max-width: 100%; max-height: min(92dvh, 92vh); border-radius: 20px 20px 0 0; }
@@ -690,6 +485,7 @@
 </head>
 <body>
 
+  <!-- ── 인트로 화면 ── -->
   <section id="introScreen">
     <div class="intro-card">
       <img class="intro-logo" src="./assets/images/logo.png" alt="모여봐요 애니멀 리그" />
@@ -702,7 +498,6 @@
             <div id="introText"></div>
           </div>
         </div>
-
         <div class="intro-btn-row">
           <button id="enterLobbyBtn">로비 입장</button>
           <button type="button" id="skipStoryBtn">스토리 건너뛰기</button>
@@ -723,6 +518,7 @@
     </div>
   </section>
 
+  <!-- ── 로비 화면 ── -->
   <section id="lobbyScreen" class="hidden">
     <div class="lobby-wrap">
       <div class="lobby-header">
@@ -740,6 +536,7 @@
       </div>
 
       <div class="lobby-main">
+        <!-- 왼쪽 컬럼 -->
         <div class="left-column">
           <div class="panel equal-height-panel">
             <div class="panel-title">
@@ -782,12 +579,12 @@
           </div>
         </div>
 
+        <!-- 오른쪽: 게임 선택 패널 (도토리 레이스 제거) -->
         <div class="panel game-panel">
           <div class="panel-title">
             <h2>🎮 미니게임 선택</h2>
             <span>원하는 게임을 선택하세요</span>
           </div>
-
           <div class="game-grid">
             <div class="game-card">
               <div class="game-emoji">🎓🪰</div>
@@ -816,19 +613,13 @@
               <p>위에서 내려오는 얼굴을 빠르게 분류하세요. 교수는 왼쪽, 학생은 오른쪽으로 넘기면 점수가 올라갑니다.</p>
               <a class="play-btn" id="playProfessorSort" href="games/professor-cheek-sort.html">플레이</a>
             </div>
-
-            <div class="game-card">
-              <div class="game-emoji">🌰🐿️</div>
-              <h3>도토리 레이스</h3>
-              <p>동물의 왕국 분위기를 더 살릴 출시 예정 미니게임입니다.</p>
-              <button class="play-btn coming">출시 예정</button>
-            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- ── 랭킹 모달 ── -->
   <div class="modal" id="rankingModal">
     <div class="modal-content">
       <div class="modal-head">
@@ -847,6 +638,7 @@
   </div>
 
   <script>
+    /* ====== 스토리 대사 ====== */
     const storyLines = [
       "어느 날, 동물의 왕국에 여러 대학을 대표하는 동물들이 모였다.",
       "각 대학의 동물들은 자신의 학교를 대표하여 가장 강한 호랑이가 되기 위한 도전을 시작한다.",
@@ -858,8 +650,7 @@
 
     let rankingData = [];
 
-    // ── 순위 → 동물 이미지 매핑 ──
-    // 1등: 사자(a_1), 2등: 말(a_2), 3등: 고양이(a_3), 4등: 다람쥐(a_4), 5등 이하: 앵무새(a_5)
+    /* ====== 동물 매핑 ====== */
     const ANIMAL_NAMES = {
       "a_1": "사자",
       "a_2": "말",
@@ -876,15 +667,9 @@
       return "a_5";
     }
 
-    function getAnimalImgSrc(rank) {
-      return `./assets/images/${getAnimalKey(rank)}.png`;
-    }
+    function getAnimalImgSrc(rank) { return `./assets/images/${getAnimalKey(rank)}.png`; }
+    function getAnimalName(rank)   { return ANIMAL_NAMES[getAnimalKey(rank)]; }
 
-    function getAnimalName(rank) {
-      return ANIMAL_NAMES[getAnimalKey(rank)];
-    }
-
-    // 기존 animal 필드(이모지 문자열 등)를 받아 이름 반환 — 서버 데이터 호환
     function resolveAnimalName(animalField, rank) {
       if (animalField && ANIMAL_NAMES[animalField]) return ANIMAL_NAMES[animalField];
       return getAnimalName(rank);
@@ -899,7 +684,7 @@
       return `<img class="animal-img${extraClass ? ' ' + extraClass : ''}" src="${src}" alt="${alt}" />`;
     }
 
-    // 동물별 응원 멘트 (순위에 따라 해당 동물 멘트 중 랜덤 표시)
+    /* ====== 응원 멘트 ====== */
     const cheerMessages = {
       "a_1": [
         "왕국은 고요하다. 도전자가 없으니, 오늘도 왕좌는 내 것이다.",
@@ -928,9 +713,9 @@
       ]
     };
 
-    // 현재 내 학교 순위에 맞는 animalKey 저장 (API 응답 후 갱신)
     let myCurrentAnimalKey = "a_5";
 
+    /* ====== 상수·설정 ====== */
     const STORAGE_SCHOOL = "animalLeagueSchool";
     const API_BASE =
       window.ANIMAL_LEAGUE_API ||
@@ -938,57 +723,60 @@
         ? "http://localhost:3000"
         : "https://backend-m5wz.onrender.com");
 
-    const introScreen = document.getElementById("introScreen");
-    const lobbyScreen = document.getElementById("lobbyScreen");
-    const introPhaseStory = document.getElementById("introPhaseStory");
+    /* ====== DOM 참조 ====== */
+    const introScreen      = document.getElementById("introScreen");
+    const lobbyScreen      = document.getElementById("lobbyScreen");
+    const introPhaseStory  = document.getElementById("introPhaseStory");
     const introPhaseSchool = document.getElementById("introPhaseSchool");
-    const introText = document.getElementById("introText");
-    const enterLobbyBtn = document.getElementById("enterLobbyBtn");
-    const skipStoryBtn = document.getElementById("skipStoryBtn");
-    const schoolNameInput = document.getElementById("schoolNameInput");
+    const introText        = document.getElementById("introText");
+    const enterLobbyBtn    = document.getElementById("enterLobbyBtn");
+    const skipStoryBtn     = document.getElementById("skipStoryBtn");
+    const schoolNameInput  = document.getElementById("schoolNameInput");
     const confirmSchoolBtn = document.getElementById("confirmSchoolBtn");
-    const backToStoryBtn = document.getElementById("backToStoryBtn");
-    const storyReplayBtn = document.getElementById("storyReplayBtn");
-    const mySchoolName = document.getElementById("mySchoolName");
-    const mySchoolSub = document.getElementById("mySchoolSub");
-    const mySchoolAnimal = document.getElementById("mySchoolAnimal");
+    const backToStoryBtn   = document.getElementById("backToStoryBtn");
+    const storyReplayBtn   = document.getElementById("storyReplayBtn");
+    const mySchoolName     = document.getElementById("mySchoolName");
+    const mySchoolSub      = document.getElementById("mySchoolSub");
+    const mySchoolAnimal   = document.getElementById("mySchoolAnimal");
     const mySchoolInfoList = document.getElementById("mySchoolInfoList");
-    const top3Container = document.getElementById("top3Container");
+    const top3Container    = document.getElementById("top3Container");
     const rankingTableBody = document.getElementById("rankingTableBody");
-    const rankingModal = document.getElementById("rankingModal");
-    const fullRankingBtn = document.getElementById("fullRankingBtn");
-    const closeRankingBtn = document.getElementById("closeRankingBtn");
-    const cheerEmoji = document.getElementById("cheerEmoji");
-    const cheerText = document.getElementById("cheerText");
-    const leftColumn = document.querySelector(".left-column");
-    const gamePanel = document.querySelector(".game-panel");
-    const gameGrid = document.querySelector(".game-grid");
+    const rankingModal     = document.getElementById("rankingModal");
+    const fullRankingBtn   = document.getElementById("fullRankingBtn");
+    const closeRankingBtn  = document.getElementById("closeRankingBtn");
+    const cheerEmoji       = document.getElementById("cheerEmoji");
+    const cheerText        = document.getElementById("cheerText");
+    const leftColumn       = document.querySelector(".left-column");
+    const gamePanel        = document.querySelector(".game-panel");
+    const gameGrid         = document.querySelector(".game-grid");
 
     let storyIndex = 0;
     let storyTimer = null;
 
+    /* ====== 레이아웃 동기화 ====== */
     function syncGamePanelHeightToLeft() {
       if (!leftColumn || !gamePanel || !gameGrid) return;
       if (window.innerWidth <= 1120) {
-        gamePanel.style.height = "";
-        gamePanel.style.width = "";
+        gamePanel.style.height    = "";
+        gamePanel.style.width     = "";
         gamePanel.style.minHeight = "";
-        gamePanel.style.minWidth = "";
+        gamePanel.style.minWidth  = "";
         gamePanel.style.maxHeight = "";
-        gamePanel.style.maxWidth = "";
-        gamePanel.style.overflow = "visible";
+        gamePanel.style.maxWidth  = "";
+        gamePanel.style.overflow  = "visible";
         return;
       }
       const leftHeight = leftColumn.getBoundingClientRect().height;
-      gamePanel.style.width = "636.84px";
-      gamePanel.style.minWidth = "636.84px";
-      gamePanel.style.maxWidth = "636.84px";
-      gamePanel.style.height = leftHeight + "px";
+      gamePanel.style.width     = "636.84px";
+      gamePanel.style.minWidth  = "636.84px";
+      gamePanel.style.maxWidth  = "636.84px";
+      gamePanel.style.height    = leftHeight + "px";
       gamePanel.style.minHeight = leftHeight + "px";
       gamePanel.style.maxHeight = leftHeight + "px";
-      gamePanel.style.overflow = "hidden";
+      gamePanel.style.overflow  = "hidden";
     }
 
+    /* ====== 랭킹 렌더링 ====== */
     function renderRankingsLoading() {
       const msg = "데이터를 불러드리는중입니다.";
       top3Container.innerHTML = `<div class="rankings-loading"><p>${msg}</p></div>`;
@@ -1004,7 +792,11 @@
 
     function renderTop3() {
       if (rankingData.length === 0) {
-        top3Container.innerHTML = `<div class="rankings-empty"><p>아직 랭킹 기록이 없습니다.<br /><span style="font-size:14px;color:#79907e;">게임을 플레이하면 여기에 표시됩니다.</span></p></div>`;
+        top3Container.innerHTML = `
+          <div class="rankings-empty">
+            <p>아직 랭킹 기록이 없습니다.<br />
+            <span style="font-size:14px;color:#79907e;">게임을 플레이하면 여기에 표시됩니다.</span></p>
+          </div>`;
         return;
       }
       const top3 = rankingData.slice(0, 3);
@@ -1015,7 +807,7 @@
         { item: top3[2], rank: 3, medal: "🥉", cls: "third" }
       ];
       top3Container.innerHTML = rows.map(({ item, rank, medal, cls }) => {
-        const src = resolveAnimalImgSrc(item.animal, rank);
+        const src  = resolveAnimalImgSrc(item.animal, rank);
         const name = resolveAnimalName(item.animal, rank);
         return `
           <div class="rank-card ${cls}">
@@ -1023,8 +815,7 @@
             <span class="podium-animal">${animalImg(src, name)}</span>
             <span class="podium-uni">${item.university}</span>
             <span class="podium-score">${item.score}점</span>
-          </div>
-        `;
+          </div>`;
       }).join("");
     }
 
@@ -1035,7 +826,7 @@
       }
       rankingTableBody.innerHTML = rankingData.map((item, i) => {
         const rank = i + 1;
-        const src = resolveAnimalImgSrc(item.animal, rank);
+        const src  = resolveAnimalImgSrc(item.animal, rank);
         const name = resolveAnimalName(item.animal, rank);
         return `
           <tr>
@@ -1043,18 +834,17 @@
             <td class="uni-cell">${item.university}</td>
             <td>${item.score}</td>
             <td class="animal-cell">${animalImg(src, name)}</td>
-          </tr>
-        `;
+          </tr>`;
       }).join("");
     }
 
     function renderRandomCheer(animalKey) {
-      const key = animalKey || myCurrentAnimalKey || "a_5";
+      const key      = animalKey || myCurrentAnimalKey || "a_5";
       const messages = cheerMessages[key];
-      const text = messages[Math.floor(Math.random() * messages.length)];
-      const src = `./assets/images/${key}.png`;
-      const name = ANIMAL_NAMES[key];
-      cheerEmoji.innerHTML = animalImg(src, name);
+      const text     = messages[Math.floor(Math.random() * messages.length)];
+      const src      = `./assets/images/${key}.png`;
+      const name     = ANIMAL_NAMES[key];
+      cheerEmoji.innerHTML  = animalImg(src, name);
       cheerText.textContent = text;
     }
 
@@ -1064,7 +854,6 @@
     }
 
     function setMySchoolPanelDemo() {
-      // 데모 상태: 앵무새(5등 이하 기본값)
       setMySchoolAnimalImg(99);
       mySchoolSub.textContent = "서버에 연결되면 실시간 순위가 표시됩니다.";
       mySchoolInfoList.innerHTML = `
@@ -1075,6 +864,7 @@
       `;
     }
 
+    /* ====== API 호출 ====== */
     async function refreshRankingsFromApi() {
       renderRankingsLoading();
       const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
@@ -1085,27 +875,30 @@
         const res = await fetch(url);
         if (!res.ok) throw new Error("rankings failed");
         const data = await res.json();
-        rankingData = (data.rankings || []).map(r => ({ university: r.university, score: r.score, animal: r.animal }));
+        rankingData = (data.rankings || []).map(r => ({
+          university: r.university,
+          score:      r.score,
+          animal:     r.animal
+        }));
         renderTop3();
         renderFullRanking();
+
         if (data.mySchool) {
-          const m = data.mySchool;
+          const m      = data.mySchool;
           const myRank = m.rank || 99;
-          const src = resolveAnimalImgSrc(m.animal, myRank);
+          const src    = resolveAnimalImgSrc(m.animal, myRank);
           const anName = resolveAnimalName(m.animal, myRank);
           mySchoolAnimal.innerHTML = animalImg(src, anName);
-          mySchoolSub.textContent = `현재 ${myRank}위 · 누적 ${m.score}점`;
+          mySchoolSub.textContent  = `현재 ${myRank}위 · 누적 ${m.score}점`;
           mySchoolInfoList.innerHTML = `
             <div class="info-item"><strong>누적 점수</strong> · ${m.score}점</div>
             <div class="info-item"><strong>대표 동물</strong> · ${anName}</div>
             <div class="info-item"><strong>플레이 횟수</strong> · ${m.playCount ?? 0}회</div>
             <div class="info-item"><strong>안내</strong> · 게임 점수가 학교 이름으로 합산됩니다</div>
           `;
-          // 내 순위에 맞는 동물로 응원 멘트 갱신
           myCurrentAnimalKey = getAnimalKey(myRank);
           renderRandomCheer(myCurrentAnimalKey);
         } else if (school) {
-          // 이 학교 기록 없음 → 앵무새(기본)
           setMySchoolAnimalImg(99);
           mySchoolSub.textContent = "아직 이 학교의 기록이 없어요. 게임을 플레이해 보세요!";
           mySchoolInfoList.innerHTML = `
@@ -1125,17 +918,31 @@
       }
     }
 
+    /* ====== 스토리 흐름 ====== */
     function startStory() {
       clearTimeout(storyTimer);
       introPhaseSchool.classList.add("hidden");
       introPhaseStory.classList.remove("hidden");
       storyIndex = 0;
-      introText.textContent = "";
+      introText.textContent       = "";
       enterLobbyBtn.style.display = "none";
-      skipStoryBtn.style.display = "inline-block";
+      skipStoryBtn.style.display  = "inline-block";
       showNextStory();
     }
 
+    function showNextStory() {
+      if (storyIndex < storyLines.length) {
+        introText.textContent = storyLines[storyIndex];
+        storyIndex++;
+        storyTimer = setTimeout(showNextStory, 2200);
+      } else {
+        enterLobbyBtn.textContent   = "학교 입력하기";
+        enterLobbyBtn.style.display = "inline-block";
+        skipStoryBtn.style.display  = "none";
+      }
+    }
+
+    /* ====== 화면 전환 ====== */
     function openSchoolPhase() {
       clearTimeout(storyTimer);
       introPhaseStory.classList.add("hidden");
@@ -1147,18 +954,6 @@
     function applySchoolToLobby() {
       const name = localStorage.getItem(STORAGE_SCHOOL);
       if (name) mySchoolName.textContent = name;
-    }
-
-    function showNextStory() {
-      if (storyIndex < storyLines.length) {
-        introText.textContent = storyLines[storyIndex];
-        storyIndex++;
-        storyTimer = setTimeout(showNextStory, 2200);
-      } else {
-        enterLobbyBtn.textContent = "학교 입력하기";
-        enterLobbyBtn.style.display = "inline-block";
-        skipStoryBtn.style.display = "none";
-      }
     }
 
     function showLobby() {
@@ -1187,34 +982,7 @@
       startStory();
     }
 
-    fullRankingBtn.addEventListener("click", () => { refreshRankingsFromApi(); rankingModal.style.display = "flex"; });
-    closeRankingBtn.addEventListener("click", () => { rankingModal.style.display = "none"; });
-    rankingModal.addEventListener("click", e => { if (e.target === rankingModal) rankingModal.style.display = "none"; });
-    window.addEventListener("resize", () => { requestAnimationFrame(syncGamePanelHeightToLeft); });
-    enterLobbyBtn.addEventListener("click", openSchoolPhase);
-    skipStoryBtn.addEventListener("click", openSchoolPhase);
-    confirmSchoolBtn.addEventListener("click", confirmSchoolAndEnter);
-    schoolNameInput.addEventListener("keydown", e => { if (e.key === "Enter") confirmSchoolAndEnter(); });
-    backToStoryBtn.addEventListener("click", () => { introPhaseSchool.classList.add("hidden"); introPhaseStory.classList.remove("hidden"); startStory(); });
-    storyReplayBtn.addEventListener("click", showIntroAgain);
-
-    function wantsLobbyFromQuery() {
-      const v = (new URLSearchParams(window.location.search).get("lobby") || "").toLowerCase();
-      return v === "1" || v === "true" || v === "yes";
-    }
-
-    function stripLobbyQuery() {
-      try {
-        const url = new URL(window.location.href);
-        url.searchParams.delete("lobby"); url.searchParams.delete("school");
-        window.history.replaceState({}, "", url.pathname + url.search + url.hash || url.pathname);
-      } catch {}
-    }
-
-    function schoolFromUrlQuery() {
-      try { return (new URLSearchParams(window.location.search).get("school") || "").trim(); } catch { return ""; }
-    }
-
+    /* ====== 게임 링크 업데이트 ====== */
     function updateGamePlayLinks() {
       const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
       const q = school ? `?school=${encodeURIComponent(school)}` : "";
@@ -1228,17 +996,61 @@
       if (ps) ps.setAttribute("href", "games/professor-cheek-sort.html" + q);
     }
 
+    /* ====== URL 쿼리 유틸 ====== */
+    function wantsLobbyFromQuery() {
+      const v = (new URLSearchParams(window.location.search).get("lobby") || "").toLowerCase();
+      return v === "1" || v === "true" || v === "yes";
+    }
+
+    function stripLobbyQuery() {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("lobby");
+        url.searchParams.delete("school");
+        window.history.replaceState({}, "", url.pathname + url.search + url.hash || url.pathname);
+      } catch {}
+    }
+
+    function schoolFromUrlQuery() {
+      try { return (new URLSearchParams(window.location.search).get("school") || "").trim(); }
+      catch { return ""; }
+    }
+
+    /* ====== 이벤트 리스너 ====== */
+    fullRankingBtn.addEventListener("click", () => { refreshRankingsFromApi(); rankingModal.style.display = "flex"; });
+    closeRankingBtn.addEventListener("click", () => { rankingModal.style.display = "none"; });
+    rankingModal.addEventListener("click", e => { if (e.target === rankingModal) rankingModal.style.display = "none"; });
+    window.addEventListener("resize", () => { requestAnimationFrame(syncGamePanelHeightToLeft); });
+    enterLobbyBtn.addEventListener("click", openSchoolPhase);
+    skipStoryBtn.addEventListener("click", openSchoolPhase);
+    confirmSchoolBtn.addEventListener("click", confirmSchoolAndEnter);
+    schoolNameInput.addEventListener("keydown", e => { if (e.key === "Enter") confirmSchoolAndEnter(); });
+    backToStoryBtn.addEventListener("click", () => {
+      introPhaseSchool.classList.add("hidden");
+      introPhaseStory.classList.remove("hidden");
+      startStory();
+    });
+    storyReplayBtn.addEventListener("click", showIntroAgain);
+
+    /* ====== 부트스트랩 ====== */
     function bootstrap() {
       renderRankingsLoading();
       renderRandomCheer();
       requestAnimationFrame(syncGamePanelHeightToLeft);
+
       if (wantsLobbyFromQuery()) {
         const fromUrl = schoolFromUrlQuery();
         if (fromUrl) { try { localStorage.setItem(STORAGE_SCHOOL, fromUrl); } catch {} }
         stripLobbyQuery();
         clearTimeout(storyTimer);
         const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
-        if (school) { showLobby(); } else { introScreen.classList.remove("hidden"); lobbyScreen.classList.add("hidden"); openSchoolPhase(); }
+        if (school) {
+          showLobby();
+        } else {
+          introScreen.classList.remove("hidden");
+          lobbyScreen.classList.add("hidden");
+          openSchoolPhase();
+        }
         return;
       }
       startStory();
