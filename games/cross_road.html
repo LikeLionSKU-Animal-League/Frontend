@@ -3,7 +3,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>사자의 길 건너기</title>
   <style>
     /* 전역 박스 모델 */
@@ -255,11 +255,11 @@
     /* 3×3 그리드 */
     .dpad-grid {
       display: grid;
-      grid-template-columns: repeat(3, 26px);
-      grid-template-rows: repeat(3, 26px);
-      gap: 3px;
+      grid-template-columns: repeat(3, 48px);
+      grid-template-rows: repeat(3, 48px);
+      gap: 6px;
       pointer-events: auto;
-      padding: 1px;
+      padding: 8px;
       border-radius: 10px;
       /* 밝은 유리 느낌 — 뒤 게임이 비치도록 (모바일 게임 UI 참고) */
       background: rgba(255, 255, 255, 0.06);
@@ -286,13 +286,13 @@
 
     /* 방향 버튼 한 칸 */
     .dpad-btn {
-      width: 26px;
-      height: 26px;
+      width: 48px;
+      height: 48px;
       border-radius: 8px;
       background: rgba(235, 240, 246, 0.38);
       border: 1px solid rgba(255, 255, 255, 0.55);
       color: rgba(48, 52, 62, 0.88);
-      font-size: 12px;
+      font-size: 18px;
       font-weight: 800;
       display: flex;
       align-items: center;
@@ -1084,7 +1084,7 @@ document.addEventListener('keyup', e => { keys[e.key] = false; });
 function bindDpadBtn(id, dc, dr) {
   const btn = document.getElementById(id);
   if (!btn) return;
-  btn.addEventListener('touchstart', e => { e.preventDefault(); movePlayer(dc, dr); }, { passive: false });
+  btn.addEventListener('touchstart', e => { e.preventDefault(); if (navigator.vibrate) navigator.vibrate(12); movePlayer(dc, dr); }, { passive: false });
   btn.addEventListener('mousedown',  e => { e.preventDefault(); movePlayer(dc, dr); });
 }
 bindDpadBtn('btnUp',    0, -1);

@@ -202,11 +202,11 @@
     /* 방향키 3×3 그리드(가운데 빈 칸 포함) */
     .classroom-dpad-grid {
       display: grid;
-      grid-template-columns: repeat(3, 26px);
-      grid-template-rows: repeat(3, 26px);
-      gap: 3px;
+      grid-template-columns: repeat(3, 48px);
+      grid-template-rows: repeat(3, 48px);
+      gap: 6px;
       pointer-events: auto;
-      padding: 1px;
+      padding: 8px;
       border-radius: 10px;
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid rgba(255, 255, 255, 0.18);
@@ -223,12 +223,12 @@
     /* 방향 버튼 한 칸 */
     .classroom-dpad-btn {
       border: none;
-      width: 26px;
-      height: 26px;
+      width: 48px;
+      height: 48px;
       border-radius: 8px;
       background: rgba(235, 240, 246, 0.38);
       border: 1px solid rgba(255, 255, 255, 0.55);
-      font-size: 12px;
+      font-size: 18px;
       font-weight: 800;
       color: rgba(48, 52, 62, 0.88);
       cursor: pointer;
@@ -1852,6 +1852,7 @@
         /* 터치·마우스 모두에서 방향키와 동일하게 처리 */
         const down = (e) => {
           e.preventDefault();
+          if (navigator.vibrate) navigator.vibrate(12);
           keys[key] = true;
         };
         const up = (e) => {
