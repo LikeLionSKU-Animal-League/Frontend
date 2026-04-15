@@ -624,13 +624,17 @@ const SDIR = '../assets/sounds/';
 const IMGS = {};
 const IDIR = '../assets/images/cross_road/';
 [
-  'long_log', 'short_log', 'road', 'river', 'glass',
+  'long_log', 'short_log', 'road', 'river', 'glass', 'street-lion',
   ...Array.from({ length: 9 }, (_, i) => [`car${i+1}_left`, `car${i+1}_right`]).flat(),
 ].forEach(name => {
   const img = new Image();
   img.onload = () => { IMGS[name] = img; };
   img.src = IDIR + name + '.png';
 });
+
+/* 게임 배경 이미지 */
+const bgImg = new Image();
+bgImg.src = '../assets/images/background.png';
 
 /** 효과음 재생(겹침 재생을 위해 cloneNode) */
 function play(key, vol = 0.5) {
@@ -737,9 +741,14 @@ function hideOverlay() {
 /** 배경 타일 한 번 그림(준비 화면) */
 function drawStatic() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (bgImg.complete && bgImg.naturalWidth) {
+    ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+  }
+  ctx.globalAlpha = 0.55;
   for (let r = 0; r < ROWS; r++) {
     drawBgRow(r);
   }
+  ctx.globalAlpha = 1;
 }
 
 /** 누적 점수에 따라 0~3 단계 난이도 인덱스 */
@@ -926,7 +935,12 @@ function draw() {
   ctx.translate(shake.x, shake.y);
   ctx.clearRect(-10, -10, canvas.width + 20, canvas.height + 20);
 
+  if (bgImg.complete && bgImg.naturalWidth) {
+    ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+  }
+
   /* 줄마다 배경 + 도로 중앙선 + 물결선 */
+  ctx.globalAlpha = 0.55;
   for (let r = 0; r < ROWS; r++) {
     drawBgRow(r);
     if (ROAD_ROWS.includes(r)) {
@@ -948,6 +962,7 @@ function draw() {
       }
     }
   }
+  ctx.globalAlpha = 1;
 
   logs.forEach(log => {
     const img = IMGS[log.w >= TILE * 2.0 ? 'long_log' : 'short_log'];
@@ -961,18 +976,8 @@ function draw() {
 
   cars.forEach(car => {
     const img = IMGS[car.imgKey];
-    if (img) {
-      ctx.drawImage(img, OX + car.x, car.row * TILE, car.w, TILE);
-    } else {
-      const cx = OX + car.x + car.w / 2;
-      const cy = car.row * TILE + TILE / 2;
-      ctx.save();
-      ctx.font = '30px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🚗', cx, cy);
-      ctx.restore();
-    }
+    const fallbackImg = IMGS[car.dir > 0 ? 'car1_left' : 'car1_right'];
+    ctx.drawImage(img || fallbackImg, OX + car.x, car.row * TILE, car.w, TILE);
   });
 
   particles.forEach(p => {
@@ -1013,16 +1018,20 @@ function drawBgRow(r) {
   ctx.fillRect(0, r * TILE, canvas.width, TILE);
 }
 
-/** 사자 이모지(스쿼시 스케일 적용) */
+/** 사자 스프라이트(스쿼시 스케일 적용) */
 function drawPlayer(x, y, size, sx = 1, sy = 1) {
   const cx = x + size / 2, cy = y + size / 2;
   ctx.save();
   ctx.translate(cx, cy);
   ctx.scale(sx, sy);
-  ctx.font = '32px serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('🦁', 0, 0);
+  if (IMGS['street-lion']) {
+    ctx.drawImage(IMGS['street-lion'], -size / 2, -size / 2, size, size);
+  } else {
+    ctx.font = '32px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('🦁', 0, 0);
+  }
   ctx.restore();
 }
 
