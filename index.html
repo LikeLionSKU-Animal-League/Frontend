@@ -351,16 +351,36 @@
       padding: 10px 12px;
       background: rgba(255,255,255,0.55);
       border: 2px solid #e0d3b0;
-      text-align: left;
+      text-align: center;
       transition: transform 0.15s ease;
       height: 100%;
       display: flex;
       flex-direction: column;
     }
     .game-card:hover { transform: translateY(-3px); }
-    .game-emoji  { font-size: 24px; margin-bottom: 3px; }
-    .game-card h3 { margin: 0 0 3px; font-size: 14px; color: #4a3728; }
-    .game-card p  { margin: 0 0 8px; font-size: 11px; color: #7a6a55; line-height: 1.4; flex: 1; }
+    .game-thumb {
+      flex: 0 0 60%;
+      border-radius: 12px;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    .game-title {
+      margin: 12px 0 0;
+      font-size: 15px;
+      font-weight: 800;
+      color: #4a3728;
+    }
+    .game-comment {
+      margin: 4px 0 8px;
+      font-size: 11px;
+      color: #7a6a55;
+      line-height: 1.4;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
     .play-btn {
       display: inline-block;
@@ -459,8 +479,7 @@
       .podium-animal .animal-img { width: 30px; height: 30px; }
       .podium-uni   { font-size: 14px; }
       .podium-score { font-size: 13px; }
-      .game-card h3 { font-size: 16px; }
-      .game-card p  { font-size: 12px; margin-bottom: 8px; }
+      .game-comment { font-size: 12px; }
       .play-btn { display: block; width: 100%; min-height: 48px; line-height: 1.25; padding: 14px 16px; font-size: 16px; }
       .modal { padding: 0; align-items: flex-end; }
       .modal-content { width: 100%; max-width: 100%; max-height: min(92dvh, 92vh); border-radius: 20px 20px 0 0; }
@@ -576,30 +595,30 @@
           </div>
           <div class="game-grid">
             <div class="game-card">
-              <div class="game-emoji">🎓🪰</div>
-              <h3>학점 사냥</h3>
-              <p>날아다니는 학점 버블 중 높은 학점을 빠르게 잡아 점수를 획득하는 순발력 게임. F를 잘못 누르면 감점됩니다.</p>
+              <div class="game-thumb" style="background:rgba(200,190,170,0.45);"></div>
+              <h3 class="game-title">학점 사냥</h3>
+              <p class="game-comment">날파리 같은 학점 잡아보세요</p>
               <a class="play-btn" id="playGradeHunt" href="games/grade-hunt.html">플레이</a>
             </div>
 
             <div class="game-card">
-              <div class="game-emoji">🏫🚪</div>
-              <h3>강의실 탈출</h3>
-              <p>교수님의 시야를 피해 학생증을 챙기고 출구까지 도달해야 하는 스텔스 미니게임. 단계가 올라갈수록 더 어려워집니다.</p>
+              <div class="game-thumb" style="background:rgba(200,190,170,0.45);"></div>
+              <h3 class="game-title">강의실 탈출</h3>
+              <p class="game-comment">곧 없어질 예정입니다.</p>
               <a class="play-btn" id="playClassroomEscape" href="games/classroom-escape.html">플레이</a>
             </div>
 
             <div class="game-card">
-              <div class="game-emoji">🦁🚗</div>
-              <h3>사자의 길 건너기</h3>
-              <p>차를 피하고 통나무를 타고 강을 건너세요. 통나무 위에서는 사자도 함께 흘러갑니다.</p>
+              <div class="game-thumb" style="background:rgba(200,190,170,0.45);"></div>
+              <h3 class="game-title">사자의 길 건너기</h3>
+              <p class="game-comment">무단횡단을 하는 사자를 구해주세요</p>
               <a class="play-btn" id="playCrossRoad" href="games/cross_road.html">플레이</a>
             </div>
 
             <div class="game-card">
-              <div class="game-emoji">👨‍🏫➡️🧑‍🎓</div>
-              <h3>교수님 분류전</h3>
-              <p>위에서 내려오는 얼굴을 빠르게 분류하세요. 교수는 왼쪽, 학생은 오른쪽으로 넘기면 점수가 올라갑니다.</p>
+              <div class="game-thumb" style="background:rgba(200,190,170,0.45);"></div>
+              <h3 class="game-title">교수님 분류전</h3>
+              <p class="game-comment">대학원의 길로 이끄는 교수님에게서 학생을 분리하세요</p>
               <a class="play-btn" id="playProfessorSort" href="games/professor-cheek-sort.html">플레이</a>
             </div>
           </div>
