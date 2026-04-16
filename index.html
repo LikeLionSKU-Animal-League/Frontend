@@ -117,12 +117,11 @@
     }
 
     .story-logo-small {
-      width: min(520px, 88vw);  /* 랜딩 로고와 동일 크기 */
+      width: min(520px, 88vw);
       display: block;
       filter: drop-shadow(0 6px 18px rgba(0,0,0,0.18));
     }
 
-    /* 텍스트 박스 */
     .story-box {
       position: relative;
       width: 100%;
@@ -161,7 +160,6 @@
       transition: opacity 0.25s ease;
     }
 
-    /* 페이지 표시 */
     .story-pager {
       font-size: 13px;
       color: rgba(255,255,255,0.85);
@@ -170,7 +168,6 @@
       text-shadow: 0 1px 4px rgba(0,0,0,0.3);
     }
 
-    /* 이전 / 다음 버튼 행 */
     .story-nav {
       display: flex;
       align-items: center;
@@ -195,7 +192,6 @@
       box-shadow: 0 3px 0 #c8982a;
     }
 
-    /* 마지막 페이지에서만 보이는 "학교 입력하기" */
     #goSchoolBtn {
       padding: 16px 44px;
       border-radius: 999px;
@@ -309,23 +305,14 @@
       overflow: hidden;
     }
 
-<<<<<<< HEAD
-    .game-card {
-      border-radius: 16px;
-      padding: 10px 12px;
-      background: rgba(255,255,255,0.55);
-      border: 2px solid #e0d3b0;
-      text-align: center;
-      transition: transform 0.15s ease;
-=======
     .lobby-map-bg {
       position: absolute;
       inset: 0;
       width: 100%;
->>>>>>> 219ac26 (:sparkles: Feat: 로고 버튼 수정, :art: Design: 로비 디자인 변경)
       height: 100%;
-      object-fit: cover;
-      object-position: center top;
+      object-fit: contain;
+      object-position: center center;
+      background: #87ceeb;
       display: block;
     }
 
@@ -402,33 +389,6 @@
       display: flex;
       flex-direction: column;
     }
-<<<<<<< HEAD
-    .game-card:hover { transform: translateY(-3px); }
-    .game-thumb {
-      flex: 0 0 60%;
-      border-radius: 12px;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-    .game-title {
-      margin: 12px 0 0;
-      font-size: 15px;
-      font-weight: 800;
-      color: #4a3728;
-    }
-    .game-comment {
-      margin: 4px 0 8px;
-      font-size: 11px;
-      color: #7a6a55;
-      line-height: 1.4;
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-=======
->>>>>>> 219ac26 (:sparkles: Feat: 로고 버튼 수정, :art: Design: 로비 디자인 변경)
 
     .modal-head {
       padding: 20px 24px 12px;
@@ -532,44 +492,16 @@
     }
 
     @media (max-width: 640px) {
-<<<<<<< HEAD
-      #introScreen { padding: 16px 12px calc(20px + env(safe-area-inset-bottom)); align-items: flex-start; }
-      .intro-card { width: 100%; max-width: 100%; padding: 24px 16px 28px; border-radius: 24px; }
-      #introText { font-size: 16px; line-height: 1.65; }
-      .intro-btn-row { flex-direction: column; width: 100%; margin-top: 20px; }
-      #enterLobbyBtn, #skipStoryBtn, #confirmSchoolBtn { width: 100%; min-height: 48px; font-size: 17px; }
-      #skipStoryBtn { padding: 14px 20px; }
-      .school-setup-hint { font-size: 15px; }
-      #schoolNameInput { font-size: 16px; padding: 14px 16px; }
-      #lobbyScreen { padding: 14px 12px calc(24px + env(safe-area-inset-bottom)); }
-      .lobby-wrap { width: 100%; max-width: 100%; }
-      .lobby-header { flex-direction: column; align-items: stretch; padding: 18px 16px; border-radius: 22px; }
-      .header-actions { width: 100%; }
-      .header-actions .header-btn { flex: 1; min-height: 48px; display: flex; align-items: center; justify-content: center; }
-      .panel { padding: 16px 14px; border-radius: 22px; }
-      .panel-title { flex-direction: column; align-items: flex-start; }
-      .panel-title h2 { font-size: 20px; }
-      .podium { gap: 6px; }
-      .rank-card { padding: 9px 10px; gap: 8px; }
-      .podium-medal { width: 30px; font-size: 20px; }
-      .podium-animal { width: 36px; }
-      .podium-animal .animal-img { width: 30px; height: 30px; }
-      .podium-uni   { font-size: 14px; }
-      .podium-score { font-size: 13px; }
-      .game-comment { font-size: 12px; }
-      .play-btn { display: block; width: 100%; min-height: 48px; line-height: 1.25; padding: 14px 16px; font-size: 16px; }
-=======
       #introScreen { padding: 20px 14px calc(24px + env(safe-area-inset-bottom)); }
       .intro-logo  { width: min(320px, 90vw); }
       #startBtn    { font-size: 18px; padding: 15px 40px; }
-      .story-logo-small { width: min(180px, 50vw); }
+      .story-logo-small { width: min(280px, 80vw); }
       #storyText   { font-size: 16px; }
       .story-box-inner { padding: 16px 44px 16px 40px; }
       .nav-btn     { font-size: 14px; padding: 10px 22px; }
       #goSchoolBtn { font-size: 16px; padding: 14px 36px; }
       .school-box  { padding: 22px 18px; }
       #mySchoolBtn { top: 10px; right: 10px; padding: 8px 12px; font-size: 13px; }
->>>>>>> 219ac26 (:sparkles: Feat: 로고 버튼 수정, :art: Design: 로비 디자인 변경)
       .modal { padding: 0; align-items: flex-end; }
       .modal-content { width: 100%; max-height: min(92dvh,92vh); border-radius: 20px 20px 0 0; }
       #mySchoolModal .modal-content { width: 100%; }
@@ -608,93 +540,9 @@
 
     <div class="story-pager" id="storyPager">1 / 6</div>
 
-<<<<<<< HEAD
-      <div class="lobby-main">
-        <!-- 왼쪽 컬럼 -->
-        <div class="left-column">
-          <div class="panel equal-height-panel">
-            <div class="panel-title">
-              <h2>🏆 현재 TOP 3</h2>
-              <span>로비에서는 3등까지만 표시</span>
-            </div>
-            <div class="podium" id="top3Container"></div>
-          </div>
-
-          <div class="left-bottom-row">
-            <div class="panel equal-height-panel">
-              <h3 class="small-panel-title">🏫 내 대학 정보</h3>
-              <div class="my-card-top">
-                <div class="my-animal" id="mySchoolAnimal">
-                  <img class="animal-img" src="./assets/images/chick_10plus.png" alt="대표 동물" />
-                </div>
-                <div class="my-meta">
-                  <h3 id="mySchoolName">성균관대학교</h3>
-                  <p id="mySchoolSub">서버에 연결되면 실시간 순위가 표시됩니다.</p>
-                </div>
-              </div>
-              <div class="info-list" id="mySchoolInfoList">
-                <div class="info-item"><strong>누적 점수</strong> · —</div>
-                <div class="info-item"><strong>대표 동물</strong> · —</div>
-                <div class="info-item"><strong>플레이 횟수</strong> · —</div>
-                <div class="info-item"><strong>안내</strong> · 백엔드 실행 후 게임 플레이 시 반영</div>
-              </div>
-            </div>
-
-            <div class="panel equal-height-panel cheer-panel">
-              <h3 class="small-panel-title">💬 왕국 응원 멘트</h3>
-              <div class="cheer-main">
-                <div class="cheer-emoji" id="cheerEmoji">
-                  <img class="animal-img" src="./assets/images/a_1.png" alt="응원 동물" />
-                </div>
-                <div class="cheer-text" id="cheerText">왕의 자리는 단 하나! 지금 바로 점수를 올려봐!</div>
-              </div>
-              <div class="mini-note">로비에 들어올 때마다 응원 멘트가 바뀝니다.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 오른쪽: 게임 선택 패널 (도토리 레이스 제거) -->
-        <div class="panel game-panel">
-          <div class="panel-title">
-            <h2>🎮 미니게임 선택</h2>
-            <span>원하는 게임을 선택하세요</span>
-          </div>
-          <div class="game-grid">
-            <div class="game-card">
-              <div class="game-thumb" style="background:rgba(200,190,170,0.45);"></div>
-              <h3 class="game-title">학점 사냥</h3>
-              <p class="game-comment">날파리 같은 학점 잡아보세요</p>
-              <a class="play-btn" id="playGradeHunt" href="games/grade-hunt.html">플레이</a>
-            </div>
-
-            <div class="game-card">
-              <div class="game-thumb" style="background:rgba(200,190,170,0.45);"></div>
-              <h3 class="game-title">강의실 탈출</h3>
-              <p class="game-comment">곧 없어질 예정입니다.</p>
-              <a class="play-btn" id="playClassroomEscape" href="games/classroom-escape.html">플레이</a>
-            </div>
-
-            <div class="game-card">
-              <div class="game-thumb" style="background:rgba(200,190,170,0.45);"></div>
-              <h3 class="game-title">사자의 길 건너기</h3>
-              <p class="game-comment">무단횡단을 하는 사자를 구해주세요</p>
-              <a class="play-btn" id="playCrossRoad" href="games/cross_road.html">플레이</a>
-            </div>
-
-            <div class="game-card">
-              <div class="game-thumb" style="background:rgba(200,190,170,0.45);"></div>
-              <h3 class="game-title">교수님 분류전</h3>
-              <p class="game-comment">대학원의 길로 이끄는 교수님에게서 학생을 분리하세요</p>
-              <a class="play-btn" id="playProfessorSort" href="games/professor-cheek-sort.html">플레이</a>
-            </div>
-          </div>
-        </div>
-      </div>
-=======
     <div class="story-nav">
       <button class="nav-btn" id="prevBtn" disabled>◀ 이전</button>
       <button class="nav-btn" id="nextBtn">다음 ▶</button>
->>>>>>> 219ac26 (:sparkles: Feat: 로고 버튼 수정, :art: Design: 로비 디자인 변경)
     </div>
 
     <!-- 마지막 페이지에만 표시 -->
@@ -727,15 +575,14 @@
   <div class="lobby-map-wrap">
     <img src="./assets/images/home/background.jpg" alt="로비 배경" class="lobby-map-bg" />
 
-    <img src="./assets/images/logo.png"            alt="모여봐요 애니멀 리그"   class="map-item logo-item" />
-    <img src="./assets/images/home/rank.png"       alt="현재 랭킹"              class="map-item item-rank"    id="rankBtn" />
-    <img src="./assets/images/home/house.png"      alt="스토리 다시보기"        class="map-item item-house"   id="storyBtn" />
-    <img src="./assets/images/home/student.png"    alt="교수 학생 구별게임"     class="map-item item-student" id="studentBtn" />
-    <img src="./assets/images/home/hunt.png"       alt="학점 사냥"              class="map-item item-hunt"    id="huntBtn" />
-    <img src="./assets/images/home/lion.png"       alt="사자 건너기"            class="map-item item-lion"    id="lionBtn" />
-    <img src="./assets/images/home/game.png"       alt="타자 연습"              class="map-item item-game"    id="gameBtn" />
+    <img src="./assets/images/logo.png"            alt="모여봐요 애니멀 리그"    class="map-item logo-item" />
+    <img src="./assets/images/home/rank.png"       alt="현재 랭킹"               class="map-item item-rank"    id="rankBtn" />
+    <img src="./assets/images/home/house.png"      alt="스토리 다시보기"         class="map-item item-house"   id="storyBtn" />
+    <img src="./assets/images/home/student.png"    alt="교수 학생 구별게임"      class="map-item item-student" id="studentBtn" />
+    <img src="./assets/images/home/hunt.png"       alt="학점 사냥"               class="map-item item-hunt"    id="huntBtn" />
+    <img src="./assets/images/home/lion.png"       alt="사자 건너기"             class="map-item item-lion"    id="lionBtn" />
+    <img src="./assets/images/home/game.png"       alt="타자 연습"               class="map-item item-game"    id="gameBtn" />
 
-    <!-- 내 대학 정보 버튼 -->
     <button id="mySchoolBtn">
       <img class="my-school-btn-animal" id="mySchoolBtnAnimal"
            src="./assets/images/chick_10plus.png" alt="대표 동물" />
@@ -789,9 +636,6 @@
 </div>
 
 <script>
-/* ═══════════════════════════════════════════
-   스토리 데이터
-═══════════════════════════════════════════ */
 const storyLines = [
   "어느 날, 동물의 왕국에 여러 대학을 대표하는 동물들이 모였다.",
   "각 대학의 동물들은 자신의 학교를 대표하여\n가장 강한 호랑이가 되기 위한 도전을 시작한다.",
@@ -801,11 +645,8 @@ const storyLines = [
   "이렇게 동물들의 대학 대항전이 시작된다."
 ];
 
-let storyIndex = 0; // 현재 보여주는 페이지 (0-based)
+let storyIndex = 0;
 
-/* ═══════════════════════════════════════════
-   동물 매핑
-═══════════════════════════════════════════ */
 const ANIMAL_NAMES = {
   lion:"사자", tiger:"호랑이", fox:"여우", dog:"강아지",
   raccoon:"너구리", cat:"고양이", squirrel:"다람쥐",
@@ -828,9 +669,6 @@ function animalImg(src,alt,cls){
   return `<img class="animal-img${cls?' '+cls:''}" src="${src}" alt="${alt}"/>`;
 }
 
-/* ═══════════════════════════════════════════
-   상수 / 설정
-═══════════════════════════════════════════ */
 const STORAGE_SCHOOL = "animalLeagueSchool";
 const API_BASE =
   window.ANIMAL_LEAGUE_API ||
@@ -838,52 +676,41 @@ const API_BASE =
     ? "http://localhost:3000"
     : "https://backend-m5wz.onrender.com");
 
-/* ═══════════════════════════════════════════
-   DOM
-═══════════════════════════════════════════ */
-const introScreen     = document.getElementById("introScreen");
-const lobbyScreen     = document.getElementById("lobbyScreen");
-
-const phaseLanding    = document.getElementById("phaseLanding");
-const phaseStory      = document.getElementById("phaseStory");
-const phaseSchool     = document.getElementById("phaseSchool");
-
-const startBtn        = document.getElementById("startBtn");
-const storyTextEl     = document.getElementById("storyText");
-const storyPager      = document.getElementById("storyPager");
-const prevBtn         = document.getElementById("prevBtn");
-const nextBtn         = document.getElementById("nextBtn");
-const goSchoolBtn     = document.getElementById("goSchoolBtn");
-
+const introScreen      = document.getElementById("introScreen");
+const lobbyScreen      = document.getElementById("lobbyScreen");
+const phaseLanding     = document.getElementById("phaseLanding");
+const phaseStory       = document.getElementById("phaseStory");
+const phaseSchool      = document.getElementById("phaseSchool");
+const startBtn         = document.getElementById("startBtn");
+const storyTextEl      = document.getElementById("storyText");
+const storyPager       = document.getElementById("storyPager");
+const prevBtn          = document.getElementById("prevBtn");
+const nextBtn          = document.getElementById("nextBtn");
+const goSchoolBtn      = document.getElementById("goSchoolBtn");
 const schoolNameInput  = document.getElementById("schoolNameInput");
 const confirmSchoolBtn = document.getElementById("confirmSchoolBtn");
 const backToStoryBtn2  = document.getElementById("backToStoryBtn2");
-
-const rankingModal    = document.getElementById("rankingModal");
-const closeRankingBtn = document.getElementById("closeRankingBtn");
-const rankingTableBody= document.getElementById("rankingTableBody");
-const mySchoolModal   = document.getElementById("mySchoolModal");
-const closeMySchoolBtn= document.getElementById("closeMySchoolBtn");
-const mySchoolBtn     = document.getElementById("mySchoolBtn");
-const mySchoolBtnAnimal=document.getElementById("mySchoolBtnAnimal");
+const rankingModal     = document.getElementById("rankingModal");
+const closeRankingBtn  = document.getElementById("closeRankingBtn");
+const rankingTableBody = document.getElementById("rankingTableBody");
+const mySchoolModal    = document.getElementById("mySchoolModal");
+const closeMySchoolBtn = document.getElementById("closeMySchoolBtn");
+const mySchoolBtn      = document.getElementById("mySchoolBtn");
+const mySchoolBtnAnimal= document.getElementById("mySchoolBtnAnimal");
 const mySchoolBtnLabel = document.getElementById("mySchoolBtnLabel");
 const modalMyAnimalImg = document.getElementById("modalMyAnimalImg");
 const modalMySchoolName= document.getElementById("modalMySchoolName");
 const modalMySchoolSub = document.getElementById("modalMySchoolSub");
 const modalMyInfoList  = document.getElementById("modalMyInfoList");
-
-const rankBtn    = document.getElementById("rankBtn");
-const storyBtn   = document.getElementById("storyBtn");
-const huntBtn    = document.getElementById("huntBtn");
-const lionBtn    = document.getElementById("lionBtn");
-const studentBtn = document.getElementById("studentBtn");
-const gameBtn    = document.getElementById("gameBtn");
+const rankBtn          = document.getElementById("rankBtn");
+const storyBtn         = document.getElementById("storyBtn");
+const huntBtn          = document.getElementById("huntBtn");
+const lionBtn          = document.getElementById("lionBtn");
+const studentBtn       = document.getElementById("studentBtn");
+const gameBtn          = document.getElementById("gameBtn");
 
 let rankingData = [];
 
-/* ═══════════════════════════════════════════
-   인트로 Phase 전환 헬퍼
-═══════════════════════════════════════════ */
 function showPhase(phase) {
   phaseLanding.classList.add("hidden");
   phaseStory.classList.add("hidden");
@@ -891,32 +718,20 @@ function showPhase(phase) {
   phase.classList.remove("hidden");
 }
 
-/* ═══════════════════════════════════════════
-   스토리 렌더
-═══════════════════════════════════════════ */
 function renderStory() {
   const total = storyLines.length;
-
-  // 텍스트 페이드 교체
   storyTextEl.style.opacity = "0";
   setTimeout(() => {
     storyTextEl.textContent = storyLines[storyIndex];
     storyTextEl.style.opacity = "1";
   }, 130);
-
   storyPager.textContent = `${storyIndex + 1} / ${total}`;
-
   const isLast = storyIndex === total - 1;
-
-  // 마지막 페이지: 이전/다음 버튼 행 전체 숨기고 학교 입력 버튼만 표시
   prevBtn.disabled = storyIndex === 0;
   document.querySelector(".story-nav").classList.toggle("hidden", isLast);
   goSchoolBtn.classList.toggle("hidden", !isLast);
 }
 
-/* ═══════════════════════════════════════════
-   화면 전환
-═══════════════════════════════════════════ */
 function goToStory() {
   storyIndex = 0;
   renderStory();
@@ -950,9 +765,6 @@ function backToLanding() {
   showPhase(phaseLanding);
 }
 
-/* ═══════════════════════════════════════════
-   랭킹 API
-═══════════════════════════════════════════ */
 function renderRankingsLoading() {
   rankingTableBody.innerHTML =
     `<tr class="ranking-table-loading"><td colspan="4">데이터를 불러드리는중입니다.</td></tr>`;
@@ -978,7 +790,6 @@ function renderFullRanking() {
 function updateMySchoolPanel(data) {
   const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
   modalMySchoolName.textContent = school || "—";
-
   if (data) {
     const rank = data.rank || 99;
     const src  = animalSrc(rank);
@@ -1024,9 +835,6 @@ async function refreshRankings() {
   }
 }
 
-/* ═══════════════════════════════════════════
-   URL 쿼리 유틸
-═══════════════════════════════════════════ */
 function wantsLobby() {
   const v = (new URLSearchParams(location.search).get("lobby") || "").toLowerCase();
   return v === "1" || v === "true" || v === "yes";
@@ -1041,31 +849,19 @@ function stripQuery() {
     history.replaceState({}, "", u.pathname + u.search + u.hash || u.pathname);
   } catch {}
 }
-
 const schoolQ = () => {
   const s = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
   return s ? `?school=${encodeURIComponent(s)}` : "";
 };
 
-/* ═══════════════════════════════════════════
-   이벤트 리스너
-═══════════════════════════════════════════ */
-// 인트로
 startBtn.addEventListener("click", goToStory);
-
-prevBtn.addEventListener("click", () => {
-  if (storyIndex > 0) { storyIndex--; renderStory(); }
-});
-nextBtn.addEventListener("click", () => {
-  if (storyIndex < storyLines.length - 1) { storyIndex++; renderStory(); }
-});
+prevBtn.addEventListener("click", () => { if (storyIndex > 0) { storyIndex--; renderStory(); } });
+nextBtn.addEventListener("click", () => { if (storyIndex < storyLines.length - 1) { storyIndex++; renderStory(); } });
 goSchoolBtn.addEventListener("click", goToSchool);
-
 confirmSchoolBtn.addEventListener("click", confirmSchool);
 schoolNameInput.addEventListener("keydown", e => { if (e.key === "Enter") confirmSchool(); });
 backToStoryBtn2.addEventListener("click", goToStory);
 
-// 로비 오브젝트
 storyBtn.addEventListener("click",   () => backToLanding());
 rankBtn.addEventListener("click",    () => { refreshRankings(); rankingModal.style.display = "flex"; });
 huntBtn.addEventListener("click",    () => { location.href = "games/grade-hunt.html"           + schoolQ(); });
@@ -1073,19 +869,14 @@ lionBtn.addEventListener("click",    () => { location.href = "games/cross_road.h
 studentBtn.addEventListener("click", () => { location.href = "games/professor-cheek-sort.html" + schoolQ(); });
 gameBtn.addEventListener("click",    () => { location.href = "games/typing-game.html"           + schoolQ(); });
 
-// 모달
 closeRankingBtn.addEventListener("click",  () => { rankingModal.style.display = "none"; });
-rankingModal.addEventListener("click",     e  => { if (e.target === rankingModal)   rankingModal.style.display = "none"; });
+rankingModal.addEventListener("click",     e  => { if (e.target === rankingModal)  rankingModal.style.display = "none"; });
 mySchoolBtn.addEventListener("click",      () => { mySchoolModal.style.display = "flex"; });
 closeMySchoolBtn.addEventListener("click", () => { mySchoolModal.style.display = "none"; });
 mySchoolModal.addEventListener("click",    e  => { if (e.target === mySchoolModal) mySchoolModal.style.display = "none"; });
 
-/* ═══════════════════════════════════════════
-   부트스트랩
-═══════════════════════════════════════════ */
 (function bootstrap() {
   renderRankingsLoading();
-
   if (wantsLobby()) {
     const fromUrl = schoolFromQuery();
     if (fromUrl) { try { localStorage.setItem(STORAGE_SCHOOL, fromUrl); } catch {} }
@@ -1095,8 +886,6 @@ mySchoolModal.addEventListener("click",    e  => { if (e.target === mySchoolModa
     else        { showPhase(phaseSchool); }
     return;
   }
-
-  // 기본: 랜딩 화면 표시
   showPhase(phaseLanding);
 })();
 </script>
