@@ -123,7 +123,6 @@
     /* 다시하기 + 메시지 */
     .controls {
       display: flex;
-      gap: 10px;
       align-items: center;
       margin-bottom: 12px;
     }
@@ -142,13 +141,6 @@
     button:hover { transform: translateY(-1px); }
 
     /* 현재 판 다시 */
-    #restartBtn {
-      background: linear-gradient(135deg, #ffe18a, #ffcd67);
-      color: #664a10;
-      box-shadow: 0 8px 18px rgba(216, 170, 58, 0.22);
-      white-space: nowrap;
-    }
-
     /* 안내 문구 영역 */
     #message {
       flex: 1;
@@ -206,15 +198,6 @@
 
       .title h1 {
         font-size: 21px;
-      }
-
-      .controls {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      #restartBtn {
-        min-height: 48px;
       }
 
       #message {
@@ -420,7 +403,6 @@
 
       <!-- 다시하기 + 메시지 -->
       <div class="controls">
-        <button id="restartBtn">현재 판 다시</button>
         <div id="message">오버레이의 시작 버튼으로 진행하세요.</div>
       </div>
 
@@ -587,7 +569,6 @@ const overlayDesc    = document.getElementById('overlayDesc');
 const overlayStartBtn   = document.getElementById('overlayStartBtn');
 const overlayRestartBtn = document.getElementById('overlayRestartBtn');
 
-document.getElementById('restartBtn').addEventListener('click', prepareGame);
 
 /* --- 격자·타일·맵 행 구성 (행 번호는 위에서 0) --- */
 const COLS = 10;
