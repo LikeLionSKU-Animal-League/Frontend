@@ -180,6 +180,31 @@
       z-index: 4;
     }
 
+    .combo-display {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 6;
+      background: rgba(0, 0, 0, 0.45);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 900;
+      padding: 6px 12px;
+      border-radius: 999px;
+      pointer-events: none;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    .combo-display.bonus {
+      background: linear-gradient(135deg, rgba(255, 165, 0, 0.8), rgba(255, 69, 0, 0.8));
+    }
+
+    .combo-display.hidden {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+
     .lane-hint {
       position: absolute;
       bottom: 170px;
@@ -578,6 +603,7 @@
 
       <!-- 플레이 필드 -->
       <div class="playfield" id="playfield">
+        <div class="combo-display hidden" id="comboDisplay">0 콤보</div>
         <div class="tunnel"></div>
         <div class="path-line"></div>
         <div class="lane-hint left"><img src="../assets/images/identify_prof/prof-face.png" alt="" />교수는 왼쪽</div>
@@ -677,6 +703,7 @@
     const overlay = document.getElementById("overlay");
     const overlayStart = document.getElementById("overlayStart");
     const kakaoShareResultBtn = document.getElementById("kakaoShareResultBtn");
+    const comboDisplay = document.getElementById("comboDisplay");
     const lobbyBackLink = document.getElementById("lobbyBackLink");
     const KAKAO_JS_APP_KEY = "fa75c82718597e9124f913d174cd92a2";
     const SHARE_SITE_ORIGIN = "https://campus-animal-battle.vercel.app";
@@ -907,6 +934,30 @@
       setTimeout(() => n.remove(), 900);
     }
 
+    function getComboBonus(c) {
+      if (c >= 30) return 3;
+      if (c >= 20) return 2;
+      if (c >= 10) return 1;
+      return 0;
+    }
+
+    function updateComboDisplay() {
+      if (combo === 0) {
+        comboDisplay.classList.add('hidden');
+        comboDisplay.classList.remove('bonus');
+        return;
+      }
+      const bonus = getComboBonus(combo);
+      comboDisplay.classList.remove('hidden');
+      if (bonus > 0) {
+        comboDisplay.classList.add('bonus');
+        comboDisplay.textContent = `${combo} 콤보 (+${bonus})`;
+      } else {
+        comboDisplay.classList.remove('bonus');
+        comboDisplay.textContent = `${combo} 콤보`;
+      }
+    }
+
     /** leftCheek => left, rightCheek => right */
     function resolveInput(input) {
       const moveDir = input === "leftCheek" ? "left" : "right";
@@ -926,10 +977,11 @@
         play('correct', 0.6);
         combo += 1;
         if (combo % 5 === 0) play('combo', 0.5);
-        const gain = 1;
+        const gain = 1 + getComboBonus(combo);
         score += gain;
         scoreEl.textContent = String(score);
         comboEl.textContent = String(combo);
+        updateComboDisplay();
 
         if (frontEl) {
           const r = frontEl.getBoundingClientRect();
@@ -974,6 +1026,7 @@
         play('wrong', 0.7);
         combo = 0;
         comboEl.textContent = "0";
+        updateComboDisplay();
         lives = Math.max(0, lives - 1);
         lifeEl.textContent = livesToHearts(lives);
         if (frontEl) {
@@ -1014,6 +1067,7 @@
       resultSubmitted = false;
       scoreEl.textContent = "0";
       comboEl.textContent = "0";
+      updateComboDisplay();
       lifeEl.textContent = livesToHearts(lives);
       updateTimeBar();
       initQueue();
