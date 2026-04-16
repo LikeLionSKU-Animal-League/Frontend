@@ -205,6 +205,21 @@
       transform: scale(0.8);
     }
 
+    .round-display {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 6;
+      background: rgba(0, 0, 0, 0.45);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 900;
+      padding: 6px 12px;
+      border-radius: 999px;
+      pointer-events: none;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    }
+
     .lane-hint {
       position: absolute;
       bottom: 170px;
@@ -604,6 +619,7 @@
       <!-- 플레이 필드 -->
       <div class="playfield" id="playfield">
         <div class="combo-display hidden" id="comboDisplay">0 콤보</div>
+        <div class="round-display" id="roundDisplay">라운드 1</div>
         <div class="tunnel"></div>
         <div class="path-line"></div>
         <div class="lane-hint left"><img src="../assets/images/identify_prof/prof-face.png" alt="" />교수는 왼쪽</div>
@@ -704,6 +720,7 @@
     const overlayStart = document.getElementById("overlayStart");
     const kakaoShareResultBtn = document.getElementById("kakaoShareResultBtn");
     const comboDisplay = document.getElementById("comboDisplay");
+    const roundDisplay = document.getElementById("roundDisplay");
     const lobbyBackLink = document.getElementById("lobbyBackLink");
     const KAKAO_JS_APP_KEY = "fa75c82718597e9124f913d174cd92a2";
     const SHARE_SITE_ORIGIN = "https://campus-animal-battle.vercel.app";
@@ -718,6 +735,10 @@
     let timeLeft = GAME_DURATION_SEC;
     let timerId = null;
     let resultSubmitted = false;
+    let round = 1;
+    let totalDuration = GAME_DURATION_SEC;
+    const ROUND_TARGETS = [60, 100]; // 라운드 1→2 목표, 라운드 2→3 목표
+    const ROUND_BONUS_TIME = 10;
 
     function getLeagueSchool() {
       try {
@@ -1047,12 +1068,27 @@
       timeLeft -= 1;
       updateTimeBar();
       if (timeLeft <= 0) {
-        endGame();
+        if (round <= ROUND_TARGETS.length) {
+          const target = ROUND_TARGETS[round - 1];
+          if (score >= target) {
+            round += 1;
+            timeLeft = ROUND_BONUS_TIME;
+            totalDuration = ROUND_BONUS_TIME;
+            lives = MAX_LIVES;
+            lifeEl.textContent = livesToHearts(lives);
+            roundDisplay.textContent = `라운드 ${round}`;
+            updateTimeBar();
+          } else {
+            endGame("라운드 실패!", `${target}점에 도달하지 못했습니다. (현재 ${score}점)`);
+          }
+        } else {
+          endGame("시간 종료!", "모든 라운드를 완료했습니다!");
+        }
       }
     }
 
     function updateTimeBar() {
-      const p = Math.max(0, timeLeft / GAME_DURATION_SEC);
+      const p = Math.max(0, timeLeft / totalDuration);
       timeBar.style.transform = `scaleX(${p})`;
     }
 
@@ -1063,10 +1099,13 @@
       score = 0;
       combo = 0;
       lives = MAX_LIVES;
+      round = 1;
+      totalDuration = GAME_DURATION_SEC;
       timeLeft = GAME_DURATION_SEC;
       resultSubmitted = false;
       scoreEl.textContent = "0";
       comboEl.textContent = "0";
+      roundDisplay.textContent = "라운드 1";
       updateComboDisplay();
       lifeEl.textContent = livesToHearts(lives);
       updateTimeBar();
@@ -1087,7 +1126,7 @@
 
       overlay.querySelector("h2").textContent = title;
       overlay.querySelector("p").innerHTML =
-        `최종 점수 <strong style="color:#c9a227;font-size:22px">${score}</strong>점<br />${desc}`;
+        `최종 점수 <strong style="color:#c9a227;font-size:22px">${score}</strong>점 (라운드 ${round})<br />${desc}`;
       overlayStart.textContent = "다시 하기";
       showKakaoShareButton();
       overlay.classList.add("show");
