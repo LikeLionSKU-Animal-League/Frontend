@@ -315,28 +315,222 @@
       display: block;
     }
 
-    /* 맵 오브젝트 */
-    .map-item {
+    /* 맵 오브젝트 래퍼 */
+    .map-item-wrap {
       position: absolute;
       z-index: 5;
+      cursor: pointer;
+    }
+
+    .map-item-wrap.logo-wrap { cursor: default; }
+
+    /* 위치 */
+    .logo-wrap    { top: 2%;  left: 2%;    width: 18%; }
+
+    /* 날짜·시간 */
+    #lobbyClockWrap {
+      position: absolute;
+      top: calc(2% + 9vw + 6px);
+      left: 2%;
+      width: 18%;
+      z-index: 10;
+      text-align: center;
+    }
+    #lobbyClock {
+      display: inline-block;
+      background: rgba(245, 238, 220, 0.90);
+      border: 2px solid #c9a96e;
+      border-radius: 12px;
+      padding: 5px 12px;
+      font-family: 'NeoDunggeunmo', sans-serif;
+      font-size: clamp(9px, 1.1vw, 13px);
+      font-weight: 700;
+      color: #4a3728;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+      backdrop-filter: blur(4px);
+      line-height: 1.65;
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+    }
+    .rank-wrap    { top: 26%; left: 13%;   width: 20%; }
+
+    /* 단상 위 1·2·3등 오버레이 */
+    .podium-overlay {
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-end;
+      padding-bottom: 2px;
+      pointer-events: none;
+    }
+
+    .podium-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      flex: 1;
+    }
+
+    /* 순서: 2등(좌) 1등(중앙) 3등(우) */
+    .podium-card.p1 { order: 2; transform: translateY(-6px); }
+    .podium-card.p2 { order: 1; }
+    .podium-card.p3 { order: 3; }
+
+    .podium-medal-icon {
+      font-size: clamp(10px, 1.4vw, 18px);
+      line-height: 1;
+    }
+
+    .podium-animal-img {
+      width: clamp(20px, 3vw, 40px);
+      height: clamp(20px, 3vw, 40px);
+      object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
+    }
+
+    .podium-uni-name {
+      background: rgba(245, 238, 220, 0.92);
+      border: 1.5px solid #c9a96e;
+      border-radius: 6px;
+      padding: 2px 5px;
+      font-family: 'NeoDunggeunmo', sans-serif;
+      font-size: clamp(7px, 0.8vw, 11px);
+      font-weight: 700;
+      color: #4a3728;
+      white-space: nowrap;
+      max-width: clamp(40px, 5vw, 70px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    }
+
+    .podium-uni-name.empty { opacity: 0.4; }
+    .house-wrap   { top: 14%; left: 41%;   width: 18%; }
+    .student-wrap { top: 14%; left: 67.5%; width: 20%; }
+    .hunt-wrap    { top: 52%; left: 19%;   width: 18%; }
+    .lion-wrap    { top: 50%; left: 49%;   width: 12%; }
+    .game-wrap    { top: 58%; left: 72.5%; width: 16.5%; }
+
+    /* 이미지 */
+    .map-item {
+      width: 100%;
+      display: block;
       user-select: none;
       -webkit-user-drag: none;
-      cursor: pointer;
       transition: transform 0.2s ease, filter 0.2s ease;
-      transform-origin: center center;
+      transform-origin: center bottom;
     }
-    .map-item:hover  { transform: scale(1.08); filter: drop-shadow(0 8px 14px rgba(0,0,0,0.18)); }
-    .map-item:active { transform: scale(1.03); }
+    .map-item-wrap:hover .map-item {
+      transform: scale(1.12) translateY(-4px);
+      filter: drop-shadow(0 10px 16px rgba(0,0,0,0.22));
+    }
+    .map-item-wrap:active .map-item { transform: scale(1.04); }
+    .logo-wrap:hover .map-item { transform: none; filter: none; }
 
-    .logo-item { top: 2%; left: 2%; width: 18%; cursor: default; }
-    .logo-item:hover { transform: none; filter: none; }
+    /* 단상은 래퍼 전체(이미지+오버레이)를 함께 scale */
+    .rank-wrap {
+      transform-origin: center bottom;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+    .rank-wrap:hover {
+      transform: scale(1.12) translateY(-4px);
+      filter: drop-shadow(0 10px 16px rgba(0,0,0,0.22));
+    }
+    .rank-wrap:hover .map-item {
+      transform: none;
+      filter: none;
+    }
+    .rank-wrap:active { transform: scale(1.04); }
 
-    .item-rank    { top: 26%; left: 13%;   width: 20%; }
-    .item-house   { top: 14%; left: 41%;   width: 18%; }
-    .item-student { top: 14%; left: 67.5%; width: 20%; }
-    .item-hunt    { top: 52%; left: 19%;   width: 18%; }
-    .item-lion    { top: 50%; left: 49%;   width: 12%; }
-    .item-game    { top: 58%; left: 72.5%; width: 16.5%; }
+    /* 말풍선 */
+    .map-tooltip {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%) translateY(6px);
+      background: rgba(245, 238, 220, 0.97);
+      border: 2px solid #c9a96e;
+      border-radius: 14px;
+      padding: 10px 14px;
+      white-space: nowrap;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+      backdrop-filter: blur(4px);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      z-index: 30;
+    }
+
+    /* 말풍선 꼬리 */
+    .map-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 7px solid transparent;
+      border-top-color: #c9a96e;
+    }
+    .map-tooltip::before {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: -1px;
+      border: 6px solid transparent;
+      border-top-color: rgba(245, 238, 220, 0.97);
+      z-index: 1;
+    }
+
+    .map-tooltip-title {
+      font-size: 14px;
+      font-weight: 900;
+      color: #4a3728;
+      margin-bottom: 3px;
+      font-family: 'NeoDunggeunmo', sans-serif;
+    }
+    .map-tooltip-desc {
+      font-size: 12px;
+      color: #7a6a55;
+      font-family: 'NeoDunggeunmo', sans-serif;
+      line-height: 1.5;
+    }
+
+    .map-item-wrap:hover .map-tooltip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* 화면 오른쪽 끝 아이템은 말풍선을 왼쪽으로 */
+    .student-wrap .map-tooltip,
+    .game-wrap    .map-tooltip {
+      left: auto;
+      right: 0;
+      transform: translateX(0) translateY(6px);
+    }
+    .student-wrap .map-tooltip::after,
+    .game-wrap    .map-tooltip::after {
+      left: auto;
+      right: 20px;
+      transform: none;
+    }
+    .student-wrap .map-tooltip::before,
+    .game-wrap    .map-tooltip::before {
+      left: auto;
+      right: 21px;
+      transform: none;
+    }
+    .student-wrap:hover .map-tooltip,
+    .game-wrap:hover    .map-tooltip {
+      opacity: 1;
+      transform: translateX(0) translateY(0);
+    }
 
     /* 내 대학 정보 버튼 */
     #mySchoolBtn {
@@ -481,13 +675,13 @@
        반응형
     ═══════════════════════════════════════════ */
     @media (max-width: 900px) {
-      .logo-item    { width: 24%; }
-      .item-rank    { width: 24%; left: 10%; }
-      .item-house   { width: 21%; left: 39%; }
-      .item-student { width: 24%; left: 65%; }
-      .item-hunt    { width: 22%; left: 16%; }
-      .item-lion    { width: 15%; left: 47%; }
-      .item-game    { width: 20%; left: 69%; }
+      .logo-wrap    { width: 24%; }
+      .rank-wrap    { width: 24%; left: 10%; }
+      .house-wrap   { width: 21%; left: 39%; }
+      .student-wrap { width: 24%; left: 65%; }
+      .hunt-wrap    { width: 22%; left: 16%; }
+      .lion-wrap    { width: 15%; left: 47%; }
+      .game-wrap    { width: 20%; left: 69%; }
     }
 
     @media (max-width: 640px) {
@@ -508,7 +702,7 @@
       .modal-head h2 { font-size: 18px; }
       .ranking-scroll { padding: 12px 12px 20px; }
       thead th, tbody td { font-size: 13px; padding: 10px 6px; }
-      .map-item:hover { transform: scale(1.04); }
+      .map-item-wrap:hover .map-item { transform: scale(1.04); }
     }
   </style>
 </head>
@@ -574,13 +768,87 @@
   <div class="lobby-map-wrap">
     <img src="./assets/images/home/background.jpg" alt="로비 배경" class="lobby-map-bg" />
 
-    <img src="./assets/images/logo.png"            alt="모여봐요 애니멀 리그"    class="map-item logo-item" />
-    <img src="./assets/images/home/rank.png"       alt="현재 랭킹"               class="map-item item-rank"    id="rankBtn" />
-    <img src="./assets/images/home/house.png"      alt="스토리 다시보기"         class="map-item item-house"   id="storyBtn" />
-    <img src="./assets/images/home/student.png"    alt="교수 학생 구별게임"      class="map-item item-student" id="studentBtn" />
-    <img src="./assets/images/home/hunt.png"       alt="학점 사냥"               class="map-item item-hunt"    id="huntBtn" />
-    <img src="./assets/images/home/lion.png"       alt="사자 건너기"             class="map-item item-lion"    id="lionBtn" />
-    <img src="./assets/images/home/game.png"       alt="타자 연습"               class="map-item item-game"    id="gameBtn" />
+    <!-- 로고 (클릭 없음) -->
+    <div class="map-item-wrap logo-wrap">
+      <img src="./assets/images/logo.png" alt="모여봐요 애니멀 리그" class="map-item" />
+    </div>
+
+    <!-- 날짜 및 시간 -->
+    <div id="lobbyClockWrap">
+      <div id="lobbyClock"></div>
+    </div>
+
+    <!-- 단상 / 현재 랭킹 -->
+    <div class="map-item-wrap rank-wrap" id="rankBtn">
+      <div class="map-tooltip">
+        <div class="map-tooltip-title">🏆 현재 랭킹</div>
+        <div class="map-tooltip-desc">지금까지의 대학 순위를 확인하세요!</div>
+      </div>
+      <!-- 1·2·3등 오버레이 -->
+      <div class="podium-overlay" id="podiumOverlay">
+        <div class="podium-card p2" id="podiumCard2">
+          <div class="podium-medal-icon">🥈</div>
+          <img class="podium-animal-img" id="podiumAnimal2" src="./assets/images/rank_2_tiger.png" alt="2등" />
+          <div class="podium-uni-name empty" id="podiumUni2">—</div>
+        </div>
+        <div class="podium-card p1" id="podiumCard1">
+          <div class="podium-medal-icon">🥇</div>
+          <img class="podium-animal-img" id="podiumAnimal1" src="./assets/images/a_1.png" alt="1등" />
+          <div class="podium-uni-name empty" id="podiumUni1">—</div>
+        </div>
+        <div class="podium-card p3" id="podiumCard3">
+          <div class="podium-medal-icon">🥉</div>
+          <img class="podium-animal-img" id="podiumAnimal3" src="./assets/images/rank_3_fox.png" alt="3등" />
+          <div class="podium-uni-name empty" id="podiumUni3">—</div>
+        </div>
+      </div>
+      <img src="./assets/images/home/rank.png" alt="현재 랭킹" class="map-item" />
+    </div>
+
+    <!-- 집 / 스토리 다시보기 -->
+    <div class="map-item-wrap house-wrap" id="storyBtn">
+      <div class="map-tooltip">
+        <div class="map-tooltip-title">📖 스토리 다시보기</div>
+        <div class="map-tooltip-desc">애니멀 리그의 이야기를 다시 읽어보세요.</div>
+      </div>
+      <img src="./assets/images/home/house.png" alt="스토리 다시보기" class="map-item" />
+    </div>
+
+    <!-- 교수+학생 -->
+    <div class="map-item-wrap student-wrap" id="studentBtn">
+      <div class="map-tooltip">
+        <div class="map-tooltip-title">🎓 교수님 분류전</div>
+        <div class="map-tooltip-desc">교수님과 학생을 빠르게 구별하세요!</div>
+      </div>
+      <img src="./assets/images/home/student.png" alt="교수 학생 구별게임" class="map-item" />
+    </div>
+
+    <!-- 새총+학점코인 / 학점 사냥 -->
+    <div class="map-item-wrap hunt-wrap" id="huntBtn">
+      <div class="map-tooltip">
+        <div class="map-tooltip-title">🎯 학점 사냥</div>
+        <div class="map-tooltip-desc">날아오는 학점을 새총으로 맞춰보세요!</div>
+      </div>
+      <img src="./assets/images/home/hunt.png" alt="학점 사냥" class="map-item" />
+    </div>
+
+    <!-- 사자+다리 / 사자 건너기 -->
+    <div class="map-item-wrap lion-wrap" id="lionBtn">
+      <div class="map-tooltip">
+        <div class="map-tooltip-title">🦁 사자의 길 건너기</div>
+        <div class="map-tooltip-desc">무단횡단하는 사자를 무사히 건너게 하세요!</div>
+      </div>
+      <img src="./assets/images/home/lion.png" alt="사자 건너기" class="map-item" />
+    </div>
+
+    <!-- 타자 연습 게시판 -->
+    <div class="map-item-wrap game-wrap" id="gameBtn">
+      <div class="map-tooltip">
+        <div class="map-tooltip-title">⌨️ 타자 연습</div>
+        <div class="map-tooltip-desc">빠르고 정확하게 타이핑해서 점수를 올리세요!</div>
+      </div>
+      <img src="./assets/images/home/game.png" alt="타자 연습" class="map-item" />
+    </div>
 
     <button id="mySchoolBtn">
       <img class="my-school-btn-animal" id="mySchoolBtnAnimal"
@@ -815,6 +1083,25 @@ function updateMySchoolPanel(data) {
   }
 }
 
+function updatePodiumOverlay() {
+  [1, 2, 3].forEach(rank => {
+    const item = rankingData[rank - 1];
+    const animalEl = document.getElementById(`podiumAnimal${rank}`);
+    const uniEl    = document.getElementById(`podiumUni${rank}`);
+    if (!animalEl || !uniEl) return;
+
+    if (item) {
+      animalEl.src = animalSrc(rank);
+      animalEl.alt = animalName(rank);
+      uniEl.textContent = item.university;
+      uniEl.classList.remove("empty");
+    } else {
+      uniEl.textContent = "—";
+      uniEl.classList.add("empty");
+    }
+  });
+}
+
 async function refreshRankings() {
   renderRankingsLoading();
   const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
@@ -827,6 +1114,7 @@ async function refreshRankings() {
     const data = await res.json();
     rankingData = (data.rankings || []).map(r => ({ university:r.university, score:r.score, animal:r.animal }));
     renderFullRanking();
+    updatePodiumOverlay();
     updateMySchoolPanel(data.mySchool || null);
   } catch {
     rankingData = [];
@@ -873,6 +1161,27 @@ rankingModal.addEventListener("click",     e  => { if (e.target === rankingModal
 mySchoolBtn.addEventListener("click",      () => { mySchoolModal.style.display = "flex"; });
 closeMySchoolBtn.addEventListener("click", () => { mySchoolModal.style.display = "none"; });
 mySchoolModal.addEventListener("click",    e  => { if (e.target === mySchoolModal) mySchoolModal.style.display = "none"; });
+
+/* ═══════════════════════════════════════════
+   날짜 · 시간 시계
+═══════════════════════════════════════════ */
+const clockEl = document.getElementById("lobbyClock");
+const DAYS_KO = ["일","월","화","수","목","금","토"];
+
+function updateClock() {
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm   = String(now.getMonth() + 1).padStart(2, "0");
+  const dd   = String(now.getDate()).padStart(2, "0");
+  const day  = DAYS_KO[now.getDay()];
+  const hh   = String(now.getHours()).padStart(2, "0");
+  const mi   = String(now.getMinutes()).padStart(2, "0");
+  const ss   = String(now.getSeconds()).padStart(2, "0");
+  clockEl.innerHTML = `${yyyy}.${mm}.${dd} (${day})<br>${hh}:${mi}:${ss}`;
+}
+
+updateClock();
+setInterval(updateClock, 1000);
 
 (function bootstrap() {
   renderRankingsLoading();
