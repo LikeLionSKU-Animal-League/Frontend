@@ -16,7 +16,7 @@
       margin: 0;
       height: 100%;
       font-family: "Trebuchet MS", "맑은 고딕", sans-serif;
-      background: linear-gradient(180deg, #87c8ff 0%, #b8e994 38%, #d4a574 38%, #c49a6c 100%);
+      background: url('../assets/images/identify_prof/game-bg.png') no-repeat center center / cover fixed;
       color: #2c3e32;
       overflow: hidden;
       overscroll-behavior: none;
@@ -64,12 +64,12 @@
       flex: 1;
       background: rgba(255, 255, 255, 0.97);
       border-radius: 28px;
-      padding: 12px 14px;
+      padding: 8px 10px;
       border: 3px solid #e8f4df;
       box-shadow: 0 18px 42px rgba(62, 130, 80, 0.16);
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 4px;
       min-height: 0;
     }
 
@@ -127,29 +127,6 @@
       line-height: 1.1;
     }
 
-    /* 시작 버튼 + 메시지 줄 */
-    .controls {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    #gameMessage {
-      flex: 1;
-      min-height: 38px;
-      display: flex;
-      align-items: center;
-      padding: 8px 12px;
-      border-radius: 14px;
-      background: linear-gradient(180deg, #ffffff, #f7fff3);
-      border: 2px solid #e4f1df;
-      color: #5a7060;
-      font-weight: 700;
-      font-size: 13px;
-      line-height: 1.4;
-    }
-
     .time-wrap {
       margin-top: 0;
     }
@@ -182,44 +159,30 @@
       flex: 1;
       position: relative;
       min-height: 200px;
-      margin: 10px 0 8px;
+      margin: 6px 0 0;
       border-radius: 24px;
       overflow: hidden;
       border: 4px solid #6b9b6e;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, transparent 40%),
-        linear-gradient(180deg, #7dce82 0%, #5aad6a 35%, #8b6914 35%, #a67c52 100%);
+      background: url('../assets/images/identify_prof/game-bg.png') no-repeat top center / cover;
       box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.08);
     }
 
     .tunnel {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 88px;
-      height: 56px;
-      background: radial-gradient(ellipse at center bottom, #1a1a1a 0%, #3d3d3d 70%);
-      border-radius: 0 0 50% 50%;
-      z-index: 2;
-      pointer-events: none;
+      display: none;
     }
 
     .path-line {
-      position: absolute;
-      left: 50%;
-      top: 48px;
-      bottom: 0;
-      width: 4px;
-      transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.35);
-      border-radius: 2px;
-      z-index: 0;
+      display: none;
+    }
+
+    .prof-slot.is-next {
+      transform: translateX(-50%) scale(1.6);
+      z-index: 4;
     }
 
     .lane-hint {
       position: absolute;
-      bottom: 112px;
+      bottom: 170px;
       font-size: 11px;
       font-weight: 800;
       color: rgba(255, 255, 255, 0.85);
@@ -247,7 +210,7 @@
 
     .side-target {
       position: absolute;
-      bottom: 184px;
+      bottom: 248px;
       z-index: 2;
       width: 88px;
       padding: 6px;
@@ -334,12 +297,17 @@
     }
 
     .cheeks-row {
-      flex-shrink: 0;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
       display: flex;
       align-items: flex-end;
-      justify-content: center;
+      justify-content: space-between;
       gap: 10px;
-      padding: 4px 0 0;
+      padding: 6px 8px 12px;
+      z-index: 5;
+      background: transparent;
     }
 
     .cheek-btn {
@@ -402,22 +370,6 @@
       color: #636e72;
     }
 
-    .face-center {
-      width: 72px;
-      height: 88px;
-      flex-shrink: 0;
-      align-self: flex-end;
-      margin-bottom: 4px;
-      background: linear-gradient(180deg, #ffccbc, #ffab91);
-      border-radius: 50% 50% 45% 45%;
-      border: 3px solid rgba(255, 255, 255, 0.85);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 36px;
-      pointer-events: none;
-    }
 
     .legend {
       text-align: center;
@@ -428,29 +380,6 @@
       line-height: 1.5;
     }
 
-    .start-btn {
-      border: none;
-      border-radius: 999px;
-      padding: 12px 18px;
-      font-size: 15px;
-      font-weight: 800;
-      cursor: pointer;
-      color: #664a10;
-      background: linear-gradient(135deg, #ffe18a, #ffcd67);
-      box-shadow: 0 10px 22px rgba(216, 170, 58, 0.22);
-      font-family: inherit;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-      white-space: nowrap;
-    }
-
-    .start-btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .start-btn:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
 
     .overlay {
       position: fixed;
@@ -598,19 +527,18 @@
     /* 소형 화면 (높이 680px 이하) 압축 */
     @media (max-height: 680px) {
       .title p { display: none; }
-      .shell { gap: 4px; padding: 8px 10px; }
+      .shell { gap: 2px; padding: 6px 8px; }
       .status-value { font-size: 15px; }
       .time-wrap { margin-top: 0; }
       .cheek-btn { min-height: 90px; }
-      .legend { padding-top: 2px; font-size: 10px; }
+      .cheeks-row { padding-bottom: 8px; }
       .lobby-link { padding: 7px 12px; font-size: 13px; margin-bottom: 4px; }
     }
 
     @media (max-height: 580px) {
       .title h1 { font-size: 18px; }
-      .legend { display: none; }
       .cheek-btn { min-height: 72px; }
-      .shell { gap: 2px; }
+      .shell { gap: 0; }
     }
   </style>
 </head>
@@ -648,12 +576,6 @@
         </div>
       </div>
 
-      <!-- 시작 버튼 + 안내 -->
-      <div class="controls">
-        <button type="button" class="start-btn" id="startBtn">게임 시작</button>
-        <div id="gameMessage">오버레이의 시작 버튼을 눌러 게임을 시작하세요.</div>
-      </div>
-
       <!-- 플레이 필드 -->
       <div class="playfield" id="playfield">
         <div class="tunnel"></div>
@@ -669,25 +591,18 @@
           <p>오른쪽<br />학생</p>
         </div>
         <div id="queueLayer"></div>
-      </div>
-
-      <p class="legend">
-        앞줄 캐릭터를 분류하세요.<br />
-        <strong>교수 얼굴</strong>은 왼쪽, <strong>학생 얼굴</strong>은 오른쪽으로 넘깁니다.
-      </p>
-
-      <div class="cheeks-row">
-        <button type="button" class="cheek-btn left-cheek" id="leftCheek" aria-label="왼쪽 뺨 — 교수를 왼쪽으로">
-          <img class="target-icon" src="../assets/images/identify_prof/prof-face.png" alt="" />
-          교수
-          <span class="cheek-hint">(왼쪽으로 넘기기)</span>
-        </button>
-        <div class="face-center" aria-hidden="true">🎓</div>
-        <button type="button" class="cheek-btn right-cheek" id="rightCheek" aria-label="오른쪽 뺨 — 교수를 오른쪽으로">
-          <img class="target-icon" src="../assets/images/identify_prof/student-face.png" alt="" />
-          학생
-          <span class="cheek-hint">(오른쪽으로 넘기기)</span>
-        </button>
+        <div class="cheeks-row">
+          <button type="button" class="cheek-btn left-cheek" id="leftCheek" aria-label="왼쪽 뺨 — 교수를 왼쪽으로">
+            <img class="target-icon" src="../assets/images/identify_prof/prof-face.png" alt="" />
+            교수
+            <span class="cheek-hint">(왼쪽으로 넘기기)</span>
+          </button>
+          <button type="button" class="cheek-btn right-cheek" id="rightCheek" aria-label="오른쪽 뺨 — 교수를 오른쪽으로">
+            <img class="target-icon" src="../assets/images/identify_prof/student-face.png" alt="" />
+            학생
+            <span class="cheek-hint">(오른쪽으로 넘기기)</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -745,8 +660,9 @@
 
     const GAME_DURATION_SEC = 15;
     const MAX_LIVES = 3;
-    const SLOT_COUNT = 5;
-    const SLOT_SPACING = 78;
+    const SLOT_COUNT = 8;
+    const SLOT_SPACING = 56;
+    const ARCH_Y = 8;
     const TOP_SPAWN_Y = -86;
     const PROFESSOR_FACE_SRC = "../assets/images/identify_prof/prof-face.png";
     const STUDENT_FACE_SRC = "../assets/images/identify_prof/student-face.png";
@@ -756,7 +672,6 @@
     const comboEl = document.getElementById("comboEl");
     const lifeEl = document.getElementById("lifeEl");
     const timeBar = document.getElementById("timeBar");
-    const startBtn = document.getElementById("startBtn");
     const leftCheek = document.getElementById("leftCheek");
     const rightCheek = document.getElementById("rightCheek");
     const overlay = document.getElementById("overlay");
@@ -894,12 +809,12 @@
     }
 
     function getBottomY() {
-      return playfield.clientHeight - 100;
+      return playfield.clientHeight - 158;
     }
 
     function getTopForIndex(index) {
-      const TUNNEL_BOTTOM = 64; // tunnel(56px) + 8px clearance
-      return Math.max(getBottomY() - index * SLOT_SPACING, TUNNEL_BOTTOM);
+      const QUEUE_TOP = 90; // walking chars stay below the arch character
+      return Math.max(getBottomY() - index * SLOT_SPACING, QUEUE_TOP);
     }
 
     function createProfessorEl(item, index, spawnFromTop = false) {
@@ -933,15 +848,37 @@
       queue.forEach((item, index) => {
         queueLayer.appendChild(createProfessorEl(item, index));
       });
+      updateNextHighlight();
+    }
+
+    function updateNextHighlight() {
+      // Remove is-next from old arch char and slide it to its new queue position
+      queueLayer.querySelectorAll('.is-next').forEach(el => {
+        el.classList.remove('is-next');
+        const id = el.dataset.id;
+        const idx = queue.findIndex(item => item.id === id);
+        if (idx >= 0 && idx < queue.length - 1) {
+          el.style.top = `${getTopForIndex(idx)}px`;
+        }
+      });
+      // Pin the new last item to the arch
+      const last = queue[queue.length - 1];
+      if (last) {
+        const el = queueLayer.querySelector(`[data-id="${last.id}"]`);
+        if (el) {
+          el.classList.add('is-next');
+          el.style.top = `${ARCH_Y}px`;
+        }
+      }
     }
 
     function syncDomPositions() {
       queue.forEach((item, index) => {
         const el = queueLayer.querySelector(`[data-id="${item.id}"]`);
-        if (el) {
-          const y = getTopForIndex(index);
-          el.style.top = `${y}px`;
-        }
+        if (!el) return;
+        // Elements still carrying is-next belong at the arch; updateNextHighlight handles them
+        if (el.classList.contains('is-next')) return;
+        el.style.top = `${getTopForIndex(index)}px`;
       });
     }
 
@@ -1024,11 +961,14 @@
         newcomer.portraitSrc = pickPortraitSrc(newcomer.role);
         queue.push(newcomer);
 
-        // 새 캐릭터는 터널 위에서 바로 진입
-        const incomingEl = createProfessorEl(newcomer, queue.length - 1, true);
+        // 새 캐릭터는 동궁 위치에 바로 등장 (페이드인)
+        const incomingEl = createProfessorEl(newcomer, queue.length - 1, false);
+        incomingEl.style.opacity = '0';
         queueLayer.appendChild(incomingEl);
+        updateNextHighlight();
         requestAnimationFrame(() => {
-          incomingEl.style.top = `${getTopForIndex(queue.length - 1)}px`;
+          incomingEl.style.transition = 'opacity 0.22s ease';
+          incomingEl.style.opacity = '1';
         });
       } else {
         play('wrong', 0.7);
@@ -1078,14 +1018,12 @@
       updateTimeBar();
       initQueue();
       playing = true;
-      startBtn.disabled = true;
       timerId = setInterval(tickTime, 1000);
     }
 
     function endGame(title = "시간 종료!", desc = "다시 도전해 보세요.") {
       play('gameover', 0.7);
       playing = false;
-      startBtn.disabled = false;
       if (timerId) clearInterval(timerId);
       timerId = null;
       if (!resultSubmitted) {
@@ -1135,11 +1073,6 @@
     bindCheek(leftCheek, "leftCheek");
     bindCheek(rightCheek, "rightCheek");
     document.addEventListener("keydown", handleKeyboardControl);
-
-    startBtn.addEventListener("click", () => {
-      if (playing) return;
-      startGame();
-    });
 
     overlayStart.addEventListener("click", () => startGame());
 
