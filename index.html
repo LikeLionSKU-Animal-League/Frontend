@@ -13,6 +13,7 @@
   <meta property="og:image" content="https://campus-animal-battle.vercel.app/assets/game-preview.png" />
   <meta property="og:image:alt" content="캠퍼스 애니멀 배틀 대표 이미지" />
   <meta name="twitter:card" content="summary_large_image" />
+
   <style>
     @font-face {
       font-family: 'NeoDunggeunmo';
@@ -22,17 +23,12 @@
     }
 
     * { box-sizing: border-box; }
-
     html { -webkit-text-size-adjust: 100%; }
 
     body {
       margin: 0;
       font-family: 'NeoDunggeunmo', sans-serif;
-      background-image: url('./assets/images/Home.jpg');
-      background-size: cover;
-      background-position: center top;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
+      background: #87ceeb;
       color: #33423a;
       overflow-x: hidden;
       min-height: 100vh;
@@ -41,138 +37,232 @@
       padding-right: env(safe-area-inset-right);
     }
 
-    button, .play-btn, .header-btn, .close-btn {
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-    }
-
     button {
       border: none;
       cursor: pointer;
       font-family: inherit;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
       transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
     }
 
-    button:hover { transform: translateY(-2px); }
-
     .hidden { display: none !important; }
-    .bg-deco { display: none; }
-
     .animal-img { object-fit: contain; display: inline-block; }
-    .podium-animal .animal-img { width: 36px; height: 36px; }
-    .my-animal .animal-img    { width: 38px; height: 38px; }
-    .animal-cell .animal-img  { width: 32px; height: 32px; }
-    .cheer-emoji .animal-img  { width: 52px; height: 52px; }
+    .animal-cell .animal-img { width: 32px; height: 32px; }
 
-    /* ── INTRO ── */
+    /* ═══════════════════════════════════════════
+       인트로 공통 배경 화면
+    ═══════════════════════════════════════════ */
     #introScreen {
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 24px 20px;
       position: relative;
-      z-index: 1;
+      background-image: url('./assets/images/home/background.jpg');
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
     }
 
-    .intro-card {
-      width: min(680px, 94vw);
-      background: transparent;
-      border: none;
-      box-shadow: none;
-      padding: 0;
-      text-align: center;
-      position: relative;
+    /* ───────────────────────────────────────────
+       Phase 0: 랜딩 (로고 + 입장하기)
+    ─────────────────────────────────────────── */
+    #phaseLanding {
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 32px;
+      animation: fadeIn 0.5s ease;
     }
 
-    .intro-logo { width: min(560px, 90vw); display: block; margin: 0 auto 12px; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
-    .intro-textbox-wrap { position: relative; width: min(580px, 92vw); margin: 0 auto; }
-    .intro-textbox2 { position: absolute; top: -26px; left: 2px; height: 54px; z-index: 2; }
-    .intro-textbox-bg { width: 100%; display: block; position: relative; z-index: 1; }
-    .intro-textbox-inner {
+    .intro-logo {
+      width: min(520px, 88vw);
+      display: block;
+      filter: drop-shadow(0 6px 18px rgba(0,0,0,0.18));
+    }
+
+    #startBtn {
+      padding: 18px 52px;
+      border-radius: 999px;
+      font-size: 22px;
+      font-weight: 900;
+      color: #7a5f2a;
+      background: rgba(255, 236, 153, 0.92);
+      box-shadow: 0 6px 0 #c8982a, 0 10px 24px rgba(200,150,40,0.30);
+      backdrop-filter: blur(4px);
+      letter-spacing: 0.04em;
+    }
+    #startBtn:hover  { transform: translateY(-3px); box-shadow: 0 9px 0 #c8982a, 0 14px 28px rgba(200,150,40,0.32); }
+    #startBtn:active { transform: translateY(2px);  box-shadow: 0 3px 0 #c8982a; }
+
+    /* ───────────────────────────────────────────
+       Phase 1: 스토리 (수동 넘기기)
+    ─────────────────────────────────────────── */
+    #phaseStory {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: min(600px, 96vw);
+      animation: fadeIn 0.4s ease;
+    }
+
+    .story-logo-small {
+      width: min(520px, 88vw);  /* 랜딩 로고와 동일 크기 */
+      display: block;
+      filter: drop-shadow(0 6px 18px rgba(0,0,0,0.18));
+    }
+
+    /* 텍스트 박스 */
+    .story-box {
+      position: relative;
+      width: 100%;
+    }
+
+    .story-box-bg {
+      width: 100%;
+      display: block;
+    }
+
+    .story-box-character {
+      position: absolute;
+      top: -30px;
+      left: 6px;
+      height: 58px;
+      z-index: 2;
+    }
+
+    .story-box-inner {
       position: absolute;
       inset: 0;
       z-index: 3;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 18px 48px 18px 44px;
+      padding: 20px 52px 20px 48px;
     }
 
-    #introText {
-      font-size: 21px;
-      line-height: 1.8;
-      color: #435246;
+    #storyText {
+      font-size: 19px;
+      line-height: 1.85;
+      color: #3a4e40;
       font-weight: 700;
       word-break: keep-all;
       text-align: center;
+      transition: opacity 0.25s ease;
     }
 
-    .intro-btn-row {
-      position: relative;
-      z-index: 1;
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    #enterLobbyBtn {
-      padding: 16px 34px;
-      border-radius: 999px;
-      font-size: 20px;
-      font-weight: 900;
-      color: #7a5f2a;
-      background: rgba(255, 236, 153, 0.88);
-      box-shadow: 0 8px 18px rgba(220, 170, 60, 0.22);
-      backdrop-filter: blur(4px);
-      display: none;
-    }
-
-    #skipStoryBtn {
-      padding: 14px 28px;
-      border-radius: 999px;
-      font-size: 14px;
-      font-weight: 900;
-      color: #7a5f2a;
-      background: rgba(255, 236, 153, 0.88);
-      box-shadow: 0 8px 18px rgba(220, 170, 60, 0.22);
-      backdrop-filter: blur(4px);
-    }
-
-    /* ── SCHOOL SETUP ── */
-    #introPhaseSchool { position: relative; z-index: 1; padding-top: 8px; }
-
-    .school-setup-hint {
-      margin: 0 0 22px;
-      color: #6c8570;
-      font-size: 17px;
+    /* 페이지 표시 */
+    .story-pager {
+      font-size: 13px;
+      color: rgba(255,255,255,0.85);
       font-weight: 700;
-      line-height: 1.55;
+      letter-spacing: 0.06em;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    /* 이전 / 다음 버튼 행 */
+    .story-nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-btn {
+      padding: 12px 28px;
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 900;
+      color: #7a5f2a;
+      background: rgba(255, 236, 153, 0.88);
+      box-shadow: 0 5px 0 #c8982a, 0 8px 16px rgba(200,150,40,0.25);
+    }
+    .nav-btn:hover  { transform: translateY(-2px); box-shadow: 0 7px 0 #c8982a, 0 10px 20px rgba(200,150,40,0.28); }
+    .nav-btn:active { transform: translateY(2px);  box-shadow: 0 2px 0 #c8982a; }
+    .nav-btn:disabled {
+      opacity: 0.35;
+      cursor: default;
+      transform: none;
+      box-shadow: 0 3px 0 #c8982a;
+    }
+
+    /* 마지막 페이지에서만 보이는 "학교 입력하기" */
+    #goSchoolBtn {
+      padding: 16px 44px;
+      border-radius: 999px;
+      font-size: 19px;
+      font-weight: 900;
+      color: #7a5f2a;
+      background: rgba(255, 236, 153, 0.92);
+      box-shadow: 0 6px 0 #c8982a, 0 10px 24px rgba(200,150,40,0.30);
+      animation: fadeIn 0.35s ease;
+    }
+    #goSchoolBtn:hover  { transform: translateY(-3px); box-shadow: 0 9px 0 #c8982a; }
+    #goSchoolBtn:active { transform: translateY(2px);  box-shadow: 0 2px 0 #c8982a; }
+
+    /* ───────────────────────────────────────────
+       Phase 2: 학교 입력
+    ─────────────────────────────────────────── */
+    #phaseSchool {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: min(480px, 96vw);
+      animation: fadeIn 0.4s ease;
+    }
+
+    .school-logo-small {
+      width: min(220px, 55vw);
+      filter: drop-shadow(0 3px 8px rgba(0,0,0,0.15));
+    }
+
+    .school-box {
+      width: 100%;
+      background: rgba(245, 238, 220, 0.93);
+      border: 3px solid #d4b86a;
+      border-radius: 24px;
+      padding: 28px 26px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+      backdrop-filter: blur(6px);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .school-box h2 {
+      margin: 0;
+      font-size: 17px;
+      color: #4a3728;
+      text-align: center;
+      line-height: 1.6;
       word-break: keep-all;
     }
 
-    .school-field { width: min(480px, 100%); margin: 0 auto 22px; text-align: left; }
-    .school-field label { display: block; margin-bottom: 10px; font-size: 15px; font-weight: 900; color: #4d7c55; }
+    .school-field { display: flex; flex-direction: column; gap: 8px; }
+    .school-field label { font-size: 14px; font-weight: 900; color: #4d7c55; }
 
     #schoolNameInput {
       width: 100%;
-      padding: 16px 18px;
-      border-radius: 22px;
+      padding: 14px 18px;
+      border-radius: 18px;
       border: 3px solid #e8f4df;
-      font-size: 18px;
+      font-size: 17px;
       font-family: inherit;
       font-weight: 700;
       color: #33423a;
       background: linear-gradient(180deg, #ffffff, #f9fff2);
       box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7);
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
     #schoolNameInput::placeholder { color: #9aaa9c; font-weight: 600; }
     #schoolNameInput:focus {
@@ -181,171 +271,45 @@
       box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7), 0 0 0 3px rgba(125,204,127,0.25);
     }
 
-    .school-actions { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 6px; }
-
     #confirmSchoolBtn {
-      padding: 16px 40px;
+      padding: 15px 0;
+      width: 100%;
       border-radius: 999px;
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 900;
       color: #7a5f2a;
-      background: rgba(255, 236, 153, 0.88);
-      box-shadow: 0 8px 18px rgba(220, 170, 60, 0.22);
-      backdrop-filter: blur(4px);
+      background: rgba(255, 236, 153, 0.92);
+      box-shadow: 0 5px 0 #c8982a, 0 8px 20px rgba(200,150,40,0.28);
     }
+    #confirmSchoolBtn:hover  { transform: translateY(-2px); box-shadow: 0 7px 0 #c8982a; }
+    #confirmSchoolBtn:active { transform: translateY(2px);  box-shadow: 0 2px 0 #c8982a; }
 
-    #backToStoryBtn {
-      padding: 10px 18px;
-      border-radius: 999px;
-      font-size: 14px;
-      font-weight: 800;
-      color: #5a6d5d;
+    #backToStoryBtn2 {
       background: transparent;
-      box-shadow: none;
+      font-size: 13px;
+      font-weight: 800;
+      color: rgba(255,255,255,0.82);
+      text-shadow: 0 1px 4px rgba(0,0,0,0.25);
       text-decoration: underline;
       text-underline-offset: 4px;
+      padding: 6px 12px;
     }
-    #backToStoryBtn:hover { color: #3d5a44; transform: none; opacity: 0.92; }
+    #backToStoryBtn2:hover { opacity: 0.75; transform: none; }
 
-    /* ── LOBBY ── */
-    #lobbyScreen { min-height: 100vh; padding: 20px 16px 32px; position: relative; z-index: 1; }
-    .lobby-wrap { width: min(1160px, 94vw); margin: 0 auto; }
+    /* ═══════════════════════════════════════════
+       LOBBY
+    ═══════════════════════════════════════════ */
+    #lobbyScreen { margin: 0; padding: 0; position: relative; width: 100%; }
 
-    .lobby-header {
-      background: rgba(245, 238, 220, 0.93);
-      border: 3px solid #e0d3b0;
-      border-radius: 24px;
-      padding: 14px 22px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 18px;
-      flex-wrap: wrap;
-      margin-bottom: 14px;
-    }
-
-    .logo-box { display: flex; align-items: center; gap: 16px; }
-    .lobby-logo-img { height: 56px; }
-    .lobby-title-text h1 { margin: 0; font-size: 26px; color: #4a3728; letter-spacing: -0.5px; }
-    .lobby-title-text p  { margin: 6px 0 0; color: #7a6a55; font-size: 13px; }
-
-    .header-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-    .header-btn {
-      padding: 9px 16px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-family: 'NeoDunggeunmo', sans-serif;
-      color: #4a3728;
-      background: #f0e6cc;
-      border: 3px solid #c9a96e;
-      box-shadow: 0 4px 0 #b08a4a, 0 6px 12px rgba(0,0,0,0.12);
-      transition: transform 0.12s ease, box-shadow 0.12s ease;
-    }
-    .header-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #b08a4a, 0 4px 8px rgba(0,0,0,0.10); }
-
-    .lobby-main { display: grid; grid-template-columns: 1fr 1.15fr; gap: 14px; align-items: start; }
-    .left-column { display: flex; flex-direction: column; gap: 12px; }
-    .left-bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-    @media (min-width: 1121px) {
-      .lobby-main { grid-template-columns: 553.78px 636.84px; justify-content: center; }
-      .left-column { width: 553.78px; }
-      .left-bottom-row { grid-template-columns: 267.89px 267.89px; }
-      .left-bottom-row > .panel.equal-height-panel {
-        width: 267.89px; min-width: 267.89px; max-width: 267.89px;
-        height: 428px; min-height: 428px; max-height: 428px;
-      }
-      .game-panel {
-        width: 636.84px; min-width: 636.84px; max-width: 636.84px;
-        height: auto; min-height: unset; max-height: unset;
-      }
-      .game-grid {
-        grid-template-columns: repeat(2, 284.42px);
-        grid-template-rows: repeat(2, minmax(0, 1fr));
-        justify-content: center;
-      }
-      .game-card {
-        width: 284.42px; min-width: 284.42px; max-width: 284.42px;
-        height: 100%; min-height: 0; max-height: unset;
-      }
-    }
-
-    .panel {
-      background: rgba(245, 238, 220, 0.93);
-      border: 3px solid #e0d3b0;
-      border-radius: 20px;
-      padding: 14px 16px;
+    .lobby-map-wrap {
       position: relative;
-    }
-    .panel::before { display: none; }
-    .equal-height-panel { height: 100%; }
-    .game-panel { height: 100%; display: flex; flex-direction: column; min-height: 0; overflow: hidden; flex: 0 0 auto; }
-
-    .panel-title { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; }
-    .panel-title h2  { margin: 0; font-size: 18px; color: #4a3728; }
-    .panel-title span { color: #9a8a72; font-size: 12px; }
-    .small-panel-title { margin: 0 0 12px; font-size: 15px; color: #4a3728; }
-
-    .podium { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
-
-    .rankings-loading, .rankings-empty {
-      min-height: 120px;
-      display: flex; align-items: center; justify-content: center;
-      text-align: center; padding: 24px 16px; border-radius: 18px;
-      background: rgba(255,255,255,0.45); border: 2px dashed #d4c49a;
-    }
-    .rankings-loading p, .rankings-empty p { margin: 0; font-size: 15px; color: #7a6a55; line-height: 1.6; word-break: keep-all; }
-    .ranking-table-loading td { text-align: center; padding: 36px 16px !important; color: #7a6a55; font-size: 14px; border: none !important; }
-
-    .rank-card {
-      display: flex; flex-direction: row; align-items: center; gap: 10px;
-      padding: 10px 12px; border-radius: 16px; text-align: left;
-      position: relative; border: 2px solid #e0d3b0; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    }
-    .rank-card.first  { background: rgba(255, 240, 180, 0.75); border-color: #d4b86a; }
-    .rank-card.second { background: rgba(220, 228, 245, 0.75); border-color: #a8b8d8; }
-    .rank-card.third  { background: rgba(240, 220, 200, 0.75); border-color: #c8a880; }
-
-    .podium-medal  { flex-shrink: 0; width: 34px; text-align: center; font-size: 22px; line-height: 1; }
-    .podium-animal { flex-shrink: 0; width: 40px; text-align: center; line-height: 1; display: flex; align-items: center; justify-content: center; }
-    .podium-uni    { flex: 1; min-width: 0; font-size: 15px; color: #4a3728; word-break: break-word; line-height: 1.35; }
-    .podium-score  { flex-shrink: 0; font-size: 14px; color: #5a4a38; white-space: nowrap; }
-
-    .my-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-    .my-animal {
-      width: 50px; height: 50px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(255,240,180,0.8); border: 3px solid #d4b86a; flex-shrink: 0; overflow: hidden;
-    }
-    .my-meta h3 { margin: 0; color: #4a3728; font-size: 15px; }
-    .my-meta p  { margin: 4px 0 0; color: #7a6a55; font-size: 12px; }
-
-    .info-item {
-      border-radius: 12px; background: rgba(255,255,255,0.5); border: 2px solid #e0d3b0;
-      padding: 7px 10px; margin-bottom: 6px; font-size: 12px; color: #5a4a38;
-    }
-    .info-item strong { color: #4a3728; }
-
-    .cheer-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 160px; }
-    .cheer-main  { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 8px; }
-    .cheer-emoji { width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; }
-    .cheer-text  { font-size: 14px; line-height: 1.75; color: #5a4020; word-break: keep-all; }
-    .mini-note   { font-size: 11px; color: #9a8a60; margin-top: 10px; }
-
-    .game-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      position: relative;
-      z-index: 1;
-      height: 100%;
-      flex: 1;
-      min-height: 0;
-      align-content: stretch;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
       overflow: hidden;
     }
 
+<<<<<<< HEAD
     .game-card {
       border-radius: 16px;
       padding: 10px 12px;
@@ -353,10 +317,92 @@
       border: 2px solid #e0d3b0;
       text-align: center;
       transition: transform 0.15s ease;
+=======
+    .lobby-map-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+>>>>>>> 219ac26 (:sparkles: Feat: 로고 버튼 수정, :art: Design: 로비 디자인 변경)
       height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+
+    /* 맵 오브젝트 */
+    .map-item {
+      position: absolute;
+      z-index: 5;
+      user-select: none;
+      -webkit-user-drag: none;
+      cursor: pointer;
+      transition: transform 0.2s ease, filter 0.2s ease;
+      transform-origin: center center;
+    }
+    .map-item:hover  { transform: scale(1.08); filter: drop-shadow(0 8px 14px rgba(0,0,0,0.18)); }
+    .map-item:active { transform: scale(1.03); }
+
+    .logo-item { top: 2%; left: 2%; width: 18%; cursor: default; }
+    .logo-item:hover { transform: none; filter: none; }
+
+    .item-rank    { top: 26%; left: 13%;   width: 20%; }
+    .item-house   { top: 14%; left: 41%;   width: 18%; }
+    .item-student { top: 14%; left: 67.5%; width: 20%; }
+    .item-hunt    { top: 52%; left: 19%;   width: 18%; }
+    .item-lion    { top: 50%; left: 49%;   width: 12%; }
+    .item-game    { top: 58%; left: 72.5%; width: 16.5%; }
+
+    /* 내 대학 정보 버튼 */
+    #mySchoolBtn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 900;
+      color: #4a3728;
+      background: rgba(245, 238, 220, 0.92);
+      border: 3px solid #c9a96e;
+      box-shadow: 0 4px 0 #b08a4a, 0 6px 16px rgba(0,0,0,0.18);
+      backdrop-filter: blur(6px);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    #mySchoolBtn:hover  { transform: translateY(-2px); box-shadow: 0 6px 0 #b08a4a, 0 8px 20px rgba(0,0,0,0.20); }
+    #mySchoolBtn:active { transform: translateY(2px);  box-shadow: 0 2px 0 #b08a4a; }
+    .my-school-btn-animal { width: 28px; height: 28px; object-fit: contain; }
+
+    /* ═══════════════════════════════════════════
+       모달 공통
+    ═══════════════════════════════════════════ */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(30, 20, 10, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 99;
+      backdrop-filter: blur(3px);
+    }
+
+    .modal-content {
+      width: min(980px, 96vw);
+      max-height: 88vh;
+      overflow: hidden;
+      background: #f5eedc;
+      border-radius: 28px;
+      border: 3px solid #e0d3b0;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.22);
       display: flex;
       flex-direction: column;
     }
+<<<<<<< HEAD
     .game-card:hover { transform: translateY(-3px); }
     .game-thumb {
       flex: 0 0 60%;
@@ -381,62 +427,43 @@
       align-items: center;
       justify-content: center;
     }
+=======
+>>>>>>> 219ac26 (:sparkles: Feat: 로고 버튼 수정, :art: Design: 로비 디자인 변경)
 
-    .play-btn {
-      display: inline-block;
-      padding: 6px 12px;
-      border-radius: 10px;
-      font-size: 12px;
-      font-family: 'NeoDunggeunmo', sans-serif;
-      color: #4a3728;
-      background: #f0e6cc;
-      border: 2px solid #c9a96e;
-      box-shadow: 0 3px 0 #b08a4a;
-      text-decoration: none;
-      text-align: center;
-      transition: transform 0.12s ease, box-shadow 0.12s ease;
-      cursor: pointer;
-    }
-    .play-btn:hover { transform: translateY(2px); box-shadow: 0 1px 0 #b08a4a; }
-    .coming { background: #e8e0d0; border-color: #c8bca0; box-shadow: 0 3px 0 #a89980; color: #9a8a72; cursor: default; }
-    .coming:hover { transform: none; box-shadow: 0 3px 0 #a89980; }
-
-    .modal {
-      position: fixed; inset: 0;
-      background: rgba(30, 20, 10, 0.45);
-      display: none; align-items: center; justify-content: center;
-      padding: 24px; z-index: 99; backdrop-filter: blur(3px);
-    }
-    .modal-content {
-      width: min(980px, 96vw); max-height: 88vh; overflow: hidden;
-      background: #f5eedc; border-radius: 28px; border: 3px solid #e0d3b0;
-      box-shadow: 0 16px 40px rgba(0,0,0,0.22); display: flex; flex-direction: column;
-    }
     .modal-head {
       padding: 20px 24px 12px;
-      display: flex; justify-content: space-between; align-items: center;
-      gap: 12px; border-bottom: 2px solid #e0d3b0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 2px solid #e0d3b0;
     }
-    .modal-head h2 { margin: 0; color: #4a3728; font-size: 26px; }
+    .modal-head h2 { margin: 0; color: #4a3728; font-size: 24px; }
+
     .close-btn {
-      padding: 9px 18px; border-radius: 12px; font-size: 14px;
-      font-family: 'NeoDunggeunmo', sans-serif; color: #fff; background: #d4765a;
-      border: 2px solid #b85a40; box-shadow: 0 3px 0 #8a4030;
+      padding: 9px 18px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: 'NeoDunggeunmo', sans-serif;
+      color: #fff;
+      background: #d4765a;
+      border: 2px solid #b85a40;
+      box-shadow: 0 3px 0 #8a4030;
     }
     .close-btn:hover { transform: translateY(2px); box-shadow: 0 1px 0 #8a4030; }
-    .ranking-scroll { overflow: auto; padding: 16px 24px 24px; }
 
-    table { width: 100%; border-collapse: collapse; border-radius: 14px; overflow: hidden; }
+    /* 랭킹 모달 */
+    .ranking-scroll { overflow: auto; padding: 16px 24px 24px; }
+    table { width: 100%; border-collapse: collapse; }
     thead th {
       background: rgba(255,255,255,0.5); color: #5a4a38;
       font-size: 14px; padding: 12px; text-align: center; position: sticky; top: 0;
     }
     tbody td {
-      padding: 11px 12px; text-align: center; border-bottom: 1px solid #e0d3b0;
-      color: #4a3728; background: rgba(255,255,255,0.3);
+      padding: 11px 12px; text-align: center;
+      border-bottom: 1px solid #e0d3b0; color: #4a3728; background: rgba(255,255,255,0.3);
     }
     tbody tr:nth-child(even) td { background: rgba(255,255,255,0.55); }
-
     .rank-badge {
       display: inline-flex; justify-content: center; align-items: center;
       min-width: 30px; height: 30px; border-radius: 50%;
@@ -444,18 +471,68 @@
     }
     .animal-cell { font-size: 26px; }
     .uni-cell { font-weight: 700; }
-
-    @media (max-width: 1120px) {
-      .lobby-main { grid-template-columns: 1fr; }
-      .left-bottom-row { grid-template-columns: 1fr; }
+    .ranking-table-loading td {
+      text-align: center; padding: 36px 16px !important;
+      color: #7a6a55; font-size: 14px; border: none !important;
     }
 
-    @media (max-width: 980px) {
-      .game-grid { grid-template-columns: 1fr; grid-template-rows: auto; overflow: visible; }
-      #introText { font-size: 18px; }
+    /* 내 대학 정보 모달 */
+    #mySchoolModal .modal-content { width: min(420px, 96vw); }
+
+    .my-school-modal-body {
+      padding: 20px 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .my-school-hero {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: rgba(255, 240, 180, 0.5);
+      border: 2px solid #d4b86a;
+      border-radius: 18px;
+    }
+
+    .my-school-avatar {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: rgba(255,240,180,0.9); border: 3px solid #d4b86a;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; overflow: hidden;
+    }
+    .my-school-avatar img { width: 48px; height: 48px; object-fit: contain; }
+
+    .my-school-hero-text h3 { margin: 0 0 4px; font-size: 18px; color: #4a3728; }
+    .my-school-hero-text p  { margin: 0; font-size: 13px; color: #7a6a55; }
+
+    .my-school-info-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .my-info-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.55); border: 2px solid #e0d3b0; border-radius: 12px;
+      font-size: 14px; color: #5a4a38;
+    }
+    .my-info-row strong { color: #4a3728; }
+    .my-info-val { color: #3a6040; font-weight: 700; }
+
+    /* ═══════════════════════════════════════════
+       반응형
+    ═══════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .logo-item    { width: 24%; }
+      .item-rank    { width: 24%; left: 10%; }
+      .item-house   { width: 21%; left: 39%; }
+      .item-student { width: 24%; left: 65%; }
+      .item-hunt    { width: 22%; left: 16%; }
+      .item-lion    { width: 15%; left: 47%; }
+      .item-game    { width: 20%; left: 69%; }
     }
 
     @media (max-width: 640px) {
+<<<<<<< HEAD
       #introScreen { padding: 16px 12px calc(20px + env(safe-area-inset-bottom)); align-items: flex-start; }
       .intro-card { width: 100%; max-width: 100%; padding: 24px 16px 28px; border-radius: 24px; }
       #introText { font-size: 16px; line-height: 1.65; }
@@ -481,68 +558,57 @@
       .podium-score { font-size: 13px; }
       .game-comment { font-size: 12px; }
       .play-btn { display: block; width: 100%; min-height: 48px; line-height: 1.25; padding: 14px 16px; font-size: 16px; }
+=======
+      #introScreen { padding: 20px 14px calc(24px + env(safe-area-inset-bottom)); }
+      .intro-logo  { width: min(320px, 90vw); }
+      #startBtn    { font-size: 18px; padding: 15px 40px; }
+      .story-logo-small { width: min(180px, 50vw); }
+      #storyText   { font-size: 16px; }
+      .story-box-inner { padding: 16px 44px 16px 40px; }
+      .nav-btn     { font-size: 14px; padding: 10px 22px; }
+      #goSchoolBtn { font-size: 16px; padding: 14px 36px; }
+      .school-box  { padding: 22px 18px; }
+      #mySchoolBtn { top: 10px; right: 10px; padding: 8px 12px; font-size: 13px; }
+>>>>>>> 219ac26 (:sparkles: Feat: 로고 버튼 수정, :art: Design: 로비 디자인 변경)
       .modal { padding: 0; align-items: flex-end; }
-      .modal-content { width: 100%; max-width: 100%; max-height: min(92dvh, 92vh); border-radius: 20px 20px 0 0; }
+      .modal-content { width: 100%; max-height: min(92dvh,92vh); border-radius: 20px 20px 0 0; }
+      #mySchoolModal .modal-content { width: 100%; }
       .modal-head { padding: 16px 16px 10px; }
-      .modal-head h2 { font-size: 20px; }
+      .modal-head h2 { font-size: 18px; }
       .ranking-scroll { padding: 12px 12px 20px; }
       thead th, tbody td { font-size: 13px; padding: 10px 6px; }
-      .animal-cell .animal-img { width: 26px; height: 26px; }
+      .map-item:hover { transform: scale(1.04); }
     }
   </style>
 </head>
 <body>
 
-  <!-- ── 인트로 화면 ── -->
-  <section id="introScreen">
-    <div class="intro-card">
-      <img class="intro-logo" src="./assets/images/logo.png" alt="모여봐요 애니멀 리그" />
+<!-- ═══════════════════════════════════════════
+     인트로 화면 (3단계 공유)
+═══════════════════════════════════════════ -->
+<section id="introScreen">
 
-      <div id="introPhaseStory">
-        <div class="intro-textbox-wrap">
-          <img class="intro-textbox2" src="./assets/images/text_box_2.png" alt="라이언" />
-          <img class="intro-textbox-bg" src="./assets/images/text_box.png" alt="" />
-          <div class="intro-textbox-inner">
-            <div id="introText"></div>
-          </div>
-        </div>
-        <div class="intro-btn-row">
-          <button id="enterLobbyBtn">로비 입장</button>
-          <button type="button" id="skipStoryBtn">스토리 건너뛰기</button>
-        </div>
-      </div>
+  <!-- ① 랜딩: 로고 + 입장하기 -->
+  <div id="phaseLanding">
+    <img class="intro-logo" src="./assets/images/logo.png" alt="모여봐요 애니멀 리그" />
+    <button id="startBtn">입장하기</button>
+  </div>
 
-      <div id="introPhaseSchool" class="hidden">
-        <p class="school-setup-hint">대항전에 참가할 학교 이름을 적어 주세요. 로비와 기록에 표시됩니다.</p>
-        <div class="school-field">
-          <label for="schoolNameInput">학교 이름</label>
-          <input id="schoolNameInput" type="text" maxlength="40" placeholder="예: 성균관대학교" autocomplete="organization" />
-        </div>
-        <div class="school-actions">
-          <button type="button" id="confirmSchoolBtn">로비 입장</button>
-          <button type="button" id="backToStoryBtn">← 스토리 다시 보기</button>
-        </div>
+  <!-- ② 스토리: 텍스트 박스 + 이전/다음 -->
+  <div id="phaseStory" class="hidden">
+    <img class="story-logo-small" src="./assets/images/logo.png" alt="모여봐요 애니멀 리그" />
+
+    <div class="story-box">
+      <img class="story-box-character" src="./assets/images/text_box_2.png" alt="" />
+      <img class="story-box-bg"        src="./assets/images/text_box.png"   alt="" />
+      <div class="story-box-inner">
+        <p id="storyText"></p>
       </div>
     </div>
-  </section>
 
-  <!-- ── 로비 화면 ── -->
-  <section id="lobbyScreen" class="hidden">
-    <div class="lobby-wrap">
-      <div class="lobby-header">
-        <div class="logo-box">
-          <img class="lobby-logo-img" src="./assets/images/logo.png" alt="모여봐요 애니멀 리그" />
-          <div class="lobby-title-text">
-            <h1>애니멀 캠퍼스 로비</h1>
-            <p>대학 대표 동물들이 미니게임에 도전하고, 점수에 따라 더 강한 동물로 진화합니다.</p>
-          </div>
-        </div>
-        <div class="header-actions">
-          <button class="header-btn" id="fullRankingBtn">현재랭킹</button>
-          <button class="header-btn" id="storyReplayBtn">스토리 다시보기</button>
-        </div>
-      </div>
+    <div class="story-pager" id="storyPager">1 / 6</div>
 
+<<<<<<< HEAD
       <div class="lobby-main">
         <!-- 왼쪽 컬럼 -->
         <div class="left-column">
@@ -624,498 +690,415 @@
           </div>
         </div>
       </div>
+=======
+    <div class="story-nav">
+      <button class="nav-btn" id="prevBtn" disabled>◀ 이전</button>
+      <button class="nav-btn" id="nextBtn">다음 ▶</button>
+>>>>>>> 219ac26 (:sparkles: Feat: 로고 버튼 수정, :art: Design: 로비 디자인 변경)
     </div>
-  </section>
 
-  <!-- ── 랭킹 모달 ── -->
-  <div class="modal" id="rankingModal">
-    <div class="modal-content">
-      <div class="modal-head">
-        <h2>🏅 현재 랭킹 TOP 30</h2>
-        <button class="close-btn" id="closeRankingBtn">닫기</button>
+    <!-- 마지막 페이지에만 표시 -->
+    <button id="goSchoolBtn" class="hidden">학교 입력하기 →</button>
+  </div>
+
+  <!-- ③ 학교 입력 -->
+  <div id="phaseSchool" class="hidden">
+    <img class="school-logo-small" src="./assets/images/logo.png" alt="모여봐요 애니멀 리그" />
+
+    <div class="school-box">
+      <h2>대항전에 참가할 학교 이름을 입력해 주세요.<br />로비와 기록에 표시됩니다.</h2>
+      <div class="school-field">
+        <label for="schoolNameInput">학교 이름</label>
+        <input id="schoolNameInput" type="text" maxlength="40"
+               placeholder="예: 성균관대학교" autocomplete="organization" />
       </div>
-      <div class="ranking-scroll">
-        <table>
-          <thead>
-            <tr><th>순위</th><th>대학명</th><th>점수</th><th>동물</th></tr>
-          </thead>
-          <tbody id="rankingTableBody"></tbody>
-        </table>
+      <button id="confirmSchoolBtn">로비 입장 🐾</button>
+    </div>
+
+    <button id="backToStoryBtn2">← 스토리 다시 보기</button>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
+     로비 화면
+═══════════════════════════════════════════ -->
+<section id="lobbyScreen" class="hidden">
+  <div class="lobby-map-wrap">
+    <img src="./assets/images/home/background.jpg" alt="로비 배경" class="lobby-map-bg" />
+
+    <img src="./assets/images/logo.png"            alt="모여봐요 애니멀 리그"   class="map-item logo-item" />
+    <img src="./assets/images/home/rank.png"       alt="현재 랭킹"              class="map-item item-rank"    id="rankBtn" />
+    <img src="./assets/images/home/house.png"      alt="스토리 다시보기"        class="map-item item-house"   id="storyBtn" />
+    <img src="./assets/images/home/student.png"    alt="교수 학생 구별게임"     class="map-item item-student" id="studentBtn" />
+    <img src="./assets/images/home/hunt.png"       alt="학점 사냥"              class="map-item item-hunt"    id="huntBtn" />
+    <img src="./assets/images/home/lion.png"       alt="사자 건너기"            class="map-item item-lion"    id="lionBtn" />
+    <img src="./assets/images/home/game.png"       alt="타자 연습"              class="map-item item-game"    id="gameBtn" />
+
+    <!-- 내 대학 정보 버튼 -->
+    <button id="mySchoolBtn">
+      <img class="my-school-btn-animal" id="mySchoolBtnAnimal"
+           src="./assets/images/chick_10plus.png" alt="대표 동물" />
+      <span id="mySchoolBtnLabel">내 대학 정보</span>
+    </button>
+  </div>
+</section>
+
+<!-- 랭킹 모달 -->
+<div class="modal" id="rankingModal">
+  <div class="modal-content">
+    <div class="modal-head">
+      <h2>🏅 현재 랭킹 TOP 30</h2>
+      <button class="close-btn" id="closeRankingBtn">닫기</button>
+    </div>
+    <div class="ranking-scroll">
+      <table>
+        <thead><tr><th>순위</th><th>대학명</th><th>점수</th><th>동물</th></tr></thead>
+        <tbody id="rankingTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 내 대학 정보 모달 -->
+<div class="modal" id="mySchoolModal">
+  <div class="modal-content">
+    <div class="modal-head">
+      <h2>🏫 내 대학 정보</h2>
+      <button class="close-btn" id="closeMySchoolBtn">닫기</button>
+    </div>
+    <div class="my-school-modal-body">
+      <div class="my-school-hero">
+        <div class="my-school-avatar">
+          <img id="modalMyAnimalImg" src="./assets/images/chick_10plus.png" alt="대표 동물" />
+        </div>
+        <div class="my-school-hero-text">
+          <h3 id="modalMySchoolName">—</h3>
+          <p  id="modalMySchoolSub">서버에 연결되면 실시간 순위가 표시됩니다.</p>
+        </div>
+      </div>
+      <div class="my-school-info-list" id="modalMyInfoList">
+        <div class="my-info-row"><strong>누적 점수</strong><span class="my-info-val">—</span></div>
+        <div class="my-info-row"><strong>대표 동물</strong><span class="my-info-val">—</span></div>
+        <div class="my-info-row"><strong>플레이 횟수</strong><span class="my-info-val">—</span></div>
+        <div class="my-info-row"><strong>안내</strong>
+          <span class="my-info-val" style="font-size:12px;color:#7a6a55;">백엔드 연결 후 반영</span></div>
       </div>
     </div>
   </div>
+</div>
 
-  <script>
-    /* ====== 스토리 대사 ====== */
-    const storyLines = [
-      "어느 날, 동물의 왕국에 여러 대학을 대표하는 동물들이 모였다.",
-      "각 대학의 동물들은 자신의 학교를 대표하여 가장 강한 호랑이가 되기 위한 도전을 시작한다.",
-      "동물들은 다양한 미니게임을 수행하며 점수를 얻고,",
-      "게임이 끝난 뒤 점수 순위에 따라 점점 강한 동물로 진화하게 된다.",
-      "가장 높은 점수를 얻은 학교는 동물의 왕인 '호랑이'가 되어 최고의 학교로 인정받는다.",
-      "이렇게 동물들의 대학 대항전이 시작된다."
-    ];
+<script>
+/* ═══════════════════════════════════════════
+   스토리 데이터
+═══════════════════════════════════════════ */
+const storyLines = [
+  "어느 날, 동물의 왕국에 여러 대학을 대표하는 동물들이 모였다.",
+  "각 대학의 동물들은 자신의 학교를 대표하여\n가장 강한 호랑이가 되기 위한 도전을 시작한다.",
+  "동물들은 다양한 미니게임을 수행하며 점수를 얻고,",
+  "게임이 끝난 뒤 점수 순위에 따라\n점점 강한 동물로 진화하게 된다.",
+  "가장 높은 점수를 얻은 학교는 동물의 왕인\n'호랑이'가 되어 최고의 학교로 인정받는다.",
+  "이렇게 동물들의 대학 대항전이 시작된다."
+];
 
-    let rankingData = [];
+let storyIndex = 0; // 현재 보여주는 페이지 (0-based)
 
-    /* ====== 동물 매핑 ====== */
-    const ANIMAL_NAMES = {
-      lion: "사자",
-      tiger: "호랑이",
-      fox: "여우",
-      dog: "강아지",
-      raccoon: "너구리",
-      cat: "고양이",
-      squirrel: "다람쥐",
-      parrot: "앵무새",
-      hedgehog: "고슴도치",
-      chick: "병아리"
-    };
+/* ═══════════════════════════════════════════
+   동물 매핑
+═══════════════════════════════════════════ */
+const ANIMAL_NAMES = {
+  lion:"사자", tiger:"호랑이", fox:"여우", dog:"강아지",
+  raccoon:"너구리", cat:"고양이", squirrel:"다람쥐",
+  parrot:"앵무새", hedgehog:"고슴도치", chick:"병아리"
+};
+const ANIMAL_FILES = {
+  lion:"a_1.png", tiger:"rank_2_tiger.png", fox:"rank_3_fox.png",
+  dog:"rank_4_dog.png", raccoon:"rank_5_raccoon.png", cat:"a_3.png",
+  squirrel:"a_4.png", parrot:"a_5.png", hedgehog:"rank_9_hedgehog.png",
+  chick:"chick_10plus.png"
+};
+function getKey(rank){
+  if(!Number.isFinite(rank)||rank<=0) return "chick";
+  const map=[,"lion","tiger","fox","dog","raccoon","cat","squirrel","parrot","hedgehog"];
+  return map[rank]||"chick";
+}
+function animalSrc(rank){ return `./assets/images/${ANIMAL_FILES[getKey(rank)]}`; }
+function animalName(rank){ return ANIMAL_NAMES[getKey(rank)]; }
+function animalImg(src,alt,cls){
+  return `<img class="animal-img${cls?' '+cls:''}" src="${src}" alt="${alt}"/>`;
+}
 
-    const ANIMAL_ASSET_FILES = {
-      lion: "a_1.png",
-      tiger: "rank_2_tiger.png",
-      fox: "rank_3_fox.png",
-      dog: "rank_4_dog.png",
-      raccoon: "rank_5_raccoon.png",
-      cat: "a_3.png",
-      squirrel: "a_4.png",
-      parrot: "a_5.png",
-      hedgehog: "rank_9_hedgehog.png",
-      chick: "chick_10plus.png"
-    };
+/* ═══════════════════════════════════════════
+   상수 / 설정
+═══════════════════════════════════════════ */
+const STORAGE_SCHOOL = "animalLeagueSchool";
+const API_BASE =
+  window.ANIMAL_LEAGUE_API ||
+  (["localhost","127.0.0.1"].includes(location.hostname)
+    ? "http://localhost:3000"
+    : "https://backend-m5wz.onrender.com");
 
-    function getAnimalKey(rank) {
-      if (!Number.isFinite(rank) || rank <= 0) return "chick";
-      if (rank === 1) return "lion";
-      if (rank === 2) return "tiger";
-      if (rank === 3) return "fox";
-      if (rank === 4) return "dog";
-      if (rank === 5) return "raccoon";
-      if (rank === 6) return "cat";
-      if (rank === 7) return "squirrel";
-      if (rank === 8) return "parrot";
-      if (rank === 9) return "hedgehog";
-      return "chick";
-    }
+/* ═══════════════════════════════════════════
+   DOM
+═══════════════════════════════════════════ */
+const introScreen     = document.getElementById("introScreen");
+const lobbyScreen     = document.getElementById("lobbyScreen");
 
-    function getAnimalImgSrc(rank) {
-      const key = getAnimalKey(rank);
-      return `./assets/images/${ANIMAL_ASSET_FILES[key]}`;
-    }
-    function getAnimalName(rank)   { return ANIMAL_NAMES[getAnimalKey(rank)]; }
+const phaseLanding    = document.getElementById("phaseLanding");
+const phaseStory      = document.getElementById("phaseStory");
+const phaseSchool     = document.getElementById("phaseSchool");
 
-    function resolveAnimalName(animalField, rank) {
-      return getAnimalName(rank);
-    }
+const startBtn        = document.getElementById("startBtn");
+const storyTextEl     = document.getElementById("storyText");
+const storyPager      = document.getElementById("storyPager");
+const prevBtn         = document.getElementById("prevBtn");
+const nextBtn         = document.getElementById("nextBtn");
+const goSchoolBtn     = document.getElementById("goSchoolBtn");
 
-    function resolveAnimalImgSrc(animalField, rank) {
-      return getAnimalImgSrc(rank);
-    }
+const schoolNameInput  = document.getElementById("schoolNameInput");
+const confirmSchoolBtn = document.getElementById("confirmSchoolBtn");
+const backToStoryBtn2  = document.getElementById("backToStoryBtn2");
 
-    function animalImg(src, alt, extraClass) {
-      return `<img class="animal-img${extraClass ? ' ' + extraClass : ''}" src="${src}" alt="${alt}" />`;
-    }
+const rankingModal    = document.getElementById("rankingModal");
+const closeRankingBtn = document.getElementById("closeRankingBtn");
+const rankingTableBody= document.getElementById("rankingTableBody");
+const mySchoolModal   = document.getElementById("mySchoolModal");
+const closeMySchoolBtn= document.getElementById("closeMySchoolBtn");
+const mySchoolBtn     = document.getElementById("mySchoolBtn");
+const mySchoolBtnAnimal=document.getElementById("mySchoolBtnAnimal");
+const mySchoolBtnLabel = document.getElementById("mySchoolBtnLabel");
+const modalMyAnimalImg = document.getElementById("modalMyAnimalImg");
+const modalMySchoolName= document.getElementById("modalMySchoolName");
+const modalMySchoolSub = document.getElementById("modalMySchoolSub");
+const modalMyInfoList  = document.getElementById("modalMyInfoList");
 
-    /* ====== 응원 멘트 ====== */
-    const cheerMessages = {
-      lion: [
-        "왕국은 고요하다. 도전자가 없으니, 오늘도 왕좌는 내 것이다.",
-        "사자는 뛰지 않는다. 그저 존재만으로도 1등이다.",
-        "정상에서 내려다보는 풍경, 다른 학교들은 아직도 올려다보고 있군."
-      ],
-      tiger: [
-        "호랑이는 이미 정상 바로 아래다. 다음 한 판이 왕좌를 가른다!",
-        "강한 발톱으로 순위를 찢어올려라. 1위는 멀지 않다!",
-        "포효할 준비 완료. 지금 점수면 바로 선두 싸움이다."
-      ],
-      fox: [
-        "여우의 한 수면 판세가 뒤집힌다. 영리하게 점수를 쌓아라!",
-        "3위는 시작점일 뿐. 위를 노릴 타이밍이 왔다!",
-        "빠른 판단과 집중력으로 바로 상위권을 흔들어보자."
-      ],
-      dog: [
-        "강아지는 충성심으로 버틴다. 꾸준히 점수를 올려 상위권으로!",
-        "4위는 도약 구간이다. 연승하면 금방 TOP3다!",
-        "집중해서 달리면 바로 역전 가능!"
-      ],
-      raccoon: [
-        "너구리는 기회를 놓치지 않는다. 한 판 집중으로 순위 상승!",
-        "5위는 흐름을 바꾸기 좋은 자리. 지금이 찬스다!",
-        "영리하게 점수를 챙겨 위를 추격해보자."
-      ],
-      cat: [
-        "고양이는 조용히, 그러나 반드시 위로 올라간다.",
-        "6위라도 충분히 역전 가능! 침착하게 점수를 쌓자.",
-        "빠른 손놀림으로 상위권 문을 두드려라."
-      ],
-      squirrel: [
-        "다람쥐의 발은 빠르다. 지금 바로 뛰어올라!",
-        "작은 점수도 모이면 큰 차이를 만든다.",
-        "7위에서 한 번 탄력 받으면 순식간에 TOP5!"
-      ],
-      parrot: [
-        "앵무새는 말보다 점수로 증명한다. 지금이 기회다!",
-        "8위에서 시작해도 충분히 올라간다. 바로 플레이!",
-        "날개를 펼쳐 순위를 끌어올려보자."
-      ],
-      hedgehog: [
-        "고슴도치도 집중하면 강하다. 차근차근 점수를 쌓아보자!",
-        "9위는 반등 직전 구간. 한 판으로 분위기 전환 가능!",
-        "단단하게 버티고 정확하게 플레이하면 올라간다."
-      ],
-      chick: [
-        "병아리라고 얕보지 마! 한 판만 잘하면 바로 순위가 오른다.",
-        "첫걸음이 가장 중요해. 지금 점수를 모아 중위권까지 올라가자!",
-        "작지만 빠르게 성장한다! 10위권 탈출은 지금부터 시작이다."
-      ]
-    };
+const rankBtn    = document.getElementById("rankBtn");
+const storyBtn   = document.getElementById("storyBtn");
+const huntBtn    = document.getElementById("huntBtn");
+const lionBtn    = document.getElementById("lionBtn");
+const studentBtn = document.getElementById("studentBtn");
+const gameBtn    = document.getElementById("gameBtn");
 
-    let myCurrentAnimalKey = "chick";
+let rankingData = [];
 
-    /* ====== 상수·설정 ====== */
-    const STORAGE_SCHOOL = "animalLeagueSchool";
-    const API_BASE =
-      window.ANIMAL_LEAGUE_API ||
-      (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-        ? "http://localhost:3000"
-        : "https://backend-m5wz.onrender.com");
+/* ═══════════════════════════════════════════
+   인트로 Phase 전환 헬퍼
+═══════════════════════════════════════════ */
+function showPhase(phase) {
+  phaseLanding.classList.add("hidden");
+  phaseStory.classList.add("hidden");
+  phaseSchool.classList.add("hidden");
+  phase.classList.remove("hidden");
+}
 
-    /* ====== DOM 참조 ====== */
-    const introScreen      = document.getElementById("introScreen");
-    const lobbyScreen      = document.getElementById("lobbyScreen");
-    const introPhaseStory  = document.getElementById("introPhaseStory");
-    const introPhaseSchool = document.getElementById("introPhaseSchool");
-    const introText        = document.getElementById("introText");
-    const enterLobbyBtn    = document.getElementById("enterLobbyBtn");
-    const skipStoryBtn     = document.getElementById("skipStoryBtn");
-    const schoolNameInput  = document.getElementById("schoolNameInput");
-    const confirmSchoolBtn = document.getElementById("confirmSchoolBtn");
-    const backToStoryBtn   = document.getElementById("backToStoryBtn");
-    const storyReplayBtn   = document.getElementById("storyReplayBtn");
-    const mySchoolName     = document.getElementById("mySchoolName");
-    const mySchoolSub      = document.getElementById("mySchoolSub");
-    const mySchoolAnimal   = document.getElementById("mySchoolAnimal");
-    const mySchoolInfoList = document.getElementById("mySchoolInfoList");
-    const top3Container    = document.getElementById("top3Container");
-    const rankingTableBody = document.getElementById("rankingTableBody");
-    const rankingModal     = document.getElementById("rankingModal");
-    const fullRankingBtn   = document.getElementById("fullRankingBtn");
-    const closeRankingBtn  = document.getElementById("closeRankingBtn");
-    const cheerEmoji       = document.getElementById("cheerEmoji");
-    const cheerText        = document.getElementById("cheerText");
-    const leftColumn       = document.querySelector(".left-column");
-    const gamePanel        = document.querySelector(".game-panel");
-    const gameGrid         = document.querySelector(".game-grid");
+/* ═══════════════════════════════════════════
+   스토리 렌더
+═══════════════════════════════════════════ */
+function renderStory() {
+  const total = storyLines.length;
 
-    let storyIndex = 0;
-    let storyTimer = null;
+  // 텍스트 페이드 교체
+  storyTextEl.style.opacity = "0";
+  setTimeout(() => {
+    storyTextEl.textContent = storyLines[storyIndex];
+    storyTextEl.style.opacity = "1";
+  }, 130);
 
-    /* ====== 레이아웃 동기화 ====== */
-    function syncGamePanelHeightToLeft() {
-      if (!leftColumn || !gamePanel || !gameGrid) return;
-      if (window.innerWidth <= 1120) {
-        gamePanel.style.height    = "";
-        gamePanel.style.width     = "";
-        gamePanel.style.minHeight = "";
-        gamePanel.style.minWidth  = "";
-        gamePanel.style.maxHeight = "";
-        gamePanel.style.maxWidth  = "";
-        gamePanel.style.overflow  = "visible";
-        return;
-      }
-      const leftHeight = leftColumn.getBoundingClientRect().height;
-      gamePanel.style.width     = "636.84px";
-      gamePanel.style.minWidth  = "636.84px";
-      gamePanel.style.maxWidth  = "636.84px";
-      gamePanel.style.height    = leftHeight + "px";
-      gamePanel.style.minHeight = leftHeight + "px";
-      gamePanel.style.maxHeight = leftHeight + "px";
-      gamePanel.style.overflow  = "hidden";
-    }
+  storyPager.textContent = `${storyIndex + 1} / ${total}`;
 
-    /* ====== 랭킹 렌더링 ====== */
-    function renderRankingsLoading() {
-      const msg = "데이터를 불러드리는중입니다.";
-      top3Container.innerHTML = `<div class="rankings-loading"><p>${msg}</p></div>`;
-      rankingTableBody.innerHTML = `<tr class="ranking-table-loading"><td colspan="4">${msg}</td></tr>`;
-      mySchoolSub.textContent = msg;
-      mySchoolInfoList.innerHTML = `
-        <div class="info-item"><strong>누적 점수</strong> · …</div>
-        <div class="info-item"><strong>대표 동물</strong> · …</div>
-        <div class="info-item"><strong>플레이 횟수</strong> · …</div>
-        <div class="info-item"><strong>안내</strong> · 잠시만 기다려 주세요</div>
-      `;
-    }
+  const isLast = storyIndex === total - 1;
 
-    function renderTop3() {
-      if (rankingData.length === 0) {
-        top3Container.innerHTML = `
-          <div class="rankings-empty">
-            <p>아직 랭킹 기록이 없습니다.<br />
-            <span style="font-size:14px;color:#79907e;">게임을 플레이하면 여기에 표시됩니다.</span></p>
-          </div>`;
-        return;
-      }
-      const top3 = rankingData.slice(0, 3);
-      while (top3.length < 3) top3.push({ university: "—", score: 0, animal: null });
-      const rows = [
-        { item: top3[0], rank: 1, medal: "🥇", cls: "first" },
-        { item: top3[1], rank: 2, medal: "🥈", cls: "second" },
-        { item: top3[2], rank: 3, medal: "🥉", cls: "third" }
-      ];
-      top3Container.innerHTML = rows.map(({ item, rank, medal, cls }) => {
-        const src  = resolveAnimalImgSrc(item.animal, rank);
-        const name = resolveAnimalName(item.animal, rank);
-        return `
-          <div class="rank-card ${cls}">
-            <span class="podium-medal">${medal}</span>
-            <span class="podium-animal">${animalImg(src, name)}</span>
-            <span class="podium-uni">${item.university}</span>
-            <span class="podium-score">${item.score}점</span>
-          </div>`;
-      }).join("");
-    }
+  // 마지막 페이지: 이전/다음 버튼 행 전체 숨기고 학교 입력 버튼만 표시
+  prevBtn.disabled = storyIndex === 0;
+  document.querySelector(".story-nav").classList.toggle("hidden", isLast);
+  goSchoolBtn.classList.toggle("hidden", !isLast);
+}
 
-    function renderFullRanking() {
-      if (rankingData.length === 0) {
-        rankingTableBody.innerHTML = `<tr class="ranking-table-loading"><td colspan="4">등록된 랭킹이 없습니다.</td></tr>`;
-        return;
-      }
-      rankingTableBody.innerHTML = rankingData.map((item, i) => {
-        const rank = i + 1;
-        const src  = resolveAnimalImgSrc(item.animal, rank);
-        const name = resolveAnimalName(item.animal, rank);
-        return `
-          <tr>
-            <td><span class="rank-badge">${rank}</span></td>
-            <td class="uni-cell">${item.university}</td>
-            <td>${item.score}</td>
-            <td class="animal-cell">${animalImg(src, name)}</td>
-          </tr>`;
-      }).join("");
-    }
+/* ═══════════════════════════════════════════
+   화면 전환
+═══════════════════════════════════════════ */
+function goToStory() {
+  storyIndex = 0;
+  renderStory();
+  showPhase(phaseStory);
+}
 
-    function renderRandomCheer(animalKey) {
-      const key      = animalKey || myCurrentAnimalKey || "chick";
-      const messages = cheerMessages[key] || cheerMessages.chick;
-      const text     = messages[Math.floor(Math.random() * messages.length)];
-      const src      = `./assets/images/${ANIMAL_ASSET_FILES[key]}`;
-      const name     = ANIMAL_NAMES[key];
-      cheerEmoji.innerHTML  = animalImg(src, name);
-      cheerText.textContent = text;
-    }
+function goToSchool() {
+  schoolNameInput.value = localStorage.getItem(STORAGE_SCHOOL) || "";
+  showPhase(phaseSchool);
+  requestAnimationFrame(() => schoolNameInput.focus());
+}
 
-    function setMySchoolAnimalImg(rank) {
-      const safeRank = Number.isFinite(rank) ? rank : 99;
-      const src = getAnimalImgSrc(safeRank);
-      mySchoolAnimal.innerHTML = animalImg(src, getAnimalName(safeRank));
-    }
+function confirmSchool() {
+  const name = schoolNameInput.value.trim();
+  if (!name) { alert("학교 이름을 입력해 주세요."); schoolNameInput.focus(); return; }
+  localStorage.setItem(STORAGE_SCHOOL, name);
+  enterLobby();
+}
 
-    function setMySchoolPanelDemo() {
-      setMySchoolAnimalImg(0);
-      mySchoolSub.textContent = "서버에 연결되면 실시간 순위가 표시됩니다.";
-      mySchoolInfoList.innerHTML = `
-        <div class="info-item"><strong>누적 점수</strong> · —</div>
-        <div class="info-item"><strong>대표 동물</strong> · —</div>
-        <div class="info-item"><strong>플레이 횟수</strong> · —</div>
-        <div class="info-item"><strong>안내</strong> · 백엔드 실행 후 게임 플레이 시 반영</div>
-      `;
-    }
+function enterLobby() {
+  introScreen.classList.add("hidden");
+  lobbyScreen.classList.remove("hidden");
+  const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
+  if (school) mySchoolBtnLabel.textContent = school;
+  refreshRankings();
+}
 
-    /* ====== API 호출 ====== */
-    async function refreshRankingsFromApi() {
-      renderRankingsLoading();
-      const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
-      try {
-        const url = school
-          ? `${API_BASE}/api/rankings?limit=30&school=${encodeURIComponent(school)}`
-          : `${API_BASE}/api/rankings?limit=30`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error("rankings failed");
-        const data = await res.json();
-        rankingData = (data.rankings || []).map(r => ({
-          university: r.university,
-          score:      r.score,
-          animal:     r.animal
-        }));
-        renderTop3();
-        renderFullRanking();
+function backToLanding() {
+  introScreen.classList.remove("hidden");
+  lobbyScreen.classList.add("hidden");
+  showPhase(phaseLanding);
+}
 
-        if (data.mySchool) {
-          const m      = data.mySchool;
-          const myRank = m.rank || 99;
-          const src    = resolveAnimalImgSrc(m.animal, myRank);
-          const anName = resolveAnimalName(m.animal, myRank);
-          mySchoolAnimal.innerHTML = animalImg(src, anName);
-          mySchoolSub.textContent  = `현재 ${myRank}위 · 누적 ${m.score}점`;
-          mySchoolInfoList.innerHTML = `
-            <div class="info-item"><strong>누적 점수</strong> · ${m.score}점</div>
-            <div class="info-item"><strong>대표 동물</strong> · ${anName}</div>
-            <div class="info-item"><strong>플레이 횟수</strong> · ${m.playCount ?? 0}회</div>
-            <div class="info-item"><strong>안내</strong> · 게임 점수가 학교 이름으로 합산됩니다</div>
-          `;
-          myCurrentAnimalKey = getAnimalKey(myRank);
-          renderRandomCheer(myCurrentAnimalKey);
-        } else if (school) {
-          setMySchoolAnimalImg(0);
-          mySchoolSub.textContent = "아직 이 학교의 기록이 없어요. 게임을 플레이해 보세요!";
-          mySchoolInfoList.innerHTML = `
-            <div class="info-item"><strong>누적 점수</strong> · 0점</div>
-            <div class="info-item"><strong>대표 동물</strong> · 병아리</div>
-            <div class="info-item"><strong>플레이 횟수</strong> · 0회</div>
-            <div class="info-item"><strong>안내</strong> · 첫 플레이 후 랭킹에 올라갑니다</div>
-          `;
-        } else {
-          setMySchoolPanelDemo();
-        }
-      } catch {
-        rankingData = [];
-        renderRankingsLoading();
-      } finally {
-        requestAnimationFrame(syncGamePanelHeightToLeft);
-      }
-    }
+/* ═══════════════════════════════════════════
+   랭킹 API
+═══════════════════════════════════════════ */
+function renderRankingsLoading() {
+  rankingTableBody.innerHTML =
+    `<tr class="ranking-table-loading"><td colspan="4">데이터를 불러드리는중입니다.</td></tr>`;
+}
 
-    /* ====== 스토리 흐름 ====== */
-    function startStory() {
-      clearTimeout(storyTimer);
-      introPhaseSchool.classList.add("hidden");
-      introPhaseStory.classList.remove("hidden");
-      storyIndex = 0;
-      introText.textContent       = "";
-      enterLobbyBtn.style.display = "none";
-      skipStoryBtn.style.display  = "inline-block";
-      showNextStory();
-    }
+function renderFullRanking() {
+  if (!rankingData.length) {
+    rankingTableBody.innerHTML =
+      `<tr class="ranking-table-loading"><td colspan="4">등록된 랭킹이 없습니다.</td></tr>`;
+    return;
+  }
+  rankingTableBody.innerHTML = rankingData.map((item, i) => {
+    const rank = i + 1;
+    return `<tr>
+      <td><span class="rank-badge">${rank}</span></td>
+      <td class="uni-cell">${item.university}</td>
+      <td>${item.score}</td>
+      <td class="animal-cell">${animalImg(animalSrc(rank), animalName(rank))}</td>
+    </tr>`;
+  }).join("");
+}
 
-    function showNextStory() {
-      if (storyIndex < storyLines.length) {
-        introText.textContent = storyLines[storyIndex];
-        storyIndex++;
-        storyTimer = setTimeout(showNextStory, 2200);
-      } else {
-        enterLobbyBtn.textContent   = "학교 입력하기";
-        enterLobbyBtn.style.display = "inline-block";
-        skipStoryBtn.style.display  = "none";
-      }
-    }
+function updateMySchoolPanel(data) {
+  const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
+  modalMySchoolName.textContent = school || "—";
 
-    /* ====== 화면 전환 ====== */
-    function openSchoolPhase() {
-      clearTimeout(storyTimer);
-      introPhaseStory.classList.add("hidden");
-      introPhaseSchool.classList.remove("hidden");
-      schoolNameInput.value = localStorage.getItem(STORAGE_SCHOOL) || "";
-      requestAnimationFrame(() => schoolNameInput.focus());
-    }
+  if (data) {
+    const rank = data.rank || 99;
+    const src  = animalSrc(rank);
+    const name = animalName(rank);
+    mySchoolBtnAnimal.src = src;
+    mySchoolBtnAnimal.alt = name;
+    mySchoolBtnLabel.textContent = school || "내 대학 정보";
+    modalMyAnimalImg.src = src;
+    modalMySchoolSub.textContent = `현재 ${rank}위 · 누적 ${data.score}점`;
+    modalMyInfoList.innerHTML = `
+      <div class="my-info-row"><strong>누적 점수</strong><span class="my-info-val">${data.score}점</span></div>
+      <div class="my-info-row"><strong>대표 동물</strong><span class="my-info-val">${name}</span></div>
+      <div class="my-info-row"><strong>플레이 횟수</strong><span class="my-info-val">${data.playCount??0}회</span></div>
+      <div class="my-info-row"><strong>순위</strong><span class="my-info-val">${rank}위</span></div>`;
+  } else if (school) {
+    mySchoolBtnLabel.textContent = school;
+    modalMySchoolSub.textContent = "아직 기록이 없어요. 게임을 플레이해 보세요!";
+    modalMyInfoList.innerHTML = `
+      <div class="my-info-row"><strong>누적 점수</strong><span class="my-info-val">0점</span></div>
+      <div class="my-info-row"><strong>대표 동물</strong><span class="my-info-val">병아리</span></div>
+      <div class="my-info-row"><strong>플레이 횟수</strong><span class="my-info-val">0회</span></div>
+      <div class="my-info-row"><strong>안내</strong>
+        <span class="my-info-val" style="font-size:12px;color:#7a6a55;">첫 플레이 후 랭킹에 올라갑니다</span></div>`;
+  }
+}
 
-    function applySchoolToLobby() {
-      const name = localStorage.getItem(STORAGE_SCHOOL);
-      if (name) mySchoolName.textContent = name;
-    }
+async function refreshRankings() {
+  renderRankingsLoading();
+  const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
+  try {
+    const url = school
+      ? `${API_BASE}/api/rankings?limit=30&school=${encodeURIComponent(school)}`
+      : `${API_BASE}/api/rankings?limit=30`;
+    const res  = await fetch(url);
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    rankingData = (data.rankings || []).map(r => ({ university:r.university, score:r.score, animal:r.animal }));
+    renderFullRanking();
+    updateMySchoolPanel(data.mySchool || null);
+  } catch {
+    rankingData = [];
+    renderRankingsLoading();
+  }
+}
 
-    function showLobby() {
-      clearTimeout(storyTimer);
-      introPhaseSchool.classList.add("hidden");
-      introScreen.classList.add("hidden");
-      renderRankingsLoading();
-      lobbyScreen.classList.remove("hidden");
-      applySchoolToLobby();
-      updateGamePlayLinks();
-      renderRandomCheer();
-      requestAnimationFrame(syncGamePanelHeightToLeft);
-      refreshRankingsFromApi();
-    }
+/* ═══════════════════════════════════════════
+   URL 쿼리 유틸
+═══════════════════════════════════════════ */
+function wantsLobby() {
+  const v = (new URLSearchParams(location.search).get("lobby") || "").toLowerCase();
+  return v === "1" || v === "true" || v === "yes";
+}
+function schoolFromQuery() {
+  try { return (new URLSearchParams(location.search).get("school") || "").trim(); } catch { return ""; }
+}
+function stripQuery() {
+  try {
+    const u = new URL(location.href);
+    u.searchParams.delete("lobby"); u.searchParams.delete("school");
+    history.replaceState({}, "", u.pathname + u.search + u.hash || u.pathname);
+  } catch {}
+}
 
-    function confirmSchoolAndEnter() {
-      const name = schoolNameInput.value.trim();
-      if (!name) { alert("학교 이름을 입력해 주세요."); schoolNameInput.focus(); return; }
-      localStorage.setItem(STORAGE_SCHOOL, name);
-      showLobby();
-    }
+const schoolQ = () => {
+  const s = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
+  return s ? `?school=${encodeURIComponent(s)}` : "";
+};
 
-    function showIntroAgain() {
-      lobbyScreen.classList.add("hidden");
-      introScreen.classList.remove("hidden");
-      startStory();
-    }
+/* ═══════════════════════════════════════════
+   이벤트 리스너
+═══════════════════════════════════════════ */
+// 인트로
+startBtn.addEventListener("click", goToStory);
 
-    /* ====== 게임 링크 업데이트 ====== */
-    function updateGamePlayLinks() {
-      const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
-      const q = school ? `?school=${encodeURIComponent(school)}` : "";
-      const gh = document.getElementById("playGradeHunt");
-      const ce = document.getElementById("playClassroomEscape");
-      const cr = document.getElementById("playCrossRoad");
-      const ps = document.getElementById("playProfessorSort");
-      if (gh) gh.setAttribute("href", "games/grade-hunt.html" + q);
-      if (ce) ce.setAttribute("href", "games/classroom-escape.html" + q);
-      if (cr) cr.setAttribute("href", "games/cross_road.html" + q);
-      if (ps) ps.setAttribute("href", "games/professor-cheek-sort.html" + q);
-    }
+prevBtn.addEventListener("click", () => {
+  if (storyIndex > 0) { storyIndex--; renderStory(); }
+});
+nextBtn.addEventListener("click", () => {
+  if (storyIndex < storyLines.length - 1) { storyIndex++; renderStory(); }
+});
+goSchoolBtn.addEventListener("click", goToSchool);
 
-    /* ====== URL 쿼리 유틸 ====== */
-    function wantsLobbyFromQuery() {
-      const v = (new URLSearchParams(window.location.search).get("lobby") || "").toLowerCase();
-      return v === "1" || v === "true" || v === "yes";
-    }
+confirmSchoolBtn.addEventListener("click", confirmSchool);
+schoolNameInput.addEventListener("keydown", e => { if (e.key === "Enter") confirmSchool(); });
+backToStoryBtn2.addEventListener("click", goToStory);
 
-    function stripLobbyQuery() {
-      try {
-        const url = new URL(window.location.href);
-        url.searchParams.delete("lobby");
-        url.searchParams.delete("school");
-        window.history.replaceState({}, "", url.pathname + url.search + url.hash || url.pathname);
-      } catch {}
-    }
+// 로비 오브젝트
+storyBtn.addEventListener("click",   () => backToLanding());
+rankBtn.addEventListener("click",    () => { refreshRankings(); rankingModal.style.display = "flex"; });
+huntBtn.addEventListener("click",    () => { location.href = "games/grade-hunt.html"           + schoolQ(); });
+lionBtn.addEventListener("click",    () => { location.href = "games/cross_road.html"            + schoolQ(); });
+studentBtn.addEventListener("click", () => { location.href = "games/professor-cheek-sort.html" + schoolQ(); });
+gameBtn.addEventListener("click",    () => { location.href = "games/typing-game.html"           + schoolQ(); });
 
-    function schoolFromUrlQuery() {
-      try { return (new URLSearchParams(window.location.search).get("school") || "").trim(); }
-      catch { return ""; }
-    }
+// 모달
+closeRankingBtn.addEventListener("click",  () => { rankingModal.style.display = "none"; });
+rankingModal.addEventListener("click",     e  => { if (e.target === rankingModal)   rankingModal.style.display = "none"; });
+mySchoolBtn.addEventListener("click",      () => { mySchoolModal.style.display = "flex"; });
+closeMySchoolBtn.addEventListener("click", () => { mySchoolModal.style.display = "none"; });
+mySchoolModal.addEventListener("click",    e  => { if (e.target === mySchoolModal) mySchoolModal.style.display = "none"; });
 
-    /* ====== 이벤트 리스너 ====== */
-    fullRankingBtn.addEventListener("click", () => { refreshRankingsFromApi(); rankingModal.style.display = "flex"; });
-    closeRankingBtn.addEventListener("click", () => { rankingModal.style.display = "none"; });
-    rankingModal.addEventListener("click", e => { if (e.target === rankingModal) rankingModal.style.display = "none"; });
-    window.addEventListener("resize", () => { requestAnimationFrame(syncGamePanelHeightToLeft); });
-    enterLobbyBtn.addEventListener("click", openSchoolPhase);
-    skipStoryBtn.addEventListener("click", openSchoolPhase);
-    confirmSchoolBtn.addEventListener("click", confirmSchoolAndEnter);
-    schoolNameInput.addEventListener("keydown", e => { if (e.key === "Enter") confirmSchoolAndEnter(); });
-    backToStoryBtn.addEventListener("click", () => {
-      introPhaseSchool.classList.add("hidden");
-      introPhaseStory.classList.remove("hidden");
-      startStory();
-    });
-    storyReplayBtn.addEventListener("click", showIntroAgain);
+/* ═══════════════════════════════════════════
+   부트스트랩
+═══════════════════════════════════════════ */
+(function bootstrap() {
+  renderRankingsLoading();
 
-    /* ====== 부트스트랩 ====== */
-    function bootstrap() {
-      renderRankingsLoading();
-      renderRandomCheer();
-      requestAnimationFrame(syncGamePanelHeightToLeft);
+  if (wantsLobby()) {
+    const fromUrl = schoolFromQuery();
+    if (fromUrl) { try { localStorage.setItem(STORAGE_SCHOOL, fromUrl); } catch {} }
+    stripQuery();
+    const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
+    if (school) { enterLobby(); }
+    else        { showPhase(phaseSchool); }
+    return;
+  }
 
-      if (wantsLobbyFromQuery()) {
-        const fromUrl = schoolFromUrlQuery();
-        if (fromUrl) { try { localStorage.setItem(STORAGE_SCHOOL, fromUrl); } catch {} }
-        stripLobbyQuery();
-        clearTimeout(storyTimer);
-        const school = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
-        if (school) {
-          showLobby();
-        } else {
-          introScreen.classList.remove("hidden");
-          lobbyScreen.classList.add("hidden");
-          openSchoolPhase();
-        }
-        return;
-      }
-      startStory();
-    }
-
-    bootstrap();
-  </script>
+  // 기본: 랜딩 화면 표시
+  showPhase(phaseLanding);
+})();
+</script>
 </body>
 </html>
