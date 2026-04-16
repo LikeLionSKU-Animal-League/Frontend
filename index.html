@@ -540,7 +540,7 @@
               <h3 class="small-panel-title">🏫 내 대학 정보</h3>
               <div class="my-card-top">
                 <div class="my-animal" id="mySchoolAnimal">
-                  <img class="animal-img" src="./assets/images/a_5.png" alt="대표 동물" />
+                  <img class="animal-img" src="./assets/images/chick_10plus.png" alt="대표 동물" />
                 </div>
                 <div class="my-meta">
                   <h3 id="mySchoolName">성균관대학교</h3>
@@ -641,25 +641,49 @@
 
     /* ====== 동물 매핑 ====== */
     const ANIMAL_NAMES = {
-      "a_1": "사자",
-      "a_2": "말",
-      "a_3": "고양이",
-      "a_4": "다람쥐",
-      "a_5": "앵무새",
-      "chick_10plus": "병아리"
+      lion: "사자",
+      tiger: "호랑이",
+      fox: "여우",
+      dog: "강아지",
+      raccoon: "너구리",
+      cat: "고양이",
+      squirrel: "다람쥐",
+      parrot: "앵무새",
+      hedgehog: "고슴도치",
+      chick: "병아리"
+    };
+
+    const ANIMAL_ASSET_FILES = {
+      lion: "a_1.png",
+      tiger: "rank_2_tiger.png",
+      fox: "rank_3_fox.png",
+      dog: "rank_4_dog.png",
+      raccoon: "rank_5_raccoon.png",
+      cat: "a_3.png",
+      squirrel: "a_4.png",
+      parrot: "a_5.png",
+      hedgehog: "rank_9_hedgehog.png",
+      chick: "chick_10plus.png"
     };
 
     function getAnimalKey(rank) {
-      if (!Number.isFinite(rank) || rank <= 0) return "a_5";
-      if (rank === 1) return "a_1";
-      if (rank === 2) return "a_2";
-      if (rank === 3) return "a_3";
-      if (rank >= 4 && rank <= 6) return "a_4";
-      if (rank >= 7 && rank <= 9) return "a_5";
-      return "chick_10plus";
+      if (!Number.isFinite(rank) || rank <= 0) return "chick";
+      if (rank === 1) return "lion";
+      if (rank === 2) return "tiger";
+      if (rank === 3) return "fox";
+      if (rank === 4) return "dog";
+      if (rank === 5) return "raccoon";
+      if (rank === 6) return "cat";
+      if (rank === 7) return "squirrel";
+      if (rank === 8) return "parrot";
+      if (rank === 9) return "hedgehog";
+      return "chick";
     }
 
-    function getAnimalImgSrc(rank) { return `./assets/images/${getAnimalKey(rank)}.png`; }
+    function getAnimalImgSrc(rank) {
+      const key = getAnimalKey(rank);
+      return `./assets/images/${ANIMAL_ASSET_FILES[key]}`;
+    }
     function getAnimalName(rank)   { return ANIMAL_NAMES[getAnimalKey(rank)]; }
 
     function resolveAnimalName(animalField, rank) {
@@ -676,39 +700,59 @@
 
     /* ====== 응원 멘트 ====== */
     const cheerMessages = {
-      "a_1": [
+      lion: [
         "왕국은 고요하다. 도전자가 없으니, 오늘도 왕좌는 내 것이다.",
         "사자는 뛰지 않는다. 그저 존재만으로도 1등이다.",
         "정상에서 내려다보는 풍경, 다른 학교들은 아직도 올려다보고 있군."
       ],
-      "a_2": [
-        "사자의 숨소리가 들린다. 조금만 더 달리면 왕좌가 보인다!",
-        "2등은 1등의 그림자. 지금이 역전의 순간이다!",
-        "말은 멈추지 않는다. 결승선은 바로 저기!"
+      tiger: [
+        "호랑이는 이미 정상 바로 아래다. 다음 한 판이 왕좌를 가른다!",
+        "강한 발톱으로 순위를 찢어올려라. 1위는 멀지 않다!",
+        "포효할 준비 완료. 지금 점수면 바로 선두 싸움이다."
       ],
-      "a_3": [
-        "3등도 충분히 강하다. 하지만 더 올라갈 수 있어!",
+      fox: [
+        "여우의 한 수면 판세가 뒤집힌다. 영리하게 점수를 쌓아라!",
+        "3위는 시작점일 뿐. 위를 노릴 타이밍이 왔다!",
+        "빠른 판단과 집중력으로 바로 상위권을 흔들어보자."
+      ],
+      dog: [
+        "강아지는 충성심으로 버틴다. 꾸준히 점수를 올려 상위권으로!",
+        "4위는 도약 구간이다. 연승하면 금방 TOP3다!",
+        "집중해서 달리면 바로 역전 가능!"
+      ],
+      raccoon: [
+        "너구리는 기회를 놓치지 않는다. 한 판 집중으로 순위 상승!",
+        "5위는 흐름을 바꾸기 좋은 자리. 지금이 찬스다!",
+        "영리하게 점수를 챙겨 위를 추격해보자."
+      ],
+      cat: [
         "고양이는 조용히, 그러나 반드시 위로 올라간다.",
-        "두 계단만 더. 왕좌가 비어있진 않지만, 도전은 계속된다!"
+        "6위라도 충분히 역전 가능! 침착하게 점수를 쌓자.",
+        "빠른 손놀림으로 상위권 문을 두드려라."
       ],
-      "a_4": [
-        "작은 다람쥐도 도토리를 모으면 겨울을 난다. 점수를 모아라!",
-        "4등은 아직 중간. 위도 아래도 노려볼 수 있는 자리다!",
-        "다람쥐의 발은 빠르다. 지금 바로 뛰어올라!"
+      squirrel: [
+        "다람쥐의 발은 빠르다. 지금 바로 뛰어올라!",
+        "작은 점수도 모이면 큰 차이를 만든다.",
+        "7위에서 한 번 탄력 받으면 순식간에 TOP5!"
       ],
-      "a_5": [
-        "앵무새는 말만 잘한다고? 이번엔 점수로 증명할 차례!",
-        "꼴찌도 게임 한 판이면 역전이 가능하다. 지금 당장 시작해!",
-        "날개가 있으면 날아야지. 순위는 지금부터 올라간다!"
+      parrot: [
+        "앵무새는 말보다 점수로 증명한다. 지금이 기회다!",
+        "8위에서 시작해도 충분히 올라간다. 바로 플레이!",
+        "날개를 펼쳐 순위를 끌어올려보자."
       ],
-      "chick_10plus": [
+      hedgehog: [
+        "고슴도치도 집중하면 강하다. 차근차근 점수를 쌓아보자!",
+        "9위는 반등 직전 구간. 한 판으로 분위기 전환 가능!",
+        "단단하게 버티고 정확하게 플레이하면 올라간다."
+      ],
+      chick: [
         "병아리라고 얕보지 마! 한 판만 잘하면 바로 순위가 오른다.",
-        "첫걸음이 가장 중요해. 지금 점수를 모아 다람쥐 구간까지 올라가자!",
+        "첫걸음이 가장 중요해. 지금 점수를 모아 중위권까지 올라가자!",
         "작지만 빠르게 성장한다! 10위권 탈출은 지금부터 시작이다."
       ]
     };
 
-    let myCurrentAnimalKey = "a_5";
+    let myCurrentAnimalKey = "chick";
 
     /* ====== 상수·설정 ====== */
     const STORAGE_SCHOOL = "animalLeagueSchool";
@@ -834,18 +878,19 @@
     }
 
     function renderRandomCheer(animalKey) {
-      const key      = animalKey || myCurrentAnimalKey || "a_5";
-      const messages = cheerMessages[key] || cheerMessages["a_5"];
+      const key      = animalKey || myCurrentAnimalKey || "chick";
+      const messages = cheerMessages[key] || cheerMessages.chick;
       const text     = messages[Math.floor(Math.random() * messages.length)];
-      const src      = `./assets/images/${key}.png`;
+      const src      = `./assets/images/${ANIMAL_ASSET_FILES[key]}`;
       const name     = ANIMAL_NAMES[key];
       cheerEmoji.innerHTML  = animalImg(src, name);
       cheerText.textContent = text;
     }
 
     function setMySchoolAnimalImg(rank) {
-      const src = getAnimalImgSrc(rank || 99);
-      mySchoolAnimal.innerHTML = animalImg(src, getAnimalName(rank || 99));
+      const safeRank = Number.isFinite(rank) ? rank : 99;
+      const src = getAnimalImgSrc(safeRank);
+      mySchoolAnimal.innerHTML = animalImg(src, getAnimalName(safeRank));
     }
 
     function setMySchoolPanelDemo() {
@@ -898,7 +943,7 @@
           mySchoolSub.textContent = "아직 이 학교의 기록이 없어요. 게임을 플레이해 보세요!";
           mySchoolInfoList.innerHTML = `
             <div class="info-item"><strong>누적 점수</strong> · 0점</div>
-            <div class="info-item"><strong>대표 동물</strong> · 앵무새</div>
+            <div class="info-item"><strong>대표 동물</strong> · 병아리</div>
             <div class="info-item"><strong>플레이 횟수</strong> · 0회</div>
             <div class="info-item"><strong>안내</strong> · 첫 플레이 후 랭킹에 올라갑니다</div>
           `;
