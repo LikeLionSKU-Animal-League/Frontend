@@ -259,15 +259,14 @@
         width: 636.84px; min-width: 636.84px; max-width: 636.84px;
         height: auto; min-height: unset; max-height: unset;
       }
-      /* ★ 카드 4개 기준 높이 축소 */
       .game-grid {
         grid-template-columns: repeat(2, 284.42px);
-        grid-auto-rows: 230px;
+        grid-template-rows: repeat(2, minmax(0, 1fr));
         justify-content: center;
       }
       .game-card {
         width: 284.42px; min-width: 284.42px; max-width: 284.42px;
-        height: 230px; min-height: 230px; max-height: 230px;
+        height: 100%; min-height: 0; max-height: unset;
       }
     }
 
@@ -333,33 +332,20 @@
     .cheer-text  { font-size: 14px; line-height: 1.75; color: #5a4020; word-break: keep-all; }
     .mini-note   { font-size: 11px; color: #9a8a60; margin-top: 10px; }
 
-    /* ★ 게임 그리드 여백 축소 */
     .game-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, minmax(0, 1fr));
       gap: 10px;
       position: relative;
       z-index: 1;
       height: 100%;
       flex: 1;
       min-height: 0;
-      align-content: start;
-      overflow-y: auto;
-      padding-right: 6px;
-      margin-right: -2px;
-      scrollbar-width: thin;
-      scrollbar-color: #c9a96e #f0e6cc;
-      overscroll-behavior: contain;
-    }
-    .game-grid::-webkit-scrollbar { width: 9px; }
-    .game-grid::-webkit-scrollbar-track { background: #f0e6cc; border-radius: 999px; }
-    .game-grid::-webkit-scrollbar-thumb {
-      background: linear-gradient(180deg, #c9a96e, #b08a4a);
-      border-radius: 999px;
-      border: 2px solid #f0e6cc;
+      align-content: stretch;
+      overflow: hidden;
     }
 
-    /* ★ 카드 패딩·폰트 축소 */
     .game-card {
       border-radius: 16px;
       padding: 10px 12px;
@@ -367,11 +353,14 @@
       border: 2px solid #e0d3b0;
       text-align: left;
       transition: transform 0.15s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
     .game-card:hover { transform: translateY(-3px); }
     .game-emoji  { font-size: 24px; margin-bottom: 3px; }
     .game-card h3 { margin: 0 0 3px; font-size: 14px; color: #4a3728; }
-    .game-card p  { margin: 0 0 8px; font-size: 11px; color: #7a6a55; line-height: 1.4; }
+    .game-card p  { margin: 0 0 8px; font-size: 11px; color: #7a6a55; line-height: 1.4; flex: 1; }
 
     .play-btn {
       display: inline-block;
@@ -442,7 +431,7 @@
     }
 
     @media (max-width: 980px) {
-      .game-grid { grid-template-columns: 1fr; overflow-y: visible; padding-right: 0; margin-right: 0; }
+      .game-grid { grid-template-columns: 1fr; grid-template-rows: auto; overflow: visible; }
       #introText { font-size: 18px; }
     }
 
@@ -656,27 +645,28 @@
       "a_2": "말",
       "a_3": "고양이",
       "a_4": "다람쥐",
-      "a_5": "앵무새"
+      "a_5": "앵무새",
+      "chick_10plus": "병아리"
     };
 
     function getAnimalKey(rank) {
+      if (!Number.isFinite(rank) || rank <= 0) return "a_5";
       if (rank === 1) return "a_1";
       if (rank === 2) return "a_2";
       if (rank === 3) return "a_3";
-      if (rank === 4) return "a_4";
-      return "a_5";
+      if (rank >= 4 && rank <= 6) return "a_4";
+      if (rank >= 7 && rank <= 9) return "a_5";
+      return "chick_10plus";
     }
 
     function getAnimalImgSrc(rank) { return `./assets/images/${getAnimalKey(rank)}.png`; }
     function getAnimalName(rank)   { return ANIMAL_NAMES[getAnimalKey(rank)]; }
 
     function resolveAnimalName(animalField, rank) {
-      if (animalField && ANIMAL_NAMES[animalField]) return ANIMAL_NAMES[animalField];
       return getAnimalName(rank);
     }
 
     function resolveAnimalImgSrc(animalField, rank) {
-      if (animalField && ANIMAL_NAMES[animalField]) return `./assets/images/${animalField}.png`;
       return getAnimalImgSrc(rank);
     }
 
@@ -710,6 +700,11 @@
         "앵무새는 말만 잘한다고? 이번엔 점수로 증명할 차례!",
         "꼴찌도 게임 한 판이면 역전이 가능하다. 지금 당장 시작해!",
         "날개가 있으면 날아야지. 순위는 지금부터 올라간다!"
+      ],
+      "chick_10plus": [
+        "병아리라고 얕보지 마! 한 판만 잘하면 바로 순위가 오른다.",
+        "첫걸음이 가장 중요해. 지금 점수를 모아 다람쥐 구간까지 올라가자!",
+        "작지만 빠르게 성장한다! 10위권 탈출은 지금부터 시작이다."
       ]
     };
 
@@ -840,7 +835,7 @@
 
     function renderRandomCheer(animalKey) {
       const key      = animalKey || myCurrentAnimalKey || "a_5";
-      const messages = cheerMessages[key];
+      const messages = cheerMessages[key] || cheerMessages["a_5"];
       const text     = messages[Math.floor(Math.random() * messages.length)];
       const src      = `./assets/images/${key}.png`;
       const name     = ANIMAL_NAMES[key];
@@ -854,7 +849,7 @@
     }
 
     function setMySchoolPanelDemo() {
-      setMySchoolAnimalImg(99);
+      setMySchoolAnimalImg(0);
       mySchoolSub.textContent = "서버에 연결되면 실시간 순위가 표시됩니다.";
       mySchoolInfoList.innerHTML = `
         <div class="info-item"><strong>누적 점수</strong> · —</div>
@@ -899,7 +894,7 @@
           myCurrentAnimalKey = getAnimalKey(myRank);
           renderRandomCheer(myCurrentAnimalKey);
         } else if (school) {
-          setMySchoolAnimalImg(99);
+          setMySchoolAnimalImg(0);
           mySchoolSub.textContent = "아직 이 학교의 기록이 없어요. 게임을 플레이해 보세요!";
           mySchoolInfoList.innerHTML = `
             <div class="info-item"><strong>누적 점수</strong> · 0점</div>
