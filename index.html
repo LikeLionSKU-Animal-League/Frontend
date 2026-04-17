@@ -325,60 +325,89 @@
     .map-item-wrap.logo-wrap { cursor: default; }
 
     /* 위치 */
-    .logo-wrap    { top: 2%;  left: 2%;    width: 18%; }
+    .logo-wrap { 
+      top: 2%;
+      left: 2%;
+      width: 18%;
+    }
 
     /* 날짜·시간 */
     #lobbyClockWrap {
-      position: absolute;
-      top: calc(2% + 9vw + 6px);
-      left: 2%;
-      width: 18%;
-      z-index: 10;
-      text-align: center;
-    }
-    #lobbyClock {
-      display: inline-block;
-      background: rgba(245, 238, 220, 0.90);
-      border: 2px solid #c9a96e;
-      border-radius: 12px;
-      padding: 5px 12px;
-      font-family: 'NeoDunggeunmo', sans-serif;
-      font-size: clamp(9px, 1.1vw, 13px);
-      font-weight: 700;
-      color: #4a3728;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.12);
-      backdrop-filter: blur(4px);
-      line-height: 1.65;
-      white-space: nowrap;
-      letter-spacing: 0.02em;
-    }
-    .rank-wrap    { top: 26%; left: 13%;   width: 20%; }
+  position: absolute;
+  top: calc(2% + 10vw + 2px);
+  left: 2%;
+  width: 18%;
+  z-index: 10;
+  text-align: center;   /* left → center */
+  pointer-events: none;
+}
 
+#lobbyClock {
+  display: block;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  font-family: 'NeoDunggeunmo', sans-serif;
+  font-size: clamp(16px, 1.8vw, 28px);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  white-space: normal;
+  text-align: center;   /* left → center */
+  text-shadow:
+    2px 2px 0 rgba(0,0,0,0.28),
+    0 0 6px rgba(0,0,0,0.18);
+}
+
+    .rank-wrap {
+  top: 26%;
+  left: 20.7%;   /* ⭐ 21 → 20.7 (거의 픽셀급 이동) */
+  width: 20%;
+}
+    
     /* 단상 위 1·2·3등 오버레이 */
     .podium-overlay {
-      position: absolute;
-      bottom: 100%;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-around;
-      align-items: flex-end;
-      padding-bottom: 2px;
-      pointer-events: none;
-    }
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 60%;   /* ⭐ 56 → 60 (조금 더 위) */
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  pointer-events: none;
+  gap: 3.5%;
+}
 
-    .podium-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      flex: 1;
-    }
+/* 공통 */
+.podium-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
 
-    /* 순서: 2등(좌) 1등(중앙) 3등(우) */
-    .podium-card.p1 { order: 2; transform: translateY(-6px); }
-    .podium-card.p2 { order: 1; }
-    .podium-card.p3 { order: 3; }
+/* ⭐ 각 카드도 살짝 더 위 */
+.podium-card.p1 {
+  order: 2;
+  transform: translateY(-42px);   /* 🔥 더 위로 (-28 → -32) */
+}
+
+.podium-card.p2 {
+  order: 2;
+  transform: translateY(-12px);        /* 🔥 더 위로 (-24 → -28) */
+}
+
+.podium-card.p3 {
+  order: 3;
+  transform: translate(-2px, -2px);  /* 🔥 더 아래로 (-4 → -1) */
+}
 
     .podium-medal-icon {
       font-size: clamp(10px, 1.4vw, 18px);
@@ -386,11 +415,11 @@
     }
 
     .podium-animal-img {
-      width: clamp(20px, 3vw, 40px);
-      height: clamp(20px, 3vw, 40px);
-      object-fit: contain;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
-    }
+  width: clamp(32px, 4.5vw, 64px);   /* ⭐ 확실히 커짐 */
+  height: clamp(32px, 4.5vw, 64px);
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
+}
 
     .podium-uni-name {
       background: rgba(245, 238, 220, 0.92);
@@ -410,11 +439,20 @@
     }
 
     .podium-uni-name.empty { opacity: 0.4; }
-    .house-wrap   { top: 14%; left: 41%;   width: 18%; }
-    .student-wrap { top: 14%; left: 67.5%; width: 20%; }
-    .hunt-wrap    { top: 52%; left: 19%;   width: 18%; }
-    .lion-wrap    { top: 50%; left: 49%;   width: 12%; }
-    .game-wrap    { top: 58%; left: 72.5%; width: 16.5%; }
+
+    .house-wrap   { top: 16%;   left: 42.7%; width: 18%; }
+    .student-wrap { top: 19%;   left: 66.2%; width: 14%; }
+    .hunt-wrap    { top: 58.5%; left: 29%;   width: 10%; }
+.lion-wrap {
+  top: 52.5%;   /* ⭐ 51.5 → 52.5 (살짝 아래) */
+  left: 51.4%;
+  width: 8%;
+}
+    .game-wrap {
+  top: 65%;     /* ⭐ 아래로 이동 (54.5 → 56) */
+  left: 70%;
+  width: 14%; /* ⭐ 크기 증가 (11.5 → 12.5) */
+}
 
     /* 이미지 */
     .map-item {
@@ -509,25 +547,25 @@
 
     /* 화면 오른쪽 끝 아이템은 말풍선을 왼쪽으로 */
     .student-wrap .map-tooltip,
-    .game-wrap    .map-tooltip {
+    .game-wrap .map-tooltip {
       left: auto;
       right: 0;
       transform: translateX(0) translateY(6px);
     }
     .student-wrap .map-tooltip::after,
-    .game-wrap    .map-tooltip::after {
+    .game-wrap .map-tooltip::after {
       left: auto;
       right: 20px;
       transform: none;
     }
     .student-wrap .map-tooltip::before,
-    .game-wrap    .map-tooltip::before {
+    .game-wrap .map-tooltip::before {
       left: auto;
       right: 21px;
       transform: none;
     }
     .student-wrap:hover .map-tooltip,
-    .game-wrap:hover    .map-tooltip {
+    .game-wrap:hover .map-tooltip {
       opacity: 1;
       transform: translateX(0) translateY(0);
     }
@@ -675,13 +713,24 @@
        반응형
     ═══════════════════════════════════════════ */
     @media (max-width: 900px) {
-      .logo-wrap    { width: 24%; }
-      .rank-wrap    { width: 24%; left: 10%; }
-      .house-wrap   { width: 21%; left: 39%; }
-      .student-wrap { width: 24%; left: 65%; }
-      .hunt-wrap    { width: 22%; left: 16%; }
-      .lion-wrap    { width: 15%; left: 47%; }
-      .game-wrap    { width: 20%; left: 69%; }
+      .logo-wrap { width: 24%; }
+
+      #lobbyClockWrap {
+        top: calc(2% + 13vw + 2px);
+        width: 24%;
+      }
+
+      #lobbyClock {
+        font-size: clamp(12px, 2vw, 20px);
+        line-height: 1.3;
+      }
+
+      .rank-wrap    { width: 24%; left: 11.5%; top: 27%; }
+      .house-wrap   { width: 21%; left: 40.8%; top: 15%; }
+      .student-wrap { width: 20%; left: 65.2%; top: 15.5%; }
+      .hunt-wrap    { width: 18%; left: 21.5%; top: 57%; }
+      .lion-wrap    { width: 12%; left: 50.8%; top: 55.5%; }
+      .game-wrap    { width: 17%; left: 72.5%; top: 56%; }
     }
 
     @media (max-width: 640px) {
@@ -784,6 +833,7 @@
         <div class="map-tooltip-title">🏆 현재 랭킹</div>
         <div class="map-tooltip-desc">지금까지의 대학 순위를 확인하세요!</div>
       </div>
+
       <!-- 1·2·3등 오버레이 -->
       <div class="podium-overlay" id="podiumOverlay">
         <div class="podium-card p2" id="podiumCard2">
@@ -802,7 +852,7 @@
           <div class="podium-uni-name empty" id="podiumUni3">—</div>
         </div>
       </div>
-      <img src="./assets/images/home/rank.png" alt="현재 랭킹" class="map-item" />
+      <img src="./assets/images/home/rank_1.png" alt="현재 랭킹" class="map-item" />
     </div>
 
     <!-- 집 / 스토리 다시보기 -->
@@ -811,7 +861,7 @@
         <div class="map-tooltip-title">📖 스토리 다시보기</div>
         <div class="map-tooltip-desc">애니멀 리그의 이야기를 다시 읽어보세요.</div>
       </div>
-      <img src="./assets/images/home/house.png" alt="스토리 다시보기" class="map-item" />
+      <img src="./assets/images/home/house_1.png" alt="스토리 다시보기" class="map-item" />
     </div>
 
     <!-- 교수+학생 -->
@@ -847,7 +897,7 @@
         <div class="map-tooltip-title">⌨️ 타자 연습</div>
         <div class="map-tooltip-desc">빠르고 정확하게 타이핑해서 점수를 올리세요!</div>
       </div>
-      <img src="./assets/images/home/game.png" alt="타자 연습" class="map-item" />
+      <img src="./assets/images/home/game_1.png" alt="타자 연습" class="map-item" />
     </div>
 
     <button id="mySchoolBtn">
@@ -905,10 +955,10 @@
 <script>
 const storyLines = [
   "어느 날, 동물의 왕국에 여러 대학을 대표하는 동물들이 모였다.",
-  "각 대학의 동물들은 자신의 학교를 대표하여\n가장 강한 호랑이가 되기 위한 도전을 시작한다.",
+  "각 대학의 동물들은 자신의 학교를 대표하여\n가장 강하고 멋진 사자가 되기 위한 도전을 시작한다.",
   "동물들은 다양한 미니게임을 수행하며 점수를 얻고,",
   "게임이 끝난 뒤 점수 순위에 따라\n점점 강한 동물로 진화하게 된다.",
-  "가장 높은 점수를 얻은 학교는 동물의 왕인\n'호랑이'가 되어 최고의 학교로 인정받는다.",
+  "가장 높은 점수를 얻은 학교는 동물의 왕인\n'사자'가 되어 최고의 학교로 인정받는다.",
   "이렇게 동물들의 대학 대항전이 시작된다."
 ];
 
@@ -1166,18 +1216,16 @@ mySchoolModal.addEventListener("click",    e  => { if (e.target === mySchoolModa
    날짜 · 시간 시계
 ═══════════════════════════════════════════ */
 const clockEl = document.getElementById("lobbyClock");
-const DAYS_KO = ["일","월","화","수","목","금","토"];
 
 function updateClock() {
   const now = new Date();
   const yyyy = now.getFullYear();
   const mm   = String(now.getMonth() + 1).padStart(2, "0");
   const dd   = String(now.getDate()).padStart(2, "0");
-  const day  = DAYS_KO[now.getDay()];
   const hh   = String(now.getHours()).padStart(2, "0");
   const mi   = String(now.getMinutes()).padStart(2, "0");
-  const ss   = String(now.getSeconds()).padStart(2, "0");
-  clockEl.innerHTML = `${yyyy}.${mm}.${dd} (${day})<br>${hh}:${mi}:${ss}`;
+
+  clockEl.innerHTML = `${yyyy}년 ${mm}월 ${dd}일<br>${hh}:${mi}`;
 }
 
 updateClock();
