@@ -404,14 +404,26 @@
       -webkit-user-drag: none;
     }
     .balloon-float img {
-      width: 80px;
-      display: block;
-      image-rendering: pixelated;
-      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.18));
-    }
-    .balloon-1 { top: 6%;  animation: balloonFly1 55s linear infinite; }
-    .balloon-2 { top: 13%; animation: balloonFly2 70s linear infinite; animation-delay: -30s; }
-    .balloon-3 { top: 9%;  animation: balloonFly1 63s linear infinite; animation-delay: -15s; }
+  width: clamp(40px, 6vw, 80px);  /* ⭐ 반응형 */
+}
+
+/* ⭐ 위치 완전 분리 */
+.balloon-1 {
+  top: 5%;
+  animation: balloonFly1 60s linear infinite;
+}
+
+.balloon-2 {
+  top: 20%;
+  animation: balloonFly2 75s linear infinite;
+  animation-delay: -20s;
+}
+
+.balloon-3 {
+  top: 35%;
+  animation: balloonFly1 65s linear infinite;
+  animation-delay: -40s;
+}
 
     @keyframes balloonFly1 {
       0%   { transform: translateX(-120px) translateY(0px); }
@@ -478,7 +490,7 @@
 
     .house-wrap   { top: 19%;   left: 47.7%; width: 12%; }
     .student-wrap { top: 20%;   left: 63.2%; width: 17%; }
-    .hunt-wrap    { top: 58.5%; left: 27%;   width: 12%; }
+    .hunt-wrap    { top: 55.5%; left: 25%;   width: 15%; }
 .lion-wrap {
   top: 53.5%;   /* ⭐ 51.5 → 52.5 (살짝 아래) */
   left: 52.4%;
@@ -608,24 +620,34 @@
 
     /* 내 대학 정보 버튼 */
     #mySchoolBtn {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      z-index: 20;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 16px;
-      border-radius: 999px;
-      font-size: 14px;
-      font-weight: 900;
-      color: #4a3728;
-      background: rgba(245, 238, 220, 0.92);
-      border: 3px solid #c9a96e;
-      box-shadow: 0 4px 0 #b08a4a, 0 6px 16px rgba(0,0,0,0.18);
-      backdrop-filter: blur(6px);
-      transition: transform 0.12s ease, box-shadow 0.12s ease;
-    }
+  position: absolute;
+  top: 3%;
+  right: 3%;
+
+  padding: 6px 10px;   /* ⭐ 줄이기 */
+  border-radius: 12px;
+
+  font-size: 12px;
+  font-weight: 900;
+
+  color: #4a3728;
+  background: rgba(245, 238, 220, 0.85);  /* ⭐ 더 연하게 */
+  border: 2px solid #c9a96e;
+
+  box-shadow: 0 3px 0 #b08a4a;
+  
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  backdrop-filter: blur(2px);
+}
+
+/* ⭐ 호버 과한거 제거 */
+#mySchoolBtn:hover {
+  transform: translateY(-1px);
+}
+
     #mySchoolBtn:hover  { transform: translateY(-2px); box-shadow: 0 6px 0 #b08a4a, 0 8px 20px rgba(0,0,0,0.20); }
     #mySchoolBtn:active { transform: translateY(2px);  box-shadow: 0 2px 0 #b08a4a; }
     .my-school-btn-animal { width: 28px; height: 28px; object-fit: contain; }
@@ -955,7 +977,7 @@
         <div class="map-tooltip-desc">짧은 시간 안에 높은 학점을 많이 잡고,<br>함정 학점은 피하세요!</div>
         <button id="goHuntConfirmBtn" class="tooltip-go-btn">게임 시작하기 →</button>
       </div>
-      <img src="./assets/images/home/hunt.png" alt="학점 사냥" class="map-item" />
+      <img src="./assets/images/home/hunt_1.png" alt="학점 사냥" class="map-item" />
     </div>
 
     <!-- 사자+다리 / 사자 건너기 -->
