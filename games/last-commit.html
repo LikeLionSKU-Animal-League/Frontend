@@ -152,6 +152,69 @@
       text-shadow: 0 0 12px rgba(255, 123, 123, 0.5);
     }
 
+    /* ---- stage transition ---- */
+    .stage-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(26, 27, 38, 0.92);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      border-radius: 15px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .stage-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .stage-overlay .stage-num {
+      font-size: 48px;
+      font-weight: 900;
+      color: #7aa2f7;
+      font-family: "neodgm", monospace;
+      text-shadow: 0 0 20px rgba(122, 162, 247, 0.6);
+      animation: stagePop 0.5s ease-out;
+    }
+    .stage-overlay .stage-desc {
+      font-size: 14px;
+      color: #9aa5ce;
+      font-family: "neodgm", monospace;
+      margin-top: 8px;
+    }
+    @keyframes stagePop {
+      0%   { transform: scale(0.3); opacity: 0; }
+      60%  { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    /* ---- timer bar ---- */
+    .timer-bar {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 6px;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      z-index: 8;
+      border-radius: 0 18px 18px 0;
+      overflow: hidden;
+    }
+    .timer-bar-fill {
+      width: 100%;
+      height: 100%;
+      background: #e53e3e;
+      transition: height 1s linear;
+      border-radius: 0 0 18px 0;
+    }
+    .timer-bar-fill.urgent {
+      background: #ff4d4d;
+      box-shadow: 0 0 10px rgba(255, 77, 77, 0.6), inset 0 0 6px rgba(255, 120, 120, 0.4);
+    }
+
     /* decorative emoji */
     .deco {
       position: absolute;
@@ -603,6 +666,7 @@
       </div>
 
       <div id="gameArea">
+        <div class="timer-bar"><div class="timer-bar-fill" id="timerBarFill"></div></div>
         <div class="file-tab-bar">
           <div class="file-tab" id="fileTab">MainService.java</div>
           <div class="progress-label" id="progressLabel">0 / 0</div>
@@ -625,6 +689,10 @@
           </div>
         </div>
         <div class="combo-banner" id="comboBanner">COMBO x0</div>
+        <div class="stage-overlay" id="stageOverlay">
+          <div class="stage-num" id="stageNum">STAGE 1</div>
+          <div class="stage-desc" id="stageDesc">어노테이션 & SQL 키워드</div>
+        </div>
         <div class="mobile-hint">화면을 터치하면 키보드가 나타납니다</div>
         <textarea id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
       </div>
@@ -644,7 +712,7 @@
         <span>정확도 <strong id="statAccuracy">0%</strong></span>
         <span>CPM <strong id="statCpm">0</strong></span>
       </div>
-      <p id="overlayDesc">배포 마감 60초 전!<br>화면에 나오는 Java, Spring, SQL 코드를<br>빠르고 정확하게 타이핑하세요!</p>
+      <p id="overlayDesc">3단계로 난이도가 올라갑니다!<br>각 단계마다 30초 안에 10개의 코드를 타이핑하세요.<br>SQL 쿼리는 대소문자 구분 없이 입력 가능!</p>
       <div class="overlay-actions">
         <button type="button" id="overlayActionBtn">코딩 시작!</button>
         <button type="button" id="overlayLobbyBtn" class="hidden" onclick="goToLobby()">로비로</button>
@@ -785,44 +853,73 @@
     }
 
     /* ═══════════════════════════════════════════
-       스니펫 데이터
+       스니펫 데이터 (3단계)
     ═══════════════════════════════════════════ */
-    const SNIPPETS = [
-      // Tier 1 - Short
-      { text: "@RestController", file: "UserController.java" },
-      { text: "@Autowired", file: "UserService.java" },
-      { text: '@RequestMapping("/api")', file: "ApiController.java" },
-      { text: "SELECT * FROM users;", file: "query.sql" },
-      { text: "@Transactional", file: "OrderService.java" },
-      { text: "DROP TABLE IF EXISTS temp;", file: "cleanup.sql" },
-      { text: "private int count = 0;", file: "Counter.java" },
-      { text: "return ResponseEntity.ok();", file: "ApiController.java" },
-      { text: "@Override", file: "UserServiceImpl.java" },
-      { text: "INSERT INTO logs VALUES(1);", file: "init.sql" },
+    const STAGE_TIME = 30;  // 각 스테이지 30초
+    const STAGE_GOAL = 5;   // 각 스테이지 5개
 
-      // Tier 2 - Medium
-      { text: '@GetMapping("/users/{id}")', file: "UserController.java" },
-      { text: "public List<User> findAll() {", file: "UserRepository.java" },
-      { text: "SELECT name, email FROM students WHERE grade = 'A';", file: "report.sql" },
-      { text: "@Service\npublic class UserService {", file: "UserService.java" },
-      { text: "private final UserRepository repo;", file: "UserService.java" },
-      { text: "UPDATE orders SET status = 'DONE' WHERE id = ?;", file: "order.sql" },
-      { text: 'throw new RuntimeException("Not found");', file: "UserService.java" },
-      { text: "return userRepository.findById(id);", file: "UserService.java" },
-      { text: "CREATE TABLE users (id BIGINT PRIMARY KEY);", file: "schema.sql" },
-      { text: '@PostMapping("/register")', file: "AuthController.java" },
+    const STAGE_SNIPPETS = [
+      // ── Stage 1: 짧은 어노테이션 + 간단 SQL 키워드 ──
+      [
+        { text: "@Override", file: "Service.java" },
+        { text: "@Bean", file: "Config.java" },
+        { text: "@Entity", file: "User.java" },
+        { text: "@Service", file: "UserService.java" },
+        { text: "@Column", file: "User.java" },
+        { text: "@Id", file: "User.java" },
+        { text: "@Table", file: "Order.java" },
+        { text: "@Lazy", file: "Config.java" },
+        { text: "@Valid", file: "Controller.java" },
+        { text: "@Getter", file: "User.java" },
+        { text: "@Setter", file: "User.java" },
+        { text: "@Mapper", file: "UserMapper.java" },
+        { text: "@Autowired", file: "UserService.java" },
+        { text: "SELECT *", file: "query.sql", ignoreCase: true },
+        { text: "DROP TABLE", file: "cleanup.sql", ignoreCase: true },
+        { text: "INSERT INTO", file: "init.sql", ignoreCase: true },
+        { text: "UPDATE SET", file: "update.sql", ignoreCase: true },
+        { text: "DELETE FROM", file: "cleanup.sql", ignoreCase: true },
+        { text: "ORDER BY", file: "query.sql", ignoreCase: true },
+        { text: "GROUP BY", file: "report.sql", ignoreCase: true },
+      ],
 
-      // Tier 3 - Long
-      { text: "public ResponseEntity<User> getUser(@PathVariable Long id) {", file: "UserController.java" },
-      { text: "SELECT o.id, u.name FROM orders o JOIN users u ON o.user_id = u.id;", file: "report.sql" },
-      { text: "@Bean\npublic PasswordEncoder passwordEncoder() {\n    return new BCryptPasswordEncoder();\n}", file: "SecurityConfig.java" },
-      { text: "if (bindingResult.hasErrors()) {\n    return ResponseEntity.badRequest().build();\n}", file: "UserController.java" },
-      { text: "ALTER TABLE products ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;", file: "migration.sql" },
-      { text: '@Query("SELECT u FROM User u WHERE u.email = :email")', file: "UserRepository.java" },
-      { text: "spring.datasource.url=jdbc:mysql://localhost:3306/mydb", file: "application.properties" },
-      { text: "public UserDto toDto(User user) {\n    return new UserDto(user.getId(), user.getName());\n}", file: "UserMapper.java" },
-      { text: "DELETE FROM sessions WHERE expires_at < NOW() AND active = false;", file: "cleanup.sql" },
-      { text: "@EnableWebSecurity\npublic class SecurityConfig extends WebSecurityConfigurerAdapter {", file: "SecurityConfig.java" },
+      // ── Stage 2: 짧은 코드 (1~2줄) ──
+      [
+        { text: "@Transactional", file: "OrderService.java" },
+        { text: '@RequestMapping("/api")', file: "ApiController.java" },
+        { text: "private int count = 0;", file: "Counter.java" },
+        { text: "return ResponseEntity.ok();", file: "ApiController.java" },
+        { text: '@GetMapping("/users/{id}")', file: "UserController.java" },
+        { text: '@PostMapping("/register")', file: "AuthController.java" },
+        { text: "private final UserRepository repo;", file: "UserService.java" },
+        { text: "return userRepository.findById(id);", file: "UserService.java" },
+        { text: 'throw new RuntimeException("Not found");', file: "UserService.java" },
+        { text: "public List<User> findAll() {", file: "UserRepository.java" },
+        { text: "SELECT * FROM users;", file: "query.sql", ignoreCase: true },
+        { text: "INSERT INTO logs VALUES(1);", file: "init.sql", ignoreCase: true },
+        { text: "DROP TABLE IF EXISTS temp;", file: "cleanup.sql", ignoreCase: true },
+        { text: "UPDATE orders SET status = 'DONE';", file: "order.sql", ignoreCase: true },
+        { text: "@RestController\npublic class ApiController {", file: "ApiController.java" },
+      ],
+
+      // ── Stage 3: 중간 길이 코드 ──
+      [
+        { text: "CREATE TABLE users (id BIGINT PRIMARY KEY);", file: "schema.sql", ignoreCase: true },
+        { text: "SELECT name, email FROM students WHERE grade = 'A';", file: "report.sql", ignoreCase: true },
+        { text: "public ResponseEntity<User> getUser(@PathVariable Long id) {", file: "UserController.java" },
+        { text: "SELECT o.id, u.name FROM orders o JOIN users u ON o.user_id = u.id;", file: "report.sql", ignoreCase: true },
+        { text: '@Query("SELECT u FROM User u WHERE u.email = :email")', file: "UserRepository.java" },
+        { text: "spring.datasource.url=jdbc:mysql://localhost:3306/mydb", file: "application.properties" },
+        { text: "ALTER TABLE products ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;", file: "migration.sql", ignoreCase: true },
+        { text: "DELETE FROM sessions WHERE expires_at < NOW() AND active = false;", file: "cleanup.sql", ignoreCase: true },
+        { text: "@Service\npublic class UserService {", file: "UserService.java" },
+        { text: "UPDATE orders SET status = 'DONE' WHERE id = ?;", file: "order.sql", ignoreCase: true },
+        { text: "if (bindingResult.hasErrors()) {\n    return ResponseEntity.badRequest().build();\n}", file: "UserController.java" },
+        { text: "public UserDto toDto(User user) {\n    return new UserDto(user.getId(), user.getName());\n}", file: "UserMapper.java" },
+        { text: "@Bean\npublic PasswordEncoder passwordEncoder() {\n    return new BCryptPasswordEncoder();\n}", file: "SecurityConfig.java" },
+        { text: "@EnableWebSecurity\npublic class SecurityConfig extends WebSecurityConfigurerAdapter {", file: "SecurityConfig.java" },
+        { text: "private final PasswordEncoder encoder;\nprivate final UserRepository userRepo;", file: "AuthService.java" },
+      ],
     ];
 
     /* ═══════════════════════════════════════════
@@ -841,6 +938,7 @@
     const comboBanner       = document.getElementById("comboBanner");
     const hiddenInput   = document.getElementById("hiddenInput");
     const gameArea      = document.getElementById("gameArea");
+    const timerBarFill  = document.getElementById("timerBarFill");
 
     const overlay          = document.getElementById("overlay");
     const overlayTitle     = document.getElementById("overlayTitle");
@@ -855,7 +953,7 @@
     ═══════════════════════════════════════════ */
     let gameActive = false;
     let timerInterval = null;
-    let timeLeft = 60;
+    let timeLeft = STAGE_TIME;
     let score = 0;
     let totalKeys = 0;
     let correctKeys = 0;
@@ -865,10 +963,13 @@
     let completedCount = 0;
     let currentTarget = "";
     let currentTyped = "";
+    let currentIgnoreCase = false;
     let snippetCorrectKeys = 0;
     let snippetTotalKeys = 0;
     let snippetStartTime = 0;
     let warningPlayed = false;
+    let currentStage = 0;
+    let stageSnippetCount = 0;
 
     /* ═══════════════════════════════════════════
        유틸
@@ -964,7 +1065,9 @@
       // --- 내 입력 (아래) ---
       let inputHtml = "";
       for (let i = 0; i < typed.length; i++) {
-        const isCorrect = i < target.length && typed[i] === target[i];
+        const isCorrect = i < target.length && (currentIgnoreCase
+          ? typed[i].toLowerCase() === target[i].toLowerCase()
+          : typed[i] === target[i]);
         const cls = "char" + (isCorrect ? "" : " wrong");
         const ch = typed[i] === "\n" ? "\n" : escapeHtml(typed[i]);
         inputHtml += `<span class="${cls}">${ch}</span>`;
@@ -993,7 +1096,7 @@
 
       const curAcc = getAccuracyPercent();
       accuracyEl.textContent = curAcc + "%";
-      progressLabel.textContent = `${completedCount} / ${SNIPPETS.length}`;
+      progressLabel.textContent = `STAGE ${currentStage + 1} - ${stageSnippetCount}/${STAGE_GOAL}`;
 
       // status value pop on change
       if (curAcc !== prevAccuracy) {
@@ -1023,12 +1126,13 @@
     ═══════════════════════════════════════════ */
     function loadSnippet() {
       if (snippetIndex >= snippetOrder.length) {
-        snippetOrder = shuffle(SNIPPETS);
+        snippetOrder = shuffle(STAGE_SNIPPETS[currentStage]);
         snippetIndex = 0;
       }
 
       const snip = snippetOrder[snippetIndex];
       currentTarget = snip.text;
+      currentIgnoreCase = !!snip.ignoreCase;
       currentTyped = "";
       snippetCorrectKeys = 0;
       snippetTotalKeys = 0;
@@ -1087,10 +1191,60 @@
       scoreEl.classList.add("pop");
 
       completedCount++;
+      stageSnippetCount++;
       snippetIndex++;
 
       playSound("complete");
+
+      // 스테이지 클리어 체크
+      if (stageSnippetCount >= STAGE_GOAL) {
+        if (currentStage >= 2) {
+          // 3단계 모두 클리어!
+          endGame(true);
+          return;
+        }
+        advanceStage();
+        return;
+      }
+
       loadSnippet();
+    }
+
+    const STAGE_DESCS = ["어노테이션 & SQL 키워드", "짧은 코드", "중간 길이 코드"];
+    const stageOverlay = document.getElementById("stageOverlay");
+    const stageNum = document.getElementById("stageNum");
+    const stageDesc = document.getElementById("stageDesc");
+
+    function advanceStage() {
+      currentStage++;
+      stageSnippetCount = 0;
+      snippetIndex = 0;
+      snippetOrder = shuffle(STAGE_SNIPPETS[currentStage]);
+      warningPlayed = false;
+
+      // 타이머 리셋
+      clearInterval(timerInterval);
+      timeLeft = STAGE_TIME;
+      timerEl.textContent = STAGE_TIME;
+      timerBarFill.style.height = "100%";
+      shell.classList.remove("urgent");
+      timerEl.classList.remove("danger");
+      timerBarFill.classList.remove("urgent");
+
+      // 스테이지 전환 팝업 표시
+      gameActive = false;
+      stageNum.textContent = `STAGE ${currentStage + 1}`;
+      stageDesc.textContent = STAGE_DESCS[currentStage];
+      stageOverlay.classList.add("show");
+      playSound("combo");
+
+      setTimeout(() => {
+        stageOverlay.classList.remove("show");
+        gameActive = true;
+        loadSnippet();
+        startTimer();
+        hiddenInput.focus();
+      }, 1500);
     }
 
     /* ═══════════════════════════════════════════
@@ -1116,7 +1270,10 @@
           if (i < target.length) {
             totalKeys++;
             snippetTotalKeys++;
-            if (val[i] === target[i]) {
+            const match = currentIgnoreCase
+              ? val[i].toLowerCase() === target[i].toLowerCase()
+              : val[i] === target[i];
+            if (match) {
               correctKeys++;
               snippetCorrectKeys++;
               playSound("key");
@@ -1179,16 +1336,18 @@
       timerInterval = setInterval(() => {
         timeLeft--;
         timerEl.textContent = timeLeft;
+        timerBarFill.style.height = (timeLeft / STAGE_TIME * 100) + "%";
 
         if (timeLeft <= 10 && !warningPlayed) {
           warningPlayed = true;
           playSound("warning");
           shell.classList.add("urgent");
           timerEl.classList.add("danger");
+          timerBarFill.classList.add("urgent");
         }
 
         if (timeLeft <= 0) {
-          endGame();
+          endGame(false);
         }
       }, 1000);
     }
@@ -1197,8 +1356,7 @@
        게임 시작 / 종료
     ═══════════════════════════════════════════ */
     function startGame() {
-      gameActive = true;
-      timeLeft = 60;
+      timeLeft = STAGE_TIME;
       score = 0;
       totalKeys = 0;
       correctKeys = 0;
@@ -1206,28 +1364,41 @@
       completedCount = 0;
       snippetIndex = 0;
       warningPlayed = false;
-      snippetOrder = shuffle(SNIPPETS);
+      currentStage = 0;
+      stageSnippetCount = 0;
+      snippetOrder = shuffle(STAGE_SNIPPETS[0]);
 
       shell.classList.remove("urgent");
       shell.classList.remove("shake");
       timerEl.classList.remove("danger");
       prevScore = 0;
       prevAccuracy = 100;
-      timerEl.textContent = "60";
+      timerEl.textContent = STAGE_TIME;
+      timerBarFill.style.height = "100%";
+      timerBarFill.classList.remove("urgent");
 
       overlay.classList.remove("show");
       finalScoreEl.classList.add("hidden");
       finalStatsEl.classList.add("hidden");
       hideKakaoShareButton();
 
+      // 스테이지 1 팝업 표시
+      gameActive = false;
+      stageNum.textContent = "STAGE 1";
+      stageDesc.textContent = STAGE_DESCS[0];
+      stageOverlay.classList.add("show");
       playSound("start");
-      loadSnippet();
-      startTimer();
 
-      hiddenInput.focus();
+      setTimeout(() => {
+        stageOverlay.classList.remove("show");
+        gameActive = true;
+        loadSnippet();
+        startTimer();
+        hiddenInput.focus();
+      }, 1500);
     }
 
-    function endGame() {
+    function endGame(cleared) {
       gameActive = false;
       clearInterval(timerInterval);
 
@@ -1235,10 +1406,10 @@
 
       // calc final stats
       const acc = getAccuracyPercent();
-      const cpm = Math.round(correctKeys); // characters typed in 60s = CPM
+      const cpm = Math.round(correctKeys);
 
       // show overlay
-      overlayTitle.textContent = "타임 오버!";
+      overlayTitle.textContent = cleared ? "배포 성공!" : `STAGE ${currentStage + 1} 시간 초과!`;
       finalScoreEl.textContent = "0점";
       finalScoreEl.classList.remove("hidden");
 
@@ -1256,11 +1427,9 @@
       animateCountUp(statAccuracyEl, acc, "%", 500, 600);
       animateCountUp(statCpmEl, cpm, "", 500, 800);
 
-      overlayDesc.textContent = completedCount >= 20
-        ? "놀라운 타이핑 실력! 배포 성공!"
-        : completedCount >= 10
-          ? "꽤 빠른 손놀림이네요!"
-          : "연습이 더 필요해요... 다시 도전!";
+      overlayDesc.textContent = cleared
+        ? "모든 코드를 시간 안에 커밋 완료! 완벽한 개발자!"
+        : "연습이 더 필요해요... 다시 도전!";
 
       overlayActionBtn.textContent = "다시 하기";
       overlayLobbyBtn.classList.remove("hidden");
