@@ -1102,7 +1102,7 @@ canvas.addEventListener('touchend', e => {
   }
 }, { passive: true });
 
-overlayStartBtn.addEventListener('click', startGame);
+overlayStartBtn.addEventListener('click', () => startCountdown(startGame));
 overlayRestartBtn.addEventListener('click', () => { prepareGame(); });
 
 const DIFF_LABELS = ['쉬움', '보통', '어려움', '매우 어려움'];
@@ -1120,6 +1120,54 @@ function updateUI() {
 
 /* 첫 로드: 준비 상태로 맵만 그리기 */
 prepareGame();
+
+function startCountdown(callback) {
+  hideOverlay();
+  const cdOverlay = document.getElementById('countdownOverlay');
+  const cdImg = document.getElementById('countdownImg');
+  cdOverlay.classList.add('active');
+  const nums = [3, 2, 1];
+  let idx = 0;
+  function showNext() {
+    if (idx >= nums.length) {
+      cdOverlay.classList.remove('active');
+      callback();
+      return;
+    }
+    cdImg.src = '../assets/images/countdown_' + nums[idx] + '.png';
+    cdImg.style.animation = 'none';
+    cdImg.offsetHeight;
+    cdImg.style.animation = 'countPop 0.9s ease forwards';
+    idx++;
+    setTimeout(showNext, 1000);
+  }
+  showNext();
+}
 </script>
+
+<style>
+  @keyframes countPop {
+    0%   { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    30%  { transform: translate(-50%, -50%) scale(1.0);  opacity: 1; }
+    80%  { transform: translate(-50%, -50%) scale(1.0);  opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(0.8);  opacity: 0; }
+  }
+  #countdownOverlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 9999;
+    background: rgba(0,0,0,0.55);
+  }
+  #countdownOverlay.active { display: block; }
+  #countdownImg {
+    position: absolute;
+    top: 50%; left: 50%;
+    height: 380px; width: auto;
+    animation: countPop 0.9s ease forwards;
+  }
+</style>
+<div id="countdownOverlay"><img id="countdownImg" src="" alt="" /></div>
 </body>
 </html>

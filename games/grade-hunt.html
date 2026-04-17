@@ -593,6 +593,7 @@
       </div>
     </div>
   </div>
+  <div id="countdownOverlay"><img id="countdownImg" src="" alt="" /></div>
 
   <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js"
     integrity="sha384-l+xbElFSnPZ2rOaPrU//2FF5B4LB8FiX5q4fXYTlfcG4PGpMkE1vcL7kNXI6Cci0"
@@ -741,7 +742,7 @@
     const overlayDesc      = document.getElementById("overlayDesc");
     const overlayActionBtn = document.getElementById("overlayActionBtn");
     const overlayLobbyBtn  = document.getElementById("overlayLobbyBtn");
-    overlayActionBtn.addEventListener("click", startGame);
+    overlayActionBtn.addEventListener("click", () => startCountdown(startGame));
 
     function startFever() {
       if (isFever) return;
@@ -1006,6 +1007,52 @@
       gameArea.appendChild(fx);
       setTimeout(() => fx.remove(), 750);
     }
+    function startCountdown(callback) {
+      overlay.classList.remove('show');
+      const cdOverlay = document.getElementById('countdownOverlay');
+      const cdImg = document.getElementById('countdownImg');
+      cdOverlay.classList.add('active');
+      const nums = [3, 2, 1];
+      let idx = 0;
+      function showNext() {
+        if (idx >= nums.length) {
+          cdOverlay.classList.remove('active');
+          callback();
+          return;
+        }
+        cdImg.src = '../assets/images/countdown_' + nums[idx] + '.png';
+        cdImg.style.animation = 'none';
+        cdImg.offsetHeight;
+        cdImg.style.animation = 'countPop 0.9s ease forwards';
+        idx++;
+        setTimeout(showNext, 1000);
+      }
+      showNext();
+    }
   </script>
+
+  <style>
+    @keyframes countPop {
+      0%   { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+      30%  { transform: translate(-50%, -50%) scale(1.0);  opacity: 1; }
+      80%  { transform: translate(-50%, -50%) scale(1.0);  opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(0.8);  opacity: 0; }
+    }
+    #countdownOverlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 9999;
+      background: rgba(0,0,0,0.55);
+    }
+    #countdownOverlay.active { display: block; }
+    #countdownImg {
+      position: absolute;
+      top: 50%; left: 50%;
+      height: 380px; width: auto;
+      animation: countPop 0.9s ease forwards;
+    }
+  </style>
 </body>
 </html>
