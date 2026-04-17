@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Last Commit : 타자 연습</title>
+  <style>
+    @font-face {
+      font-family: "neodgm";
+      src: url("../assets/fonts/neodgm.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "neodgm", "맑은 고딕", sans-serif;
+      background: url('../assets/images/Home.jpg') center center / cover no-repeat fixed;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #3d413d;
+      overflow-x: hidden;
+      padding: 12px calc(12px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left));
+    }
+
+    .wrap {
+      width: 960px;
+      max-width: 100%;
+      padding: 22px;
+    }
+
+    button, .lobby-link, .kakao-share-result-btn {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      font-family: "neodgm", "맑은 고딕", sans-serif;
+    }
+
+    .shell {
+      position: relative;
+      overflow: hidden;
+      border-radius: 28px;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.97);
+      border: 3px solid #dde9f5;
+      box-shadow: 0 18px 40px rgba(48, 78, 111, 0.18);
+      transition: border-color 0.5s;
+    }
+
+    .shell.urgent {
+      border-color: #e53e3e;
+      animation: shellPulse 0.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes shellPulse {
+      from { box-shadow: 0 18px 40px rgba(48, 78, 111, 0.18); }
+      to   { box-shadow: 0 18px 40px rgba(229, 62, 62, 0.3); }
+    }
+
+    /* ---- game juice animations ---- */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-3px); }
+      40% { transform: translateX(3px); }
+      60% { transform: translateX(-2px); }
+      80% { transform: translateX(2px); }
+    }
+    .shell.shake { animation: shake 0.15s ease !important; }
+
+    @keyframes floatUp {
+      0%   { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-50px) scale(1.2); }
+    }
+    .score-popup {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 20px;
+      font-weight: 900;
+      color: #7aa2f7;
+      font-family: "neodgm", monospace;
+      pointer-events: none;
+      z-index: 10;
+      animation: floatUp 0.8s ease-out forwards;
+      text-shadow: 0 0 10px rgba(122, 162, 247, 0.5);
+    }
+
+    @keyframes perfectPop {
+      0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+      40%  { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+      70%  { transform: translate(-50%, -50%) scale(0.95); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1.05); }
+    }
+    .perfect-popup {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 32px;
+      font-weight: 900;
+      color: #e0af68;
+      font-family: "neodgm", monospace;
+      pointer-events: none;
+      z-index: 10;
+      animation: perfectPop 0.8s ease-out forwards;
+      text-shadow: 0 0 16px rgba(224, 175, 104, 0.6);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .code-display.slide-in { animation: slideIn 0.25s ease-out; }
+
+    @keyframes comboBounce {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.4); }
+      100% { transform: scale(1); }
+    }
+    .combo-banner.bounce { animation: comboBounce 0.3s ease-out; }
+
+    @keyframes valuePop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.15); color: #7aa2f7; }
+      100% { transform: scale(1); }
+    }
+    .status-value.pop { animation: valuePop 0.25s ease-out; }
+
+    @keyframes encouragePop {
+      0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      30%  { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+      70%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+    }
+    .encourage-popup {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      font-weight: 900;
+      color: #ff7b7b;
+      font-family: "neodgm", monospace;
+      pointer-events: none;
+      z-index: 10;
+      animation: encouragePop 1s ease-out forwards;
+      text-shadow: 0 0 12px rgba(255, 123, 123, 0.5);
+    }
+
+    /* decorative emoji */
+    .deco {
+      position: absolute;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .deco1 { top: 12px;  left: 24px;  font-size: 28px; opacity: 0.35; }
+    .deco2 { top: 14px;  right: 28px; font-size: 24px; opacity: 0.30; }
+    .deco3 { bottom: 28px; left: 18px; font-size: 22px; opacity: 0.25; }
+    .deco4 { bottom: 22px; right: 22px; font-size: 26px; opacity: 0.30; }
+
+    .topbar {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: clamp(18px, 3.8vw, 28px);
+      color: #304e6f;
+      letter-spacing: -1px;
+    }
+
+    .title p {
+      margin: 4px 0 0;
+      font-size: 12px;
+      color: #6b839e;
+    }
+
+    .status {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: 6px;
+    }
+
+    .status-box {
+      flex: 1 1 0;
+      min-width: 0;
+      background: linear-gradient(180deg, #ffffff, #f0f6ff);
+      border: 2px solid #d6e4f0;
+      border-radius: 12px;
+      padding: 6px 8px;
+      text-align: center;
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    .status-label {
+      font-size: 10px;
+      color: #7b93ad;
+      margin-bottom: 2px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .status-value {
+      font-size: 18px;
+      font-weight: 900;
+      color: #2c4a6e;
+      line-height: 1.1;
+      transition: color 0.3s;
+    }
+
+    .status-value.danger {
+      color: #e53e3e;
+      animation: timerBlink 0.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes timerBlink {
+      from { opacity: 1; }
+      to   { opacity: 0.6; }
+    }
+
+    /* ---- terminal game area ---- */
+    #gameArea {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      min-height: 320px;
+      border-radius: 18px;
+      border: 3px solid #3a4a5c;
+      background: #1a1b26;
+      overflow: hidden;
+      cursor: text;
+    }
+
+    .file-tab-bar {
+      display: flex;
+      align-items: center;
+      background: #13141f;
+      padding: 0 12px;
+      height: 36px;
+      gap: 8px;
+      border-bottom: 1px solid #2a2d3a;
+    }
+
+    .file-tab {
+      font-size: 12px;
+      color: #7aa2f7;
+      background: #1a1b26;
+      padding: 5px 14px;
+      border-radius: 8px 8px 0 0;
+      border: 1px solid #2a2d3a;
+      border-bottom: none;
+      font-family: "neodgm", monospace;
+    }
+
+    .progress-label {
+      margin-left: auto;
+      font-size: 11px;
+      color: #565f89;
+      font-family: "neodgm", monospace;
+    }
+
+    .code-area {
+      padding: 12px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      min-height: 200px;
+    }
+
+    .code-section {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 800;
+      color: #565f89;
+      font-family: "neodgm", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding-left: 36px;
+    }
+
+    .code-block {
+      display: flex;
+      gap: 12px;
+      min-height: 60px;
+      padding: 8px 0;
+    }
+
+    .code-divider {
+      height: 1px;
+      background: #2a2d3a;
+      margin: 8px 0;
+    }
+
+    .line-numbers {
+      color: #3b3f54;
+      font-size: clamp(13px, 2.2vw, 16px);
+      font-family: "neodgm", monospace;
+      line-height: 1.8;
+      user-select: none;
+      text-align: right;
+      min-width: 24px;
+    }
+
+    .code-display {
+      flex: 1;
+      font-size: clamp(14px, 2.5vw, 18px);
+      font-family: "neodgm", monospace;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* 목표 코드: 항상 밝게 표시, 현재 위치만 하이라이트 */
+    .code-display .char {
+      display: inline;
+      color: #c0caf5;
+      padding: 1px 0;
+    }
+
+    .code-display .char.target-done {
+      color: #565f89;
+    }
+
+    .code-display .char.target-current {
+      background: rgba(122, 162, 247, 0.25);
+      border-radius: 2px;
+    }
+
+    /* 입력 코드: 맞으면 초록, 틀리면 빨간 배경 */
+    .input-block .code-display .char {
+      color: #9ece6a;
+    }
+
+    .input-block .code-display .char.wrong {
+      color: #fff;
+      background: #a8334a;
+      border-radius: 2px;
+      padding: 1px 1px;
+    }
+
+    .input-block .code-display .cursor {
+      display: inline;
+      color: #7aa2f7;
+      animation: cursorBlink 0.5s step-end infinite;
+    }
+
+    @keyframes cursorBlink {
+      50% { opacity: 0; }
+    }
+
+    .combo-banner {
+      position: absolute;
+      top: 50px;
+      right: 18px;
+      font-size: 14px;
+      font-weight: 900;
+      color: #e0af68;
+      font-family: "neodgm", monospace;
+      opacity: 0;
+      transition: opacity 0.3s;
+      text-shadow: 0 0 8px rgba(224, 175, 104, 0.4);
+    }
+
+    .combo-banner.show {
+      opacity: 1;
+    }
+
+    .mobile-hint {
+      display: none;
+      text-align: center;
+      padding: 8px;
+      font-size: 11px;
+      color: #565f89;
+      background: #13141f;
+      border-top: 1px solid #2a2d3a;
+    }
+
+    /* hidden textarea for capturing input */
+    #hiddenInput {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      z-index: 5;
+      font-size: 16px; /* prevent iOS zoom */
+      resize: none;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: transparent;
+      caret-color: transparent;
+    }
+
+    /* ---- guide ---- */
+    .guide {
+      position: relative;
+      z-index: 1;
+      margin-top: 12px;
+      text-align: center;
+      color: #7b93ad;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    /* ---- lobby link ---- */
+    .lobby-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #304e6f;
+      background: #e8f2fc;
+      border: 2px solid #c4d9ed;
+      text-decoration: none;
+      margin-bottom: 14px;
+      font-family: "neodgm", "맑은 고딕", sans-serif;
+    }
+    .lobby-link:hover { background: #dbe9f7; }
+
+    /* ---- kakao share ---- */
+    .kakao-share-result-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 22px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #191919;
+      background: #fee500;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .kakao-share-result-btn:hover { transform: translateY(-2px); }
+    .kakao-share-result-btn.hidden { display: none !important; }
+
+    /* ---- overlay ---- */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 20, 40, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .overlay.show { display: flex; }
+
+    .overlay-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 28px 24px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      border: 3px solid #dde9f5;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+    }
+
+    .overlay-card h2 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      color: #304e6f;
+      font-family: "neodgm", "맑은 고딕", sans-serif;
+    }
+
+    .overlay-card p {
+      margin: 0 0 20px;
+      color: #5a6f7f;
+      font-size: 14px;
+      line-height: 1.75;
+      font-family: "neodgm", "맑은 고딕", sans-serif;
+    }
+
+    .overlay-card .final-score {
+      font-size: 42px;
+      font-weight: 900;
+      color: #304e6f;
+      margin: 8px 0 12px;
+    }
+
+    .overlay-card .stats {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 18px;
+      font-size: 13px;
+      color: #6b839e;
+    }
+
+    .overlay-card .stats span {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .overlay-card .stats strong {
+      font-size: 18px;
+      color: #2c4a6e;
+    }
+
+    .overlay-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    #overlayActionBtn {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 28px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(135deg, #71c3ff, #4a9fe3);
+      box-shadow: 0 10px 22px rgba(60, 148, 225, 0.24);
+      font-family: "neodgm", "맑은 고딕", sans-serif;
+      transition: transform 0.15s ease;
+    }
+    #overlayActionBtn:hover { transform: translateY(-1px); }
+
+    #overlayLobbyBtn {
+      border: 2px solid #c4d9ed;
+      border-radius: 999px;
+      padding: 12px 28px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      color: #304e6f;
+      background: #e8f2fc;
+      font-family: "neodgm", "맑은 고딕", sans-serif;
+      transition: transform 0.15s ease, background 0.15s;
+    }
+    #overlayLobbyBtn:hover { background: #dbe9f7; transform: translateY(-1px); }
+    #overlayLobbyBtn.hidden { display: none !important; }
+
+    @media (max-width: 700px) {
+      .wrap { padding: 14px 10px; }
+      #gameArea { min-height: 260px; }
+      .code-area { padding: 12px 10px; gap: 8px; }
+      .mobile-hint { display: block; }
+      .kakao-share-result-btn { width: 100%; min-height: 48px; font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="lobby-link" id="lobbyBackLink" href="../index.html?lobby=1">← 로비로 돌아가기</a>
+    <div class="shell" id="shell">
+      <div class="deco deco1">&#9749;</div>
+      <div class="deco deco2">&#128187;</div>
+      <div class="deco deco3">&#128196;</div>
+      <div class="deco deco4">&#9881;</div>
+
+      <div class="topbar">
+        <div class="title">
+          <h1>Last Commit</h1>
+          <p>배포 마감이 코앞! 코드를 빠르고 정확하게 타이핑하세요!</p>
+        </div>
+        <div class="status">
+          <div class="status-box">
+            <div class="status-label">점수</div>
+            <div class="status-value" id="scoreEl">0</div>
+          </div>
+          <div class="status-box">
+            <div class="status-label">정확도</div>
+            <div class="status-value" id="accuracyEl">100%</div>
+          </div>
+          <div class="status-box" id="timerBox">
+            <div class="status-label">남은 시간</div>
+            <div class="status-value" id="timerEl">60</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="gameArea">
+        <div class="file-tab-bar">
+          <div class="file-tab" id="fileTab">MainService.java</div>
+          <div class="progress-label" id="progressLabel">0 / 0</div>
+        </div>
+        <div class="code-area">
+          <div class="code-section">
+            <div class="section-label">목표 코드</div>
+            <div class="code-block">
+              <div class="line-numbers" id="lineNumbers">1</div>
+              <div class="code-display" id="codeDisplay"></div>
+            </div>
+          </div>
+          <div class="code-divider"></div>
+          <div class="code-section">
+            <div class="section-label">내 입력</div>
+            <div class="code-block input-block">
+              <div class="line-numbers" id="inputLineNumbers">1</div>
+              <div class="code-display" id="inputDisplay"></div>
+            </div>
+          </div>
+        </div>
+        <div class="combo-banner" id="comboBanner">COMBO x0</div>
+        <div class="mobile-hint">화면을 터치하면 키보드가 나타납니다</div>
+        <textarea id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+      </div>
+
+      <div class="guide">
+        Java / Spring / SQL 코드가 출력됩니다. 정확도와 속도 모두 점수에 반영됩니다!
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay show" id="overlay">
+    <div class="overlay-card">
+      <h2 id="overlayTitle">Last Commit</h2>
+      <div class="final-score hidden" id="finalScore"></div>
+      <div class="stats hidden" id="finalStats">
+        <span>완료 <strong id="statSnippets">0</strong></span>
+        <span>정확도 <strong id="statAccuracy">0%</strong></span>
+        <span>CPM <strong id="statCpm">0</strong></span>
+      </div>
+      <p id="overlayDesc">배포 마감 60초 전!<br>화면에 나오는 Java, Spring, SQL 코드를<br>빠르고 정확하게 타이핑하세요!</p>
+      <div class="overlay-actions">
+        <button type="button" id="overlayActionBtn">코딩 시작!</button>
+        <button type="button" id="overlayLobbyBtn" class="hidden" onclick="goToLobby()">로비로</button>
+        <button type="button" id="kakaoShareResultBtn" class="kakao-share-result-btn hidden" onclick="shareToKakao()">결과 공유하기</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js"
+    integrity="sha384-l+xbElFSnPZ2rOaPrU//2FF5B4LB8FiX5q4fXYTlfcG4PGpMkE1vcL7kNXI6Cci0"
+    crossorigin="anonymous"></script>
+  <script>
+    /* ═══════════════════════════════════════════
+       API / School / Lobby 보일러플레이트
+    ═══════════════════════════════════════════ */
+    const STORAGE_SCHOOL = "animalLeagueSchool";
+    const API_BASE =
+      window.ANIMAL_LEAGUE_API ||
+      (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+        ? "http://localhost:3000"
+        : "https://backend-m5wz.onrender.com");
+
+    function getLeagueSchool() {
+      try {
+        const q = (new URLSearchParams(window.location.search).get("school") || "").trim();
+        if (q) { try { localStorage.setItem(STORAGE_SCHOOL, q); } catch {} return q; }
+      } catch {}
+      return (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
+    }
+
+    function setLobbyBackLink() {
+      const a = document.getElementById("lobbyBackLink");
+      if (!a) return;
+      const school = getLeagueSchool();
+      a.setAttribute("href", school ? `../index.html?lobby=1&school=${encodeURIComponent(school)}` : "../index.html?lobby=1");
+    }
+
+    function getLobbyUrl() {
+      const school = getLeagueSchool();
+      return school ? `../index.html?lobby=1&school=${encodeURIComponent(school)}` : "../index.html?lobby=1";
+    }
+
+    function goToLobby() { window.location.href = getLobbyUrl(); }
+
+    function submitScoreToLeague(game, value) {
+      const school = getLeagueSchool();
+      if (!school) {
+        if (!window.__leagueSchoolMissingWarned) {
+          window.__leagueSchoolMissingWarned = true;
+          alert("학교 정보가 없어 점수를 저장할 수 없습니다. 로비에서 학교를 먼저 입력해 주세요.");
+        }
+        return;
+      }
+      const s = Math.round(Number(value));
+      if (!Number.isFinite(s)) return;
+      fetch(`${API_BASE}/api/scores`, {
+        method: "POST", keepalive: true,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ school, game, score: s })
+      }).catch(() => {});
+    }
+
+    setLobbyBackLink();
+
+    /* ═══════════════════════════════════════════
+       Kakao 공유
+    ═══════════════════════════════════════════ */
+    const KAKAO_JS_APP_KEY  = "fa75c82718597e9124f913d174cd92a2";
+    const SHARE_SITE_ORIGIN = "https://campus-animal-battle.vercel.app";
+    const SHARE_FEED_IMAGE_URL = `${SHARE_SITE_ORIGIN}/assets/game-preview.png`;
+
+    function buildShareLobbyUrl() {
+      const school = getLeagueSchool();
+      const base = `${SHARE_SITE_ORIGIN}/?lobby=true`;
+      return school ? `${base}&school=${encodeURIComponent(school)}` : base;
+    }
+
+    (function initKakaoSdk() {
+      if (!window.Kakao || !KAKAO_JS_APP_KEY) return;
+      if (!Kakao.isInitialized()) Kakao.init(KAKAO_JS_APP_KEY);
+    })();
+
+    function hideKakaoShareButton() { document.getElementById("kakaoShareResultBtn")?.classList.add("hidden"); }
+    function showKakaoShareButton() { document.getElementById("kakaoShareResultBtn")?.classList.remove("hidden"); }
+
+    function shareToKakao() {
+      if (!window.Kakao || !Kakao.isInitialized()) { alert("카카오 SDK를 불러오지 못했습니다."); return; }
+      const u = buildShareLobbyUrl();
+      Kakao.Share.sendDefault({
+        objectType: "feed",
+        content: {
+          title: "캠퍼스 애니멀 배틀 : Last Commit",
+          description: `코드 타이핑으로 ${score}점 달성! 도전해보세요!`,
+          imageUrl: SHARE_FEED_IMAGE_URL,
+          link: { mobileWebUrl: u, webUrl: u }
+        },
+        buttons: [{ title: "게임 참여하기", link: { mobileWebUrl: u, webUrl: u } }]
+      });
+    }
+
+    /* ═══════════════════════════════════════════
+       사운드
+    ═══════════════════════════════════════════ */
+    const sounds = {
+      key:      new Audio("../assets/sounds/click1.mp3"),
+      wrong:    new Audio("../assets/sounds/lowRandom.mp3"),
+      complete: new Audio("../assets/sounds/powerUp2.mp3"),
+      combo:    new Audio("../assets/sounds/jingles_NES03.mp3"),
+      warning:  new Audio("../assets/sounds/phaserDown1.mp3"),
+      gameover: new Audio("../assets/sounds/jingles_SAX00.mp3"),
+      start:    new Audio("../assets/sounds/phaseJump1.mp3"),
+    };
+    sounds.key.volume = 0.25;
+    sounds.wrong.volume = 0.35;
+    sounds.complete.volume = 0.5;
+    sounds.combo.volume = 0.45;
+    sounds.warning.volume = 0.5;
+    sounds.gameover.volume = 0.55;
+    sounds.start.volume = 0.45;
+
+    let lastKeySound = 0;
+    function playSound(key) {
+      const snd = sounds[key];
+      if (!snd) return;
+      if (key === "key") {
+        const now = performance.now();
+        if (now - lastKeySound < 60) return;
+        lastKeySound = now;
+      }
+      if (key === "key") {
+        snd.playbackRate = 0.95 + Math.random() * 0.1;
+      } else {
+        snd.playbackRate = 1;
+      }
+      snd.currentTime = 0;
+      snd.play().catch(() => {});
+    }
+
+    /* ═══════════════════════════════════════════
+       스니펫 데이터
+    ═══════════════════════════════════════════ */
+    const SNIPPETS = [
+      // Tier 1 - Short
+      { text: "@RestController", file: "UserController.java" },
+      { text: "@Autowired", file: "UserService.java" },
+      { text: '@RequestMapping("/api")', file: "ApiController.java" },
+      { text: "SELECT * FROM users;", file: "query.sql" },
+      { text: "@Transactional", file: "OrderService.java" },
+      { text: "DROP TABLE IF EXISTS temp;", file: "cleanup.sql" },
+      { text: "private int count = 0;", file: "Counter.java" },
+      { text: "return ResponseEntity.ok();", file: "ApiController.java" },
+      { text: "@Override", file: "UserServiceImpl.java" },
+      { text: "INSERT INTO logs VALUES(1);", file: "init.sql" },
+
+      // Tier 2 - Medium
+      { text: '@GetMapping("/users/{id}")', file: "UserController.java" },
+      { text: "public List<User> findAll() {", file: "UserRepository.java" },
+      { text: "SELECT name, email FROM students WHERE grade = 'A';", file: "report.sql" },
+      { text: "@Service\npublic class UserService {", file: "UserService.java" },
+      { text: "private final UserRepository repo;", file: "UserService.java" },
+      { text: "UPDATE orders SET status = 'DONE' WHERE id = ?;", file: "order.sql" },
+      { text: 'throw new RuntimeException("Not found");', file: "UserService.java" },
+      { text: "return userRepository.findById(id);", file: "UserService.java" },
+      { text: "CREATE TABLE users (id BIGINT PRIMARY KEY);", file: "schema.sql" },
+      { text: '@PostMapping("/register")', file: "AuthController.java" },
+
+      // Tier 3 - Long
+      { text: "public ResponseEntity<User> getUser(@PathVariable Long id) {", file: "UserController.java" },
+      { text: "SELECT o.id, u.name FROM orders o JOIN users u ON o.user_id = u.id;", file: "report.sql" },
+      { text: "@Bean\npublic PasswordEncoder passwordEncoder() {\n    return new BCryptPasswordEncoder();\n}", file: "SecurityConfig.java" },
+      { text: "if (bindingResult.hasErrors()) {\n    return ResponseEntity.badRequest().build();\n}", file: "UserController.java" },
+      { text: "ALTER TABLE products ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;", file: "migration.sql" },
+      { text: '@Query("SELECT u FROM User u WHERE u.email = :email")', file: "UserRepository.java" },
+      { text: "spring.datasource.url=jdbc:mysql://localhost:3306/mydb", file: "application.properties" },
+      { text: "public UserDto toDto(User user) {\n    return new UserDto(user.getId(), user.getName());\n}", file: "UserMapper.java" },
+      { text: "DELETE FROM sessions WHERE expires_at < NOW() AND active = false;", file: "cleanup.sql" },
+      { text: "@EnableWebSecurity\npublic class SecurityConfig extends WebSecurityConfigurerAdapter {", file: "SecurityConfig.java" },
+    ];
+
+    /* ═══════════════════════════════════════════
+       DOM 참조
+    ═══════════════════════════════════════════ */
+    const shell         = document.getElementById("shell");
+    const scoreEl       = document.getElementById("scoreEl");
+    const accuracyEl    = document.getElementById("accuracyEl");
+    const timerEl       = document.getElementById("timerEl");
+    const fileTab       = document.getElementById("fileTab");
+    const progressLabel = document.getElementById("progressLabel");
+    const lineNumbers   = document.getElementById("lineNumbers");
+    const codeDisplay       = document.getElementById("codeDisplay");
+    const inputDisplay      = document.getElementById("inputDisplay");
+    const inputLineNumbers  = document.getElementById("inputLineNumbers");
+    const comboBanner       = document.getElementById("comboBanner");
+    const hiddenInput   = document.getElementById("hiddenInput");
+    const gameArea      = document.getElementById("gameArea");
+
+    const overlay          = document.getElementById("overlay");
+    const overlayTitle     = document.getElementById("overlayTitle");
+    const overlayDesc      = document.getElementById("overlayDesc");
+    const overlayActionBtn = document.getElementById("overlayActionBtn");
+    const overlayLobbyBtn  = document.getElementById("overlayLobbyBtn");
+    const finalScoreEl     = document.getElementById("finalScore");
+    const finalStatsEl     = document.getElementById("finalStats");
+
+    /* ═══════════════════════════════════════════
+       게임 상태
+    ═══════════════════════════════════════════ */
+    let gameActive = false;
+    let timerInterval = null;
+    let timeLeft = 60;
+    let score = 0;
+    let totalKeys = 0;
+    let correctKeys = 0;
+    let comboCount = 0;
+    let snippetOrder = [];
+    let snippetIndex = 0;
+    let completedCount = 0;
+    let currentTarget = "";
+    let currentTyped = "";
+    let snippetCorrectKeys = 0;
+    let snippetTotalKeys = 0;
+    let snippetStartTime = 0;
+    let warningPlayed = false;
+
+    /* ═══════════════════════════════════════════
+       유틸
+    ═══════════════════════════════════════════ */
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function getAccuracyPercent() {
+      if (totalKeys === 0) return 100;
+      return Math.round((correctKeys / totalKeys) * 100);
+    }
+
+    /* ── game juice helpers ── */
+    let scoreAnimId = null;
+    function animateScore(from, to) {
+      if (scoreAnimId) cancelAnimationFrame(scoreAnimId);
+      const start = performance.now();
+      const dur = 300;
+      (function tick(now) {
+        const t = Math.min((now - start) / dur, 1);
+        scoreEl.textContent = Math.round(from + (to - from) * t);
+        if (t < 1) scoreAnimId = requestAnimationFrame(tick);
+        else scoreAnimId = null;
+      })(start);
+    }
+
+    function showScorePopup(pts) {
+      const el = document.createElement("div");
+      el.className = "score-popup";
+      el.textContent = `+${pts}`;
+      gameArea.appendChild(el);
+      el.addEventListener("animationend", () => el.remove());
+    }
+
+    function showPerfect() {
+      const el = document.createElement("div");
+      el.className = "perfect-popup";
+      el.textContent = "PERFECT!";
+      gameArea.appendChild(el);
+      el.addEventListener("animationend", () => el.remove());
+    }
+
+    function showEncouragement(text) {
+      const el = document.createElement("div");
+      el.className = "encourage-popup";
+      el.textContent = text;
+      gameArea.appendChild(el);
+      el.addEventListener("animationend", () => el.remove());
+    }
+
+    function animateCountUp(el, target, suffix, duration, delay) {
+      setTimeout(() => {
+        const start = performance.now();
+        (function tick(now) {
+          const t = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+          el.textContent = Math.round(target * eased) + suffix;
+          if (t < 1) requestAnimationFrame(tick);
+        })(start);
+      }, delay);
+    }
+
+    let prevScore = 0;
+    let prevAccuracy = 100;
+
+    /* ═══════════════════════════════════════════
+       렌더링
+    ═══════════════════════════════════════════ */
+    function renderCode() {
+      const typed = currentTyped;
+      const target = currentTarget;
+
+      // --- 목표 코드 (위) ---
+      let targetHtml = "";
+      for (let i = 0; i < target.length; i++) {
+        let cls = "char";
+        if (i < typed.length) {
+          cls += " target-done";
+        } else if (i === typed.length) {
+          cls += " target-current";
+        }
+        const ch = target[i] === "\n" ? "\n" : escapeHtml(target[i]);
+        targetHtml += `<span class="${cls}">${ch}</span>`;
+      }
+      codeDisplay.innerHTML = targetHtml;
+
+      // --- 내 입력 (아래) ---
+      let inputHtml = "";
+      for (let i = 0; i < typed.length; i++) {
+        const isCorrect = i < target.length && typed[i] === target[i];
+        const cls = "char" + (isCorrect ? "" : " wrong");
+        const ch = typed[i] === "\n" ? "\n" : escapeHtml(typed[i]);
+        inputHtml += `<span class="${cls}">${ch}</span>`;
+      }
+      inputHtml += '<span class="cursor">|</span>';
+      inputDisplay.innerHTML = inputHtml;
+
+      // 줄 번호 업데이트
+      const targetLines = target.split("\n");
+      lineNumbers.innerHTML = targetLines.map((_, i) => i + 1).join("<br>");
+      const inputLines = (typed || " ").split("\n");
+      inputLineNumbers.innerHTML = inputLines.map((_, i) => i + 1).join("<br>");
+    }
+
+    function escapeHtml(ch) {
+      if (ch === "<") return "&lt;";
+      if (ch === ">") return "&gt;";
+      if (ch === "&") return "&amp;";
+      if (ch === '"') return "&quot;";
+      return ch;
+    }
+
+    function updateUI() {
+      // score rolling is handled by animateScore; only set directly if no animation running
+      if (!scoreAnimId) scoreEl.textContent = score;
+
+      const curAcc = getAccuracyPercent();
+      accuracyEl.textContent = curAcc + "%";
+      progressLabel.textContent = `${completedCount} / ${SNIPPETS.length}`;
+
+      // status value pop on change
+      if (curAcc !== prevAccuracy) {
+        prevAccuracy = curAcc;
+        accuracyEl.classList.remove("pop");
+        void accuracyEl.offsetWidth; // reflow to restart animation
+        accuracyEl.classList.add("pop");
+      }
+
+      if (comboCount >= 2) {
+        const oldText = comboBanner.textContent;
+        comboBanner.textContent = `COMBO x${comboCount}`;
+        comboBanner.classList.add("show");
+        // bounce on change
+        if (oldText !== `COMBO x${comboCount}`) {
+          comboBanner.classList.remove("bounce");
+          void comboBanner.offsetWidth;
+          comboBanner.classList.add("bounce");
+        }
+      } else {
+        comboBanner.classList.remove("show");
+      }
+    }
+
+    /* ═══════════════════════════════════════════
+       스니펫 관리
+    ═══════════════════════════════════════════ */
+    function loadSnippet() {
+      if (snippetIndex >= snippetOrder.length) {
+        snippetOrder = shuffle(SNIPPETS);
+        snippetIndex = 0;
+      }
+
+      const snip = snippetOrder[snippetIndex];
+      currentTarget = snip.text;
+      currentTyped = "";
+      snippetCorrectKeys = 0;
+      snippetTotalKeys = 0;
+      snippetStartTime = performance.now();
+
+      fileTab.textContent = snip.file;
+      hiddenInput.value = "";
+
+      renderCode();
+      updateUI();
+
+      // slide-in animation
+      codeDisplay.classList.remove("slide-in");
+      void codeDisplay.offsetWidth;
+      codeDisplay.classList.add("slide-in");
+    }
+
+    function completeSnippet() {
+      const len = currentTarget.length;
+      const acc = snippetTotalKeys > 0 ? snippetCorrectKeys / snippetTotalKeys : 1;
+      let pts = Math.round(len * acc);
+
+      // speed bonus
+      const elapsed = (performance.now() - snippetStartTime) / 1000;
+      let gotSpeedBonus = false;
+      if (elapsed < len * 0.15) {
+        pts = Math.round(pts * 1.5);
+        gotSpeedBonus = true;
+      }
+
+      // combo bonus
+      if (acc === 1) {
+        comboCount++;
+        if (comboCount > 0) {
+          const multiplier = Math.min(1 + comboCount * 0.1, 2);
+          pts = Math.round(pts * multiplier);
+        }
+        showPerfect();
+        if (comboCount === 5)  { playSound("combo"); showEncouragement("불타오르네!"); }
+        else if (comboCount === 10) { playSound("combo"); showEncouragement("미쳤다!"); }
+        else if (comboCount === 15) { playSound("combo"); showEncouragement("갓벽한 코딩!"); }
+      } else {
+        comboCount = 0;
+      }
+
+      if (gotSpeedBonus) showEncouragement("번개 손!");
+
+      // score popup & rolling animation
+      showScorePopup(pts);
+      const oldScore = score;
+      score += pts;
+      animateScore(oldScore, score);
+      // pop effect on score
+      scoreEl.classList.remove("pop");
+      void scoreEl.offsetWidth;
+      scoreEl.classList.add("pop");
+
+      completedCount++;
+      snippetIndex++;
+
+      playSound("complete");
+      loadSnippet();
+    }
+
+    /* ═══════════════════════════════════════════
+       입력 처리
+    ═══════════════════════════════════════════ */
+    let composing = false;
+    hiddenInput.addEventListener("compositionstart", () => { composing = true; });
+    hiddenInput.addEventListener("compositionend", () => {
+      composing = false;
+      hiddenInput.dispatchEvent(new Event("input"));
+    });
+
+    hiddenInput.addEventListener("input", () => {
+      if (!gameActive || composing) return;
+
+      const val = hiddenInput.value;
+      const target = currentTarget;
+
+      // figure out what changed
+      if (val.length > currentTyped.length) {
+        // typed new character(s)
+        for (let i = currentTyped.length; i < val.length; i++) {
+          if (i < target.length) {
+            totalKeys++;
+            snippetTotalKeys++;
+            if (val[i] === target[i]) {
+              correctKeys++;
+              snippetCorrectKeys++;
+              playSound("key");
+            } else {
+              playSound("wrong");
+              shell.classList.remove("shake");
+              void shell.offsetWidth;
+              shell.classList.add("shake");
+            }
+          }
+        }
+      }
+      // backspace case: just update currentTyped, don't count keys
+
+      currentTyped = val;
+
+      // check if snippet completed
+      if (currentTyped.length >= target.length) {
+        completeSnippet();
+        return;
+      }
+
+      renderCode();
+      updateUI();
+    });
+
+    // prevent Tab from leaving textarea; type actual tab or skip
+    hiddenInput.addEventListener("keydown", (e) => {
+      if (!gameActive) return;
+      if (e.key === "Tab") {
+        e.preventDefault();
+        // insert spaces for tab
+        const pos = hiddenInput.selectionStart;
+        const before = hiddenInput.value.slice(0, pos);
+        const after = hiddenInput.value.slice(pos);
+        hiddenInput.value = before + "    " + after;
+        hiddenInput.selectionStart = hiddenInput.selectionEnd = pos + 4;
+        hiddenInput.dispatchEvent(new Event("input"));
+      }
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const pos = hiddenInput.selectionStart;
+        const before = hiddenInput.value.slice(0, pos);
+        const after = hiddenInput.value.slice(pos);
+        hiddenInput.value = before + "\n" + after;
+        hiddenInput.selectionStart = hiddenInput.selectionEnd = pos + 1;
+        hiddenInput.dispatchEvent(new Event("input"));
+      }
+    });
+
+    // click game area to focus input
+    gameArea.addEventListener("click", () => {
+      if (gameActive) hiddenInput.focus();
+    });
+
+    /* ═══════════════════════════════════════════
+       타이머
+    ═══════════════════════════════════════════ */
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = timeLeft;
+
+        if (timeLeft <= 10 && !warningPlayed) {
+          warningPlayed = true;
+          playSound("warning");
+          shell.classList.add("urgent");
+          timerEl.classList.add("danger");
+        }
+
+        if (timeLeft <= 0) {
+          endGame();
+        }
+      }, 1000);
+    }
+
+    /* ═══════════════════════════════════════════
+       게임 시작 / 종료
+    ═══════════════════════════════════════════ */
+    function startGame() {
+      gameActive = true;
+      timeLeft = 60;
+      score = 0;
+      totalKeys = 0;
+      correctKeys = 0;
+      comboCount = 0;
+      completedCount = 0;
+      snippetIndex = 0;
+      warningPlayed = false;
+      snippetOrder = shuffle(SNIPPETS);
+
+      shell.classList.remove("urgent");
+      shell.classList.remove("shake");
+      timerEl.classList.remove("danger");
+      prevScore = 0;
+      prevAccuracy = 100;
+      timerEl.textContent = "60";
+
+      overlay.classList.remove("show");
+      finalScoreEl.classList.add("hidden");
+      finalStatsEl.classList.add("hidden");
+      hideKakaoShareButton();
+
+      playSound("start");
+      loadSnippet();
+      startTimer();
+
+      hiddenInput.focus();
+    }
+
+    function endGame() {
+      gameActive = false;
+      clearInterval(timerInterval);
+
+      playSound("gameover");
+
+      // calc final stats
+      const acc = getAccuracyPercent();
+      const cpm = Math.round(correctKeys); // characters typed in 60s = CPM
+
+      // show overlay
+      overlayTitle.textContent = "타임 오버!";
+      finalScoreEl.textContent = "0점";
+      finalScoreEl.classList.remove("hidden");
+
+      const statSnippetsEl = document.getElementById("statSnippets");
+      const statAccuracyEl = document.getElementById("statAccuracy");
+      const statCpmEl = document.getElementById("statCpm");
+      statSnippetsEl.textContent = "0";
+      statAccuracyEl.textContent = "0%";
+      statCpmEl.textContent = "0";
+      finalStatsEl.classList.remove("hidden");
+
+      // count-up animations
+      animateCountUp(finalScoreEl, score, "점", 1000, 200);
+      animateCountUp(statSnippetsEl, completedCount, "", 500, 400);
+      animateCountUp(statAccuracyEl, acc, "%", 500, 600);
+      animateCountUp(statCpmEl, cpm, "", 500, 800);
+
+      overlayDesc.textContent = completedCount >= 20
+        ? "놀라운 타이핑 실력! 배포 성공!"
+        : completedCount >= 10
+          ? "꽤 빠른 손놀림이네요!"
+          : "연습이 더 필요해요... 다시 도전!";
+
+      overlayActionBtn.textContent = "다시 하기";
+      overlayLobbyBtn.classList.remove("hidden");
+      showKakaoShareButton();
+      overlay.classList.add("show");
+
+      submitScoreToLeague("last-commit", score);
+    }
+
+    /* ═══════════════════════════════════════════
+       오버레이 이벤트
+    ═══════════════════════════════════════════ */
+    overlayActionBtn.addEventListener("click", () => {
+      startGame();
+    });
+
+  </script>
+</body>
+</html>
