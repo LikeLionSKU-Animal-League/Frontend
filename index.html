@@ -829,6 +829,7 @@
       .ranking-scroll { padding: 12px 12px 20px; }
       thead th, tbody td { font-size: 13px; padding: 10px 6px; }
       .map-item-wrap:hover .map-item { transform: scale(1.04); }
+      .map-tooltip { display: none !important; }
 
       /* 모바일 로비 전용 보정 (데스크탑 배치는 유지) */
       .lobby-map-wrap {
@@ -851,9 +852,9 @@
         line-height: 1.25;
       }
 
-      .rank-wrap    { top: 31.8%; left: 13.8%; width: 22%; }
+      .rank-wrap    { top: 30.9%; left: 14.8%; width: 22%; }
       .house-wrap   { top: 32.8%; left: 55.6%; width: 16.8%; }
-      .student-wrap { top: 47.2%; left: 49.8%; width: 19.8%; }
+      .student-wrap { top: 44.8%; left: 44.6%; width: 19.8%; }
       .hunt-wrap    { top: 78.2%; left: 27.4%; width: 16.8%; }
       .lion-wrap    { top: 49.6%; left: 53.1%; width: 11.8%; }
       .game-wrap    { top: 78.2%; left: 55.4%; width: 16.2%; }
@@ -894,9 +895,9 @@
         top: calc(2.2% + 17.2vw);
       }
 
-      .rank-wrap    { top: 31.2%; left: 12.6%; width: 23.5%; }
+      .rank-wrap    { top: 30.2%; left: 13.8%; width: 23.5%; }
       .house-wrap   { top: 32.1%; left: 54.7%; width: 18.3%; }
-      .student-wrap { top: 46.7%; left: 49.2%; width: 21.8%; }
+      .student-wrap { top: 44.1%; left: 43.8%; width: 21.8%; }
       .hunt-wrap    { top: 78.8%; left: 25.4%; width: 19%; }
       .lion-wrap    { top: 50.4%; left: 52.2%; width: 12.9%; }
       .game-wrap    { top: 78.8%; left: 54.1%; width: 18.3%; }
@@ -1364,6 +1365,7 @@ const schoolQ = () => {
   const s = (localStorage.getItem(STORAGE_SCHOOL) || "").trim();
   return s ? `?school=${encodeURIComponent(s)}` : "";
 };
+const isMobileLayout = () => window.matchMedia("(max-width: 640px)").matches;
 
 startBtn.addEventListener("click", goToStory);
 prevBtn.addEventListener("click", () => { if (storyIndex > 0) { storyIndex--; renderStory(); } });
@@ -1378,6 +1380,14 @@ document.getElementById("goHuntConfirmBtn").addEventListener("click",    (e) => 
 document.getElementById("goLionConfirmBtn").addEventListener("click",    (e) => { e.stopPropagation(); location.href = "games/cross_road.html"            + schoolQ(); });
 document.getElementById("goStudentConfirmBtn").addEventListener("click", (e) => { e.stopPropagation(); location.href = "games/professor-cheek-sort.html" + schoolQ(); });
 document.getElementById("goGameConfirmBtn").addEventListener("click",    (e) => { e.stopPropagation(); location.href = "games/last-commit.html"            + schoolQ(); });
+
+/* 모바일에서는 툴팁 대신 오브젝트 자체를 직접 클릭 */
+storyBtn.addEventListener("click",   (e) => { if (!isMobileLayout()) return; e.stopPropagation(); backToLanding(); });
+huntBtn.addEventListener("click",    (e) => { if (!isMobileLayout()) return; e.stopPropagation(); location.href = "games/grade-hunt.html"           + schoolQ(); });
+lionBtn.addEventListener("click",    (e) => { if (!isMobileLayout()) return; e.stopPropagation(); location.href = "games/cross_road.html"            + schoolQ(); });
+studentBtn.addEventListener("click", (e) => { if (!isMobileLayout()) return; e.stopPropagation(); location.href = "games/professor-cheek-sort.html" + schoolQ(); });
+gameBtn.addEventListener("click",    (e) => { if (!isMobileLayout()) return; e.stopPropagation(); location.href = "games/last-commit.html"            + schoolQ(); });
+
 rankBtn.addEventListener("click",    () => { refreshRankings(); rankingModal.style.display = "flex"; });
 
 closeRankingBtn.addEventListener("click",  () => { rankingModal.style.display = "none"; });
