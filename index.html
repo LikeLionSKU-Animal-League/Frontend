@@ -62,7 +62,7 @@
       justify-content: center;
       padding: 24px 20px;
       position: relative;
-      background-image: url('./assets/images/home/background.jpg');
+      background-image: url('./assets/images/story_background.png');
       background-size: cover;
       background-position: center top;
       background-repeat: no-repeat;
@@ -266,6 +266,10 @@
       border-color: #9dd9a0;
       box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7), 0 0 0 3px rgba(125,204,127,0.25);
     }
+
+    #introScreen.story-bg {
+  background-image: url('./assets/images/story_background.png');
+}
 
     #confirmSchoolBtn {
       padding: 15px 0;
@@ -994,17 +998,17 @@
       <div class="podium-overlay" id="podiumOverlay">
         <div class="podium-card p2" id="podiumCard2">
           <div class="podium-medal-icon">🥈</div>
-          <img class="podium-animal-img" id="podiumAnimal2" src="./assets/images/rank_2_tiger.png" alt="2등" />
+          <img class="podium-animal-img" id="podiumAnimal2" src="./assets/images/identify_prof/a_2.png" alt="2등" />
           <div class="podium-uni-name empty" id="podiumUni2">—</div>
         </div>
         <div class="podium-card p1" id="podiumCard1">
           <div class="podium-medal-icon">🥇</div>
-          <img class="podium-animal-img" id="podiumAnimal1" src="./assets/images/a_1.png" alt="1등" />
+          <img class="podium-animal-img" id="podiumAnimal1" src="./assets/images/identify_prof/a_1.png" alt="1등" />
           <div class="podium-uni-name empty" id="podiumUni1">—</div>
         </div>
         <div class="podium-card p3" id="podiumCard3">
           <div class="podium-medal-icon">🥉</div>
-          <img class="podium-animal-img" id="podiumAnimal3" src="./assets/images/a_2.png" alt="3등" />
+          <img class="podium-animal-img" id="podiumAnimal3" src="./assets/images/identify_prof/a_3.png" alt="3등" />
           <div class="podium-uni-name empty" id="podiumUni3">—</div>
         </div>
       </div>
@@ -1076,8 +1080,9 @@
     </div>
 
     <button id="mySchoolBtn">
-      <img class="my-school-btn-animal" id="mySchoolBtnAnimal"
-           src="./assets/images/chick_10plus.png" alt="대표 동물" />
+      <!-- 기존: chick_10plus.png → a_6.png -->
+<img class="my-school-btn-animal" id="mySchoolBtnAnimal"
+     src="./assets/images/identify_prof/a_10.png" alt="대표 동물" />
       <span id="mySchoolBtnLabel">내 대학 정보</span>
     </button>
   </div>
@@ -1109,7 +1114,8 @@
     <div class="my-school-modal-body">
       <div class="my-school-hero">
         <div class="my-school-avatar">
-          <img id="modalMyAnimalImg" src="./assets/images/chick_10plus.png" alt="대표 동물" />
+          <!-- modalMyAnimalImg도 동일 -->
+<img id="modalMyAnimalImg" src="./assets/images/identify_prof/a_10.png" alt="대표 동물" />
         </div>
         <div class="my-school-hero-text">
           <h3 id="modalMySchoolName">—</h3>
@@ -1140,22 +1146,27 @@ const storyLines = [
 let storyIndex = 0;
 
 const ANIMAL_NAMES = {
-  lion:"사자", tiger:"호랑이", fox:"말", dog:"강아지",
-  raccoon:"너구리", cat:"고양이", squirrel:"다람쥐",
-  parrot:"앵무새", hedgehog:"고슴도치", chick:"병아리"
+  lion:"사자", tiger:"호랑이", horse:"말", fox:"여우", dog:"강아지",
+  cat:"고양이", hedgehog:"고슴도치", squirrel:"다람쥐", parrot:"앵무새", chick:"병아리"
 };
 const ANIMAL_FILES = {
-  lion:"a_1.png", tiger:"rank_2_tiger.png", fox:"a_2.png",
-  dog:"rank_4_dog.png", raccoon:"rank_5_raccoon.png", cat:"a_3.png",
-  squirrel:"a_4.png", parrot:"a_5.png", hedgehog:"rank_9_hedgehog.png",
-  chick:"chick_10plus.png"
+  lion:"a_1.png", tiger:"a_2.png", horse:"a_3.png", fox:"a_4.png", dog:"a_5.png",
+  cat:"a_6.png", hedgehog:"a_7.png", squirrel:"a_8.png", parrot:"a_9.png", chick:"a_10.png"
 };
 function getKey(rank){
   if(!Number.isFinite(rank)||rank<=0) return "chick";
-  const map=[,"lion","tiger","fox","dog","raccoon","cat","squirrel","parrot","hedgehog"];
-  return map[rank]||"chick";
+  if(rank === 1)  return "lion";
+  if(rank === 2)  return "tiger";
+  if(rank === 3)  return "horse";
+  if(rank === 4)  return "fox";
+  if(rank === 5)  return "dog";
+  if(rank <= 10)  return "cat";
+  if(rank <= 15)  return "hedgehog";
+  if(rank <= 20)  return "squirrel";
+  if(rank <= 25)  return "parrot";
+  return "chick";
 }
-function animalSrc(rank){ return `./assets/images/${ANIMAL_FILES[getKey(rank)]}`; }
+function animalSrc(rank){ return `./assets/images/identify_prof/${ANIMAL_FILES[getKey(rank)]}`; }
 function animalName(rank){ return ANIMAL_NAMES[getKey(rank)]; }
 function animalImg(src,alt,cls){
   return `<img class="animal-img${cls?' '+cls:''}" src="${src}" alt="${alt}"/>`;
@@ -1208,6 +1219,13 @@ function showPhase(phase) {
   phaseStory.classList.add("hidden");
   phaseSchool.classList.add("hidden");
   phase.classList.remove("hidden");
+
+  // 랜딩 화면일 때만 기본 배경, 나머지는 스토리 배경
+  if (phase === phaseLanding) {
+    introScreen.classList.remove("story-bg");
+  } else {
+    introScreen.classList.add("story-bg");
+  }
 }
 
 function renderStory() {
