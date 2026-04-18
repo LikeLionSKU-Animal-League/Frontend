@@ -740,7 +740,10 @@
       { g: "C+", score: 3,  type: "low",   img: "../assets/images/identify_prof/a_5.png" },
       { g: "C",  score: 2,  type: "low",   img: "../assets/images/identify_prof/a_6.png" },
       { g: "D",  score: -2, type: "bad",   img: "../assets/images/identify_prof/a_7.png" },
-      { g: "F",  score: -10,type: "worst", img: "../assets/images/identify_prof/a_8.png" }
+      { g: "D",  score: -2, type: "bad",   img: "../assets/images/identify_prof/a_7.png" },  // ★ D 2배
+      { g: "F",  score: -10,type: "worst", img: "../assets/images/identify_prof/a_8.png" },
+      { g: "F",  score: -10,type: "worst", img: "../assets/images/identify_prof/a_8.png" },  // ★ F 2배
+      { g: "F",  score: -10,type: "worst", img: "../assets/images/identify_prof/a_8.png" },  // ★ F 3배
     ];
 
     const dropletColors = {
@@ -753,51 +756,8 @@
       bomb:   ["#ff6030", "#ff3300", "#ffcc00"]
     };
 
-    /* ═══════════════════════════════════════════
-       ★ 버블 이동 애니메이션 동적 생성
-    ═══════════════════════════════════════════ */
-    let animIdCounter = 0;
     const dynamicStyleEl = document.createElement("style");
     document.head.appendChild(dynamicStyleEl);
-
-    /**
-     * 버블 이동 keyframe을 동적으로 생성하고 animation 문자열을 반환
-     * @param {number} startX  버블 시작 left (px)
-     * @param {number} startY  버블 시작 top  (px)
-     * @param {number} areaW   게임 영역 너비
-     * @param {number} areaH   게임 영역 높이
-     * @param {number} size    버블 크기
-     * @param {number} lifeMs  버블 수명 (ms)
-     */
-    function createMoveAnimation(startX, startY, areaW, areaH, size, lifeMs) {
-      const id = `bm${++animIdCounter}`;
-
-      // 이동 방향 & 거리 (랜덤)
-      const angle  = Math.random() * Math.PI * 2;
-      const dist   = 60 + Math.random() * 100;        // 60~160px 이동
-      const endDX  = Math.cos(angle) * dist;
-      const endDY  = Math.sin(angle) * dist;
-
-      // 흔들림 진폭 (좌우 ±)
-      const wobble = 8 + Math.random() * 14;           // 8~22px 흔들림
-      const wobbleDir = Math.random() < 0.5 ? 1 : -1;
-
-      // 중간 경유점 (약간 곡선감)
-      const midDX = endDX * 0.5 + wobble * wobbleDir;
-      const midDY = endDY * 0.5 - Math.abs(wobble) * 0.5;
-
-      dynamicStyleEl.textContent += `
-        @keyframes ${id} {
-          0%   { transform: translate(0px, 0px)         scale(1); opacity: 1; }
-          30%  { transform: translate(${midDX * 0.6}px, ${midDY * 0.6}px) scale(1.04); opacity: 1; }
-          60%  { transform: translate(${midDX}px, ${midDY}px) scale(0.97); opacity: 1; }
-          85%  { transform: translate(${endDX * 0.9}px, ${endDY * 0.9}px) scale(1.02); opacity: 0.85; }
-          100% { transform: translate(${endDX}px, ${endDY}px) scale(0.9); opacity: 0; }
-        }
-      `;
-
-      return `${id} ${lifeMs}ms cubic-bezier(0.25,0.1,0.25,1) forwards`;
-    }
 
     /* ═══════════════════════════════════════════
        게임 상태
@@ -880,14 +840,14 @@
       resultEl.textContent = "게임 시작! 좋은 학점을 빠르게 잡아보세요!";
       hideKakaoShareButton();
 
-      // ★ 스폰 간격: 700ms → 600ms (약간 더 빈번)
-      spawnInterval = setInterval(spawnBubble, 600);
+      // ★ 스폰 간격: 500ms
+      spawnInterval = setInterval(spawnBubble, 500);
 
-      // ★ 하드모드 전환: 7초 후 400ms 간격
+      // ★ 하드모드 전환: 5초 후 350ms 간격
       hardModeInterval = setTimeout(() => {
         clearInterval(spawnInterval);
-        spawnInterval = setInterval(spawnBubble, 400);
-      }, 7000);
+        spawnInterval = setInterval(spawnBubble, 350);
+      }, 5000);
 
       gameInterval = setInterval(() => {
         time--;
@@ -981,16 +941,16 @@
       if (!isPlaying) return;
       const rnd = Math.random();
       if      (rnd < 0.10) spawnGolden();
-      else if (rnd < 0.18) spawnBomb();
+      else if (rnd < 0.28) spawnBomb();   // 8% → 18% (2배 이상)
       else                 spawnGrade();
     }
 
-    // ★ 버블 수명 (ms) — 원래대로 복원
-    const LIFE_GRADE  = 2200;
-    const LIFE_GOLDEN = 2500;
-    const LIFE_BOMB   = 2000;
+    // ★ 버블 수명 (ms)
+    const LIFE_GRADE  = 1000;
+    const LIFE_GOLDEN = 1300;
+    const LIFE_BOMB   = 1000;
 
-    // ★ 이동 확률: 50% 움직임 / 50% 정지
+    // ★ 이동 확률 제거
     const MOVE_CHANCE = 0.5;
 
     function spawnGrade() {
@@ -1005,17 +965,7 @@
 
       bubble.style.left = `${pos.x}px`;
       bubble.style.top  = `${pos.y}px`;
-
-      // ★ 50% 확률로 이동, 나머지는 기존 floaty 애니메이션 (정지)
-      const areaW = gameArea.clientWidth;
-      const areaH = gameArea.clientHeight;
-      const moves = Math.random() < MOVE_CHANCE;
-      if (moves) {
-        const moveAnim = createMoveAnimation(pos.x, pos.y, areaW, areaH, size, LIFE_GRADE);
-        bubble.style.animation = `popIn 0.24s ease, ${moveAnim}`;
-      } else {
-        bubble.style.animation = `popIn 0.24s ease, floaty 1.6s ease-in-out infinite alternate`;
-      }
+      bubble.style.animation = `popIn 0.24s ease, floaty 1.6s ease-in-out infinite alternate`;
 
       bubble.onclick = () => {
         if (!isPlaying) return;
@@ -1070,15 +1020,7 @@
       bubble.style.left = `${pos.x}px`;
       bubble.style.top  = `${pos.y}px`;
 
-      const areaW = gameArea.clientWidth;
-      const areaH = gameArea.clientHeight;
-      const movesG = Math.random() < MOVE_CHANCE;
-      if (movesG) {
-        const moveAnim = createMoveAnimation(pos.x, pos.y, areaW, areaH, size, LIFE_GOLDEN);
-        bubble.style.animation = `popIn 0.24s ease, ${moveAnim}`;
-      } else {
-        bubble.style.animation = `popIn 0.24s ease, goldenPulse 0.9s ease-in-out infinite alternate`;
-      }
+      bubble.style.animation = `popIn 0.24s ease, goldenPulse 0.9s ease-in-out infinite alternate`;
 
       bubble.onclick = () => {
         if (!isPlaying) return;
@@ -1112,15 +1054,7 @@
       bubble.style.left = `${pos.x}px`;
       bubble.style.top  = `${pos.y}px`;
 
-      const areaW = gameArea.clientWidth;
-      const areaH = gameArea.clientHeight;
-      const movesB = Math.random() < MOVE_CHANCE;
-      if (movesB) {
-        const moveAnim = createMoveAnimation(pos.x, pos.y, areaW, areaH, size, LIFE_BOMB);
-        bubble.style.animation = `popIn 0.24s ease, ${moveAnim}`;
-      } else {
-        bubble.style.animation = `popIn 0.24s ease, bombWobble 0.5s ease-in-out infinite alternate`;
-      }
+      bubble.style.animation = `popIn 0.24s ease, bombWobble 0.5s ease-in-out infinite alternate`;
 
       bubble.onclick = () => {
         if (!isPlaying) return;
