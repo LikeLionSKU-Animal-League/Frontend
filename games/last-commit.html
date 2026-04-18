@@ -115,7 +115,6 @@
       from { opacity: 0; transform: translateY(15px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    .code-display.slide-in { animation: slideIn 0.25s ease-out; }
 
     @keyframes comboBounce {
       0%   { transform: scale(1); }
@@ -300,7 +299,9 @@
       position: relative;
       z-index: 1;
       width: 100%;
-      min-height: 320px;
+      height: min(600px, calc(100vh - 220px));
+      height: min(600px, calc(100dvh - 220px));
+      min-height: 440px;
       border-radius: 18px;
       border: 3px solid #3a4a5c;
       background: #1a1b26;
@@ -336,91 +337,78 @@
       font-family: "neodgm", monospace;
     }
 
-    .code-area {
-      padding: 12px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      min-height: 200px;
-    }
-
-    .code-section {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .section-label {
-      font-size: 10px;
-      font-weight: 800;
-      color: #565f89;
-      font-family: "neodgm", monospace;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding-left: 36px;
-    }
-
-    .code-block {
-      display: flex;
-      gap: 12px;
-      min-height: 60px;
-      padding: 8px 0;
-    }
-
-    .code-divider {
-      height: 1px;
-      background: #2a2d3a;
-      margin: 8px 0;
-    }
-
-    .line-numbers {
-      color: #3b3f54;
-      font-size: clamp(13px, 2.2vw, 16px);
-      font-family: "neodgm", monospace;
-      line-height: 1.8;
-      user-select: none;
-      text-align: right;
-      min-width: 24px;
-    }
-
-    .code-display {
+    /* ---- 5행 레이아웃 ---- */
+    .rows-area {
       flex: 1;
-      font-size: clamp(14px, 2.5vw, 18px);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      padding: 6px 14px;
+    }
+
+    .type-row {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding: 7px 4px;
+      border-bottom: 1px solid #2a2d3a;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .type-row:last-child { border-bottom: none; }
+
+    .type-row.active {
+      background: rgba(122, 162, 247, 0.05);
+    }
+
+    .type-target {
       font-family: "neodgm", monospace;
-      line-height: 1.8;
+      font-size: clamp(14px, 2.6vw, 18px);
+      color: #3b3f54;
+      line-height: 1.5;
       white-space: pre-wrap;
       word-break: break-all;
+      padding: 0 2px;
     }
 
-    /* 목표 코드: 항상 밝게 표시, 현재 위치만 하이라이트 */
-    .code-display .char {
-      display: inline;
-      color: #c0caf5;
-      padding: 1px 0;
-    }
+    .type-row.active .type-target { color: #c0caf5; }
 
-    .code-display .char.target-done {
-      color: #565f89;
-    }
-
-    .code-display .char.target-current {
+    .type-target .char { display: inline; color: #c0caf5; }
+    .type-target .char.target-done { color: #565f89; }
+    .type-target .char.target-current {
       background: rgba(122, 162, 247, 0.25);
       border-radius: 2px;
     }
 
-    /* 입력 코드: 맞으면 초록, 틀리면 빨간 배경 */
-    .input-block .code-display .char {
-      color: #9ece6a;
+    .type-target.slide-in { animation: slideIn 0.2s ease-out; }
+
+    .type-input-wrap {
+      font-family: "neodgm", monospace;
+      font-size: clamp(14px, 2.6vw, 18px);
+      min-height: 30px;
+      background: #13141f;
+      border-radius: 5px;
+      padding: 3px 8px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-all;
     }
 
-    .input-block .code-display .char.wrong {
+    .type-input-wrap.active {
+      background: rgba(122, 162, 247, 0.1);
+      border: 1px solid rgba(122, 162, 247, 0.2);
+    }
+
+    .type-input-wrap .char { display: inline; color: #9ece6a; }
+    .type-input-wrap .char.wrong {
       color: #fff;
       background: #a8334a;
       border-radius: 2px;
       padding: 1px 1px;
     }
 
-    .input-block .code-display .cursor {
+    .type-input-wrap .cursor {
       display: inline;
       color: #7aa2f7;
       animation: cursorBlink 0.5s step-end infinite;
@@ -502,7 +490,6 @@
       font-family: "neodgm", "맑은 고딕", sans-serif;
     }
     .lobby-link:hover { background: #dcf2de; }
-
 
     /* ---- overlay ---- */
     .overlay {
@@ -597,7 +584,6 @@
     #overlayActionBtn:hover { transform: translateY(-1px); }
     #overlayActionBtn.hidden { display: none !important; }
 
-
     /* 이미지 버튼 */
     .img-btn {
       background: none;
@@ -624,9 +610,7 @@
     @media (max-width: 700px) {
       .wrap { padding: 14px 10px; }
       #gameArea { min-height: 260px; }
-      .code-area { padding: 12px 10px; gap: 8px; }
       .mobile-hint { display: block; }
-      .kakao-share-result-btn { width: 100%; min-height: 48px; font-size: 14px; }
       .img-btn img { height: 60px; }
     }
   </style>
@@ -667,23 +651,7 @@
           <div class="file-tab" id="fileTab">MainService.java</div>
           <div class="progress-label" id="progressLabel">0 / 0</div>
         </div>
-        <div class="code-area">
-          <div class="code-section">
-            <div class="section-label">목표 코드</div>
-            <div class="code-block">
-              <div class="line-numbers" id="lineNumbers">1</div>
-              <div class="code-display" id="codeDisplay"></div>
-            </div>
-          </div>
-          <div class="code-divider"></div>
-          <div class="code-section">
-            <div class="section-label">내 입력</div>
-            <div class="code-block input-block">
-              <div class="line-numbers" id="inputLineNumbers">1</div>
-              <div class="code-display" id="inputDisplay"></div>
-            </div>
-          </div>
-        </div>
+        <div class="rows-area" id="rowsArea"></div>
         <div class="combo-banner" id="comboBanner">COMBO x0</div>
         <div class="stage-overlay" id="stageOverlay">
           <div class="stage-num" id="stageNum">STAGE 1</div>
@@ -934,11 +902,8 @@
     const timerEl       = document.getElementById("timerEl");
     const fileTab       = document.getElementById("fileTab");
     const progressLabel = document.getElementById("progressLabel");
-    const lineNumbers   = document.getElementById("lineNumbers");
-    const codeDisplay       = document.getElementById("codeDisplay");
-    const inputDisplay      = document.getElementById("inputDisplay");
-    const inputLineNumbers  = document.getElementById("inputLineNumbers");
-    const comboBanner       = document.getElementById("comboBanner");
+    const rowsArea      = document.getElementById("rowsArea");
+    const comboBanner   = document.getElementById("comboBanner");
     const hiddenInput   = document.getElementById("hiddenInput");
     const gameArea      = document.getElementById("gameArea");
     const timerBarFill  = document.getElementById("timerBarFill");
@@ -1046,44 +1011,72 @@
     let prevAccuracy = 100;
 
     /* ═══════════════════════════════════════════
-       렌더링
+       5행 렌더링
     ═══════════════════════════════════════════ */
-    function renderCode() {
-      const typed = currentTyped;
-      const target = currentTarget;
+    const VISIBLE_COUNT = 5;
+    let visibleQueue = [];   // {text, file, ignoreCase}
 
-      // --- 목표 코드 (위) ---
-      let targetHtml = "";
+    function nextSnippetFromPool() {
+      if (snippetIndex >= snippetOrder.length) {
+        snippetOrder = shuffle(STAGE_SNIPPETS[currentStage]);
+        snippetIndex = 0;
+      }
+      return snippetOrder[snippetIndex++];
+    }
+
+    function buildRows() {
+      rowsArea.innerHTML = "";
+      visibleQueue.forEach((snip, i) => {
+        const row = document.createElement("div");
+        row.className = "type-row" + (i === 0 ? " active" : "");
+
+        const targetEl = document.createElement("div");
+        targetEl.className = "type-target";
+        if (i === 0) {
+          targetEl.innerHTML = buildTargetHtml(snip.text, currentTyped);
+        } else {
+          targetEl.textContent = snip.text;
+        }
+
+        const inputEl = document.createElement("div");
+        inputEl.className = "type-input-wrap" + (i === 0 ? " active" : "");
+        if (i === 0) inputEl.innerHTML = buildInputHtml(currentTarget, currentTyped);
+
+        row.appendChild(targetEl);
+        row.appendChild(inputEl);
+        rowsArea.appendChild(row);
+      });
+    }
+
+    function renderRows() {
+      const activeRow = rowsArea.querySelector(".type-row.active");
+      if (!activeRow) return;
+      activeRow.querySelector(".type-target").innerHTML =
+        buildTargetHtml(currentTarget, currentTyped);
+      activeRow.querySelector(".type-input-wrap").innerHTML =
+        buildInputHtml(currentTarget, currentTyped);
+    }
+
+    function buildTargetHtml(target, typed) {
+      let html = "";
       for (let i = 0; i < target.length; i++) {
         let cls = "char";
-        if (i < typed.length) {
-          cls += " target-done";
-        } else if (i === typed.length) {
-          cls += " target-current";
-        }
-        const ch = target[i] === "\n" ? "\n" : escapeHtml(target[i]);
-        targetHtml += `<span class="${cls}">${ch}</span>`;
+        if (i < typed.length) cls += " target-done";
+        else if (i === typed.length) cls += " target-current";
+        html += `<span class="${cls}">${escapeHtml(target[i])}</span>`;
       }
-      codeDisplay.innerHTML = targetHtml;
+      return html;
+    }
 
-      // --- 내 입력 (아래) ---
-      let inputHtml = "";
+    function buildInputHtml(target, typed) {
+      let html = "";
       for (let i = 0; i < typed.length; i++) {
-        const isCorrect = i < target.length && (currentIgnoreCase
+        const ok = i < target.length && (currentIgnoreCase
           ? typed[i].toLowerCase() === target[i].toLowerCase()
           : typed[i] === target[i]);
-        const cls = "char" + (isCorrect ? "" : " wrong");
-        const ch = typed[i] === "\n" ? "\n" : escapeHtml(typed[i]);
-        inputHtml += `<span class="${cls}">${ch}</span>`;
+        html += `<span class="char${ok ? "" : " wrong"}">${escapeHtml(typed[i])}</span>`;
       }
-      inputHtml += '<span class="cursor">|</span>';
-      inputDisplay.innerHTML = inputHtml;
-
-      // 줄 번호 업데이트
-      const targetLines = target.split("\n");
-      lineNumbers.innerHTML = targetLines.map((_, i) => i + 1).join("<br>");
-      const inputLines = (typed || " ").split("\n");
-      inputLineNumbers.innerHTML = inputLines.map((_, i) => i + 1).join("<br>");
+      return html + '<span class="cursor">|</span>';
     }
 
     function escapeHtml(ch) {
@@ -1095,18 +1088,16 @@
     }
 
     function updateUI() {
-      // score rolling is handled by animateScore; only set directly if no animation running
       if (!scoreAnimId) scoreEl.textContent = score;
 
       const curAcc = getAccuracyPercent();
       accuracyEl.textContent = curAcc + "%";
       progressLabel.textContent = `STAGE ${currentStage + 1} - ${stageSnippetCount}/${STAGE_GOAL}`;
 
-      // status value pop on change
       if (curAcc !== prevAccuracy) {
         prevAccuracy = curAcc;
         accuracyEl.classList.remove("pop");
-        void accuracyEl.offsetWidth; // reflow to restart animation
+        void accuracyEl.offsetWidth;
         accuracyEl.classList.add("pop");
       }
 
@@ -1114,7 +1105,6 @@
         const oldText = comboBanner.textContent;
         comboBanner.textContent = `COMBO x${comboCount}`;
         comboBanner.classList.add("show");
-        // bounce on change
         if (oldText !== `COMBO x${comboCount}`) {
           comboBanner.classList.remove("bounce");
           void comboBanner.offsetWidth;
@@ -1128,30 +1118,33 @@
     /* ═══════════════════════════════════════════
        스니펫 관리
     ═══════════════════════════════════════════ */
-    function loadSnippet() {
-      if (snippetIndex >= snippetOrder.length) {
-        snippetOrder = shuffle(STAGE_SNIPPETS[currentStage]);
-        snippetIndex = 0;
-      }
-
-      const snip = snippetOrder[snippetIndex];
+    function setActiveSnippet() {
+      const snip = visibleQueue[0];
       currentTarget = snip.text;
       currentIgnoreCase = !!snip.ignoreCase;
       currentTyped = "";
       snippetCorrectKeys = 0;
       snippetTotalKeys = 0;
       snippetStartTime = performance.now();
-
       fileTab.textContent = snip.file;
       hiddenInput.value = "";
+    }
 
-      renderCode();
+    function loadSnippet() {
+      if (visibleQueue.length === 0) {
+        for (let i = 0; i < VISIBLE_COUNT; i++) {
+          visibleQueue.push(nextSnippetFromPool());
+        }
+      }
+      setActiveSnippet();
+      buildRows();
       updateUI();
-
-      // slide-in animation
-      codeDisplay.classList.remove("slide-in");
-      void codeDisplay.offsetWidth;
-      codeDisplay.classList.add("slide-in");
+      const activeTarget = rowsArea.querySelector(".type-row.active .type-target");
+      if (activeTarget) {
+        activeTarget.classList.remove("slide-in");
+        void activeTarget.offsetWidth;
+        activeTarget.classList.add("slide-in");
+      }
     }
 
     function completeSnippet() {
@@ -1184,26 +1177,22 @@
 
       if (gotSpeedBonus) showEncouragement("번개 손!");
 
-      // score popup & rolling animation
       showScorePopup(pts);
       const oldScore = score;
       score += pts;
       animateScore(oldScore, score);
-      // pop effect on score
       scoreEl.classList.remove("pop");
       void scoreEl.offsetWidth;
       scoreEl.classList.add("pop");
 
       completedCount++;
       stageSnippetCount++;
-      snippetIndex++;
 
       playSound("complete");
 
       // 스테이지 클리어 체크
       if (stageSnippetCount >= STAGE_GOAL) {
         if (currentStage >= 2) {
-          // 3단계 모두 클리어!
           endGame(true);
           return;
         }
@@ -1211,7 +1200,18 @@
         return;
       }
 
-      loadSnippet();
+      // 완료된 첫 행 제거, 새 스니펫을 큐 끝에 추가
+      visibleQueue.shift();
+      visibleQueue.push(nextSnippetFromPool());
+      setActiveSnippet();
+      buildRows();
+      updateUI();
+      const activeTarget = rowsArea.querySelector(".type-row.active .type-target");
+      if (activeTarget) {
+        activeTarget.classList.remove("slide-in");
+        void activeTarget.offsetWidth;
+        activeTarget.classList.add("slide-in");
+      }
     }
 
     const STAGE_DESCS = ["어노테이션 & SQL 키워드", "짧은 코드", "중간 길이 코드"];
@@ -1224,9 +1224,9 @@
       stageSnippetCount = 0;
       snippetIndex = 0;
       snippetOrder = shuffle(STAGE_SNIPPETS[currentStage]);
+      visibleQueue = [];
       warningPlayed = false;
 
-      // 타이머 리셋
       clearInterval(timerInterval);
       timeLeft = STAGE_TIME;
       timerEl.textContent = STAGE_TIME;
@@ -1235,7 +1235,6 @@
       timerEl.classList.remove("danger");
       timerBarFill.classList.remove("urgent");
 
-      // 스테이지 전환 팝업 표시
       gameActive = false;
       stageNum.textContent = `STAGE ${currentStage + 1}`;
       stageDesc.textContent = STAGE_DESCS[currentStage];
@@ -1267,9 +1266,7 @@
       const val = hiddenInput.value;
       const target = currentTarget;
 
-      // figure out what changed
       if (val.length > currentTyped.length) {
-        // typed new character(s)
         for (let i = currentTyped.length; i < val.length; i++) {
           if (i < target.length) {
             totalKeys++;
@@ -1290,26 +1287,22 @@
           }
         }
       }
-      // backspace case: just update currentTyped, don't count keys
 
       currentTyped = val;
 
-      // check if snippet completed
       if (currentTyped.length >= target.length) {
         completeSnippet();
         return;
       }
 
-      renderCode();
+      renderRows();
       updateUI();
     });
 
-    // prevent Tab from leaving textarea; type actual tab or skip
     hiddenInput.addEventListener("keydown", (e) => {
       if (!gameActive) return;
       if (e.key === "Tab") {
         e.preventDefault();
-        // insert spaces for tab
         const pos = hiddenInput.selectionStart;
         const before = hiddenInput.value.slice(0, pos);
         const after = hiddenInput.value.slice(pos);
@@ -1328,7 +1321,6 @@
       }
     });
 
-    // click game area to focus input
     gameArea.addEventListener("click", () => {
       if (gameActive) hiddenInput.focus();
     });
@@ -1371,6 +1363,7 @@
       currentStage = 0;
       stageSnippetCount = 0;
       snippetOrder = shuffle(STAGE_SNIPPETS[0]);
+      visibleQueue = [];
 
       shell.classList.remove("urgent");
       shell.classList.remove("shake");
@@ -1389,7 +1382,6 @@
       replayImgBtn.classList.add("hidden");
       overlayLobbyBtn.classList.add("hidden");
 
-      // 스테이지 1 팝업 표시
       gameActive = false;
       stageNum.textContent = "STAGE 1";
       stageDesc.textContent = STAGE_DESCS[0];
@@ -1411,11 +1403,9 @@
 
       playSound("gameover");
 
-      // calc final stats
       const acc = getAccuracyPercent();
       const cpm = Math.round(correctKeys);
 
-      // show overlay
       overlayTitle.textContent = cleared ? "배포 성공!" : `STAGE ${currentStage + 1} 시간 초과!`;
       finalScoreEl.textContent = "0점";
       finalScoreEl.classList.remove("hidden");
@@ -1428,7 +1418,6 @@
       statCpmEl.textContent = "0";
       finalStatsEl.classList.remove("hidden");
 
-      // count-up animations
       animateCountUp(finalScoreEl, score, "점", 1000, 200);
       animateCountUp(statSnippetsEl, completedCount, "", 500, 400);
       animateCountUp(statAccuracyEl, acc, "%", 500, 600);
