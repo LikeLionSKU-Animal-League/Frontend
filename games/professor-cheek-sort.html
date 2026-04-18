@@ -724,7 +724,7 @@
     let resultSubmitted = false;
     let round = 1;
     let totalDuration = GAME_DURATION_SEC;
-    const ROUND_TARGETS = [60, 100]; // 라운드 1→2 목표, 라운드 2→3 목표
+    const ROUND_TARGETS = [15, 25]; // 라운드 1→2 목표, 라운드 2→3 목표 (0.25배율 적용)
     const ROUND_BONUS_TIME = 10;
 
     function getLeagueSchool() {
@@ -989,7 +989,7 @@
         combo += 1;
         if (combo % 5 === 0) play('combo', 0.5);
         const gain = 1 + getComboBonus(combo);
-        score += gain;
+        score += Math.round(gain * 0.25);
         scoreEl.textContent = String(score);
         comboEl.textContent = String(combo);
         updateComboDisplay();

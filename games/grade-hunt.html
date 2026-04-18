@@ -998,7 +998,7 @@
 
         let gained = item.score;
         if (isFever && gained > 0) gained *= 2;
-        score += gained;
+        score += Math.round(gained * 0.3);
 
         if (gained > 0) {
           combo++;

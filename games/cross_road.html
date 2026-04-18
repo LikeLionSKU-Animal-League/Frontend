@@ -799,9 +799,9 @@ function drawStatic() {
 
 /** 누적 점수에 따라 0~3 단계 난이도 인덱스 */
 function getDifficulty() {
-  if (score >= 7) return 3;
-  if (score >= 5) return 2;
-  if (score >= 3) return 1;
+  if (score >= 140) return 3;
+  if (score >= 100) return 2;
+  if (score >= 60) return 1;
   return 0;
 }
 
@@ -1098,7 +1098,7 @@ function movePlayer(dc, dr) {
   play(stepSound(nr), 0.4);
 
   if (nr === GOAL_ROW) {
-    score++;
+    score += 20;
     updateUI();
     play('goal', 0.8);
     play('score_up', 0.5);
