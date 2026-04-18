@@ -1290,7 +1290,16 @@
 
       currentTyped = val;
 
-      if (currentTyped.length >= target.length) {
+      // 맞은 글자 수가 target 길이에 도달해야 완료
+      let correctCount = 0;
+      for (let i = 0; i < Math.min(currentTyped.length, target.length); i++) {
+        const m = currentIgnoreCase
+          ? currentTyped[i].toLowerCase() === target[i].toLowerCase()
+          : currentTyped[i] === target[i];
+        if (m) correctCount++;
+        else break;
+      }
+      if (correctCount >= target.length) {
         completeSnippet();
         return;
       }
