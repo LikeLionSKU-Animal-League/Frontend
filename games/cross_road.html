@@ -7,11 +7,11 @@
   <title>사자의 길 건너기</title>
   <style>
     @font-face {
-  font-family: "neodgm";
-  src: url("../assets/fonts/neodgm.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
+      font-family: "neodgm";
+      src: url("../assets/fonts/neodgm.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+    }
 
     /* 전역 박스 모델 */
     * { box-sizing: border-box; }
@@ -24,7 +24,7 @@
     /* 페이지 배경·상단 정렬·세이프 에리어 패딩 */
     body {
       margin: 0;
-      font-family: "neodgm", "Arial", "맑은 고딕", sans-serif;
+      font-family: "neodgm", "맑은 고딕", sans-serif;
       background: url('../assets/images/game_background.png') center center / cover no-repeat fixed;
       display: flex;
       justify-content: center;
@@ -51,10 +51,10 @@
     /* 흰 카드 메인 패널 */
     .shell {
       background: rgba(255,255,255,0.97);
-      border: 3px solid #dde9f5;
+      border: 3px solid #eef8e7;
       border-radius: 28px;
       padding: 18px;
-      box-shadow: 0 18px 42px rgba(62, 95, 130, 0.16);
+      box-shadow: 0 18px 40px rgba(92, 132, 97, 0.18);
     }
 
     .lobby-link {
@@ -64,13 +64,15 @@
       border-radius: 999px;
       font-size: 14px;
       font-weight: 800;
-      color: #304e6f;
-      background: #e8f2fc;
-      border: 2px solid #cfe3f5;
+      background: #e8f5e9;
+      border: 2px solid #c8e6c9;
+      color: #4f7b55;
       text-decoration: none;
       margin-bottom: 12px;
     }
-    .lobby-link:hover { background: #dceaf9; }
+    .lobby-link:hover {
+  background: #dcf2de;
+}
 
     /* 제목 + 점수·목숨·난이도 */
     .topbar {
@@ -109,8 +111,8 @@
       padding: 8px 12px;
       text-align: center;
       border-radius: 16px;
-      background: #f7fbff;
-      border: 2px solid #e0ebf6;
+      background: linear-gradient(180deg, #ffffff, #f7fff3);
+      border: 2px solid #e6f4df;
     }
 
     /* 상태 라벨(작은 글씨) */
@@ -163,11 +165,15 @@
       font-size: 14px;
     }
 
+    .game-wrap {
+  position: relative;
+}
+
     /* Canvas + 오버레이 + D패드의 부모(터치 스크롤 방지) */
     #game {
       position: relative;
       border-radius: 18px;
-      border: 3px solid #8faec8;
+      border: 4px solid #8ec18f;
       overflow: hidden;
       line-height: 0;
       touch-action: none;
@@ -311,15 +317,17 @@
 
     /* 시작·게임오버 전체 덮개 */
     .overlay {
-      position: absolute;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: rgba(17, 24, 33, 0.44);
-      backdrop-filter: blur(3px);
-      z-index: 30;
-    }
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(20, 40, 15, 0.38);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 50;
+  border-radius: 28px;
+}
 
     /* 오버레이 안 흰 카드 */
     .overlay-card {
@@ -386,27 +394,42 @@
     <a class="lobby-link" id="lobbyBackLink" href="../index.html?lobby=1">← 로비로 돌아가기</a>
 
     <div class="shell">
-      <!-- 제목 + 점수·목숨·난이도 -->
-      <div class="topbar">
-        <div class="title">
-          <h1>🦁 사자의 길 건너기</h1>
-          <p>차를 피하고 통나무를 타고 강을 건너 목적지에 도달하세요!</p>
-        </div>
-        <div class="status">
-          <div class="status-box">
-            <div class="status-label">점수</div>
-            <div class="status-value" id="score">0</div>
-          </div>
-          <div class="status-box">
-            <div class="status-label">목숨</div>
-            <div class="status-value" id="lives">3</div>
-          </div>
-          <div class="status-box">
-            <div class="status-label">난이도</div>
-            <div class="status-value" id="diffText" style="font-size:14px;padding-top:4px;">쉬움</div>
-          </div>
-        </div>
+
+  <div class="overlay" id="overlay">
+    <div class="overlay-card">
+      <h2 id="overlayTitle">게임 준비</h2>
+      <p id="overlayDesc">차를 피하고, 통나무 위에서 강을 건너 맨 위 줄에 도달하면 점수를 얻습니다.</p>
+      <div class="overlay-actions">
+        <button id="overlayStartBtn">시작</button>
+        <button id="overlayRestartBtn">다시 시작</button>
+        <button type="button" id="kakaoShareResultBtn" class="hidden" onclick="shareToKakao()">
+          결과 공유하기
+        </button>
       </div>
+    </div>
+  </div>
+
+  <!-- 제목 + 점수·목숨·난이도 -->
+  <div class="topbar">
+    <div class="title">
+      <h1>🦁 사자의 길 건너기</h1>
+      <p>차를 피하고 통나무를 타고 강을 건너 목적지에 도달하세요!</p>
+    </div>
+    <div class="status">
+      <div class="status-box">
+        <div class="status-label">점수</div>
+        <div class="status-value" id="score">0</div>
+      </div>
+      <div class="status-box">
+        <div class="status-label">목숨</div>
+        <div class="status-value" id="lives">3</div>
+      </div>
+      <div class="status-box">
+        <div class="status-label">난이도</div>
+        <div class="status-value" id="diffText" style="font-size:14px;padding-top:4px;">쉬움</div>
+      </div>
+    </div>
+  </div>
 
       <!-- 다시하기 + 메시지 -->
       <div class="controls">
@@ -414,38 +437,41 @@
       </div>
 
       <!-- Canvas 게임 영역 + 오버레이 + 모바일 D패드 -->
-      <div id="game">
-        <canvas id="gameCanvas" width="480" height="560"></canvas>
+      <div class="game-wrap">
+  <div id="game">
+    <canvas id="gameCanvas" width="480" height="560"></canvas>
 
-        <div class="overlay" id="overlay">
-          <div class="overlay-card">
-            <h2 id="overlayTitle">게임 준비</h2>
-            <p id="overlayDesc">차를 피하고, 통나무 위에서 강을 건너 맨 위 줄에 도달하면 점수를 얻습니다.</p>
-            <div class="overlay-actions">
-              <button id="overlayStartBtn">시작</button>
-              <button id="overlayRestartBtn">다시 시작</button>
-              <button type="button" id="kakaoShareResultBtn" class="hidden" onclick="shareToKakao()">
-                결과 공유하기
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 터치용 방향키 (CSS에서 900px 이하만 표시) -->
-        <div class="dpad" id="crossDpad" aria-label="이동 조작">
-          <div class="dpad-grid">
-            <div class="dpad-empty"></div>
-            <button type="button" class="dpad-btn" id="btnUp">▲</button>
-            <div class="dpad-empty"></div>
-            <button type="button" class="dpad-btn" id="btnLeft">◀</button>
-            <div class="dpad-empty"></div>
-            <button type="button" class="dpad-btn" id="btnRight">▶</button>
-            <div class="dpad-empty"></div>
-            <button type="button" class="dpad-btn" id="btnDown">▼</button>
-            <div class="dpad-empty"></div>
-          </div>
-        </div>
+    <!-- 터치용 방향키 -->
+    <div class="dpad" id="crossDpad" aria-label="이동 조작">
+      <div class="dpad-grid">
+        <div class="dpad-empty"></div>
+        <button type="button" class="dpad-btn" id="btnUp">▲</button>
+        <div class="dpad-empty"></div>
+        <button type="button" class="dpad-btn" id="btnLeft">◀</button>
+        <div class="dpad-empty"></div>
+        <button type="button" class="dpad-btn" id="btnRight">▶</button>
+        <div class="dpad-empty"></div>
+        <button type="button" class="dpad-btn" id="btnDown">▼</button>
+        <div class="dpad-empty"></div>
       </div>
+    </div>
+  </div>
+
+  <!-- 시작 / 게임오버 오버레이 -->
+  <div class="overlay" id="overlay">
+    <div class="overlay-card">
+      <h2 id="overlayTitle">게임 준비</h2>
+      <p id="overlayDesc">차를 피하고, 통나무 위에서 강을 건너 맨 위 줄에 도달하면 점수를 얻습니다.</p>
+      <div class="overlay-actions">
+        <button id="overlayStartBtn">시작</button>
+        <button id="overlayRestartBtn">다시 시작</button>
+        <button type="button" id="kakaoShareResultBtn" class="hidden" onclick="shareToKakao()">
+          결과 공유하기
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
       <div class="legend">이동: ← ↑ ↓ → 또는 W A S D &nbsp;|&nbsp; 통나무 위에서는 함께 흘러갑니다</div>
     </div>
