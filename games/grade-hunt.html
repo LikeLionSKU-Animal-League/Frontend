@@ -259,9 +259,6 @@
       to   { transform: translateX(-50%) scale(1.05); box-shadow: 0 8px 28px rgba(255,180,0,0.6); }
     }
 
-    /* ═══════════════════════════════════════════
-       버블 — 이동 + 흔들림 (난이도 UP)
-    ═══════════════════════════════════════════ */
     .grade {
       position: absolute;
       width: 88px;
@@ -276,7 +273,6 @@
       z-index: 2;
       border: 3px solid rgba(255,255,255,0.95);
       box-shadow: 0 10px 22px rgba(0,0,0,0.18);
-      /* ★ 이동+흔들림은 JS에서 인라인 animation으로 주입 */
       transition: transform 0.12s ease;
       backdrop-filter: blur(3px);
       font-family: "neodgm", "맑은 고딕", sans-serif;
@@ -336,9 +332,6 @@
       70%  { opacity: 0.9; }
       100% { opacity: 0;   transform: translate(var(--dx), var(--dy)) scale(0.2); }
     }
-
-    /* ★ 버블 이동 keyframe — JS에서 동적 생성 */
-    /* JS에서 <style> 태그를 동적으로 삽입 */
 
     .animal-img {
       width: 46px;
@@ -414,20 +407,35 @@
     }
     .lobby-link:hover { background: #dcf2de; }
 
-    .kakao-share-result-btn {
+    /* ═══════════════════════════════════════════
+       이미지 버튼 스타일
+    ═══════════════════════════════════════════ */
+    .img-btn {
+      background: none;
       border: none;
-      border-radius: 999px;
-      padding: 12px 22px;
-      font-size: 14px;
-      font-weight: 800;
-      color: #191919;
-      background: #fee500;
+      padding: 0;
       cursor: pointer;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s ease, filter 0.15s ease;
     }
-    .kakao-share-result-btn:hover { transform: translateY(-2px); }
-    .kakao-share-result-btn.hidden { display: none !important; }
+    .img-btn:hover  { transform: translateY(-2px); filter: brightness(1.06); }
+    .img-btn:active { transform: scale(0.94); filter: brightness(0.95); }
+    .img-btn.hidden { display: none !important; }
+
+    .img-btn img {
+      height: 72px;
+      width: auto;
+      display: block;
+      pointer-events: none;
+    }
+
+    @media (max-width: 700px) {
+      .img-btn img { height: 60px; }
+    }
 
     @media (max-width: 700px) {
       .wrap { padding: 14px 10px; }
@@ -437,7 +445,6 @@
       .animal-img { width: 38px; height: 38px; }
       .special-img { width: 42px; height: 42px; }
       .grade-text { font-size: 12px; }
-      .kakao-share-result-btn { width: 100%; min-height: 48px; font-size: 14px; }
     }
 
     .overlay {
@@ -481,13 +488,6 @@
       font-family: "neodgm", "맑은 고딕", sans-serif;
     }
 
-    .overlay-actions {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
     #overlayActionBtn {
       border: none;
       border-radius: 999px;
@@ -502,21 +502,15 @@
       transition: transform 0.15s ease;
     }
     #overlayActionBtn:hover { transform: translateY(-1px); }
+    #overlayActionBtn.hidden { display: none !important; }
 
-    #overlayLobbyBtn {
-      border: 2px solid #c8e6c9;
-      border-radius: 999px;
-      padding: 12px 28px;
-      font-size: 14px;
-      font-weight: 800;
-      cursor: pointer;
-      color: #4f7b55;
-      background: #e8f5e9;
-      font-family: "neodgm", "맑은 고딕", sans-serif;
-      transition: transform 0.15s ease, background 0.15s;
+    .overlay-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
     }
-    #overlayLobbyBtn:hover { background: #dcf2de; transform: translateY(-1px); }
-    #overlayLobbyBtn.hidden { display: none !important; }
 
     @keyframes countPop {
       0%   { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
@@ -593,14 +587,26 @@
     </div>
   </div>
 
+  <!-- ═══════════════════════════════════════════
+       오버레이 — 첫 화면: 텍스트 버튼 / 종료 후: 이미지 버튼
+  ═══════════════════════════════════════════ -->
   <div class="overlay show" id="overlay">
     <div class="overlay-card">
       <h2 id="overlayTitle">🐾 동물의 왕국 : 학점 사냥</h2>
       <p id="overlayDesc">짧은 시간 안에 높은 학점을 많이 잡고, 함정 학점은 피하세요!</p>
       <div class="overlay-actions">
+        <!-- 첫 화면: 텍스트 게임 시작 버튼 -->
         <button type="button" id="overlayActionBtn">게임 시작</button>
-        <button type="button" id="overlayLobbyBtn" class="hidden" onclick="goToLobby()">🏠 로비로</button>
-        <button type="button" id="kakaoShareResultBtn" class="kakao-share-result-btn hidden" onclick="shareToKakao()">결과 공유하기</button>
+        <!-- 종료 후: 이미지 버튼 3개 (초기에는 숨김) -->
+        <button type="button" class="img-btn hidden" id="replayImgBtn">
+          <img src="../assets/images/ui/replay_b.png" alt="다시 하기" />
+        </button>
+        <button type="button" class="img-btn hidden" id="overlayLobbyBtn" onclick="goToLobby()">
+          <img src="../assets/images/ui/loby_b.png" alt="로비로" />
+        </button>
+        <button type="button" class="img-btn hidden" id="kakaoShareResultBtn" onclick="shareToKakao()">
+          <img src="../assets/images/ui/share_b.png" alt="결과 공유하기" />
+        </button>
       </div>
     </div>
   </div>
@@ -740,10 +746,10 @@
       { g: "C+", score: 3,  type: "low",   img: "../assets/images/identify_prof/a_5.png" },
       { g: "C",  score: 2,  type: "low",   img: "../assets/images/identify_prof/a_6.png" },
       { g: "D",  score: -2, type: "bad",   img: "../assets/images/identify_prof/a_7.png" },
-      { g: "D",  score: -2, type: "bad",   img: "../assets/images/identify_prof/a_7.png" },  // ★ D 2배
+      { g: "D",  score: -2, type: "bad",   img: "../assets/images/identify_prof/a_7.png" },
       { g: "F",  score: -10,type: "worst", img: "../assets/images/identify_prof/a_8.png" },
-      { g: "F",  score: -10,type: "worst", img: "../assets/images/identify_prof/a_8.png" },  // ★ F 2배
-      { g: "F",  score: -10,type: "worst", img: "../assets/images/identify_prof/a_8.png" },  // ★ F 3배
+      { g: "F",  score: -10,type: "worst", img: "../assets/images/identify_prof/a_8.png" },
+      { g: "F",  score: -10,type: "worst", img: "../assets/images/identify_prof/a_8.png" },
     ];
 
     const dropletColors = {
@@ -779,9 +785,11 @@
     const overlayTitle     = document.getElementById("overlayTitle");
     const overlayDesc      = document.getElementById("overlayDesc");
     const overlayActionBtn = document.getElementById("overlayActionBtn");
+    const replayImgBtn     = document.getElementById("replayImgBtn");
     const overlayLobbyBtn  = document.getElementById("overlayLobbyBtn");
 
     overlayActionBtn.addEventListener("click", () => startCountdown(startGame));
+    replayImgBtn.addEventListener("click", () => startCountdown(startGame));
 
     /* ═══════════════════════════════════════════
        피버
@@ -821,14 +829,17 @@
     ═══════════════════════════════════════════ */
     function startGame() {
       overlay.classList.remove("show");
+      /* 이미지 버튼 3개 숨기고, 텍스트 버튼 복원 */
+      overlayActionBtn.classList.remove("hidden");
+      replayImgBtn.classList.add("hidden");
       overlayLobbyBtn.classList.add("hidden");
+      hideKakaoShareButton();
       clearInterval(gameInterval);
       clearInterval(spawnInterval);
       clearTimeout(hardModeInterval);
       clearTimeout(feverTimeout);
       endFever();
 
-      // 동적 keyframe 초기화
       dynamicStyleEl.textContent = "";
       animIdCounter = 0;
 
@@ -838,12 +849,9 @@
       Array.from(gameArea.children).forEach(el => { if (!el.id) el.remove(); });
       resetUI();
       resultEl.textContent = "게임 시작! 좋은 학점을 빠르게 잡아보세요!";
-      hideKakaoShareButton();
 
-      // ★ 스폰 간격: 500ms
       spawnInterval = setInterval(spawnBubble, 500);
 
-      // ★ 하드모드 전환: 5초 후 350ms 간격
       hardModeInterval = setTimeout(() => {
         clearInterval(spawnInterval);
         spawnInterval = setInterval(spawnBubble, 350);
@@ -874,7 +882,10 @@
 
       overlayTitle.textContent = "🎯 게임 종료!";
       overlayDesc.innerHTML = `최종 점수 <strong style="color:#4f7b55;font-size:22px">${score}</strong>점<br />${message}`;
-      overlayActionBtn.textContent = "다시 하기";
+
+      /* 텍스트 버튼 숨기고 이미지 버튼 3개 표시 */
+      overlayActionBtn.classList.add("hidden");
+      replayImgBtn.classList.remove("hidden");
       overlayLobbyBtn.classList.remove("hidden");
       showKakaoShareButton();
       overlay.classList.add("show");
@@ -941,17 +952,24 @@
       if (!isPlaying) return;
       const rnd = Math.random();
       if      (rnd < 0.10) spawnGolden();
-      else if (rnd < 0.28) spawnBomb();   // 8% → 18% (2배 이상)
+      else if (rnd < 0.28) spawnBomb();
       else                 spawnGrade();
     }
 
-    // ★ 버블 수명 (ms)
-    const LIFE_GRADE  = 1000;
-    const LIFE_GOLDEN = 1300;
-    const LIFE_BOMB   = 1000;
-
-    // ★ 이동 확률 제거
+    const LIFE_GRADE  = 1800;
+    const LIFE_GOLDEN = 2200;
+    const LIFE_BOMB   = 1800;
     const MOVE_CHANCE = 0.5;
+
+    function removeBubbleSmoothly(el, delay) {
+      setTimeout(() => {
+        if (!el.parentNode || el.classList.contains("popping")) return;
+        el.style.transition = "opacity 0.35s ease, transform 0.35s ease";
+        el.style.opacity = "0";
+        el.style.transform = "scale(0.7)";
+        setTimeout(() => el.remove(), 380);
+      }, delay);
+    }
 
     function spawnGrade() {
       const item   = grades[Math.floor(Math.random() * grades.length)];
@@ -969,7 +987,7 @@
 
       bubble.onclick = () => {
         if (!isPlaying) return;
-        bubble.style.animation = "none";   // 이동 중단 후 팝
+        bubble.style.animation = "none";
         bubble.classList.add("popping");
         const rect = bubble.getBoundingClientRect();
         const areaRect = gameArea.getBoundingClientRect();
@@ -1005,7 +1023,7 @@
       };
 
       gameArea.appendChild(bubble);
-      setTimeout(() => { if (bubble.parentNode) bubble.remove(); }, LIFE_GRADE + 50);
+      removeBubbleSmoothly(bubble, LIFE_GRADE);
     }
 
     function spawnGolden() {
@@ -1019,7 +1037,6 @@
 
       bubble.style.left = `${pos.x}px`;
       bubble.style.top  = `${pos.y}px`;
-
       bubble.style.animation = `popIn 0.24s ease, goldenPulse 0.9s ease-in-out infinite alternate`;
 
       bubble.onclick = () => {
@@ -1039,7 +1056,7 @@
       };
 
       gameArea.appendChild(bubble);
-      setTimeout(() => { if (bubble.parentNode) bubble.remove(); }, LIFE_GOLDEN + 50);
+      removeBubbleSmoothly(bubble, LIFE_GOLDEN);
     }
 
     function spawnBomb() {
@@ -1053,7 +1070,6 @@
 
       bubble.style.left = `${pos.x}px`;
       bubble.style.top  = `${pos.y}px`;
-
       bubble.style.animation = `popIn 0.24s ease, bombWobble 0.5s ease-in-out infinite alternate`;
 
       bubble.onclick = () => {
@@ -1087,7 +1103,7 @@
       };
 
       gameArea.appendChild(bubble);
-      setTimeout(() => { if (bubble.parentNode) bubble.remove(); }, LIFE_BOMB + 50);
+      removeBubbleSmoothly(bubble, LIFE_BOMB);
     }
 
     /* ═══════════════════════════════════════════
@@ -1130,7 +1146,7 @@
       showNext();
     }
 
-    /* CSS keyframe (goldenPulse, bombWobble) — 동적 style에 추가 */
+    /* CSS keyframe */
     dynamicStyleEl.textContent += `
       @keyframes goldenPulse {
         from { box-shadow: 0 0 0 3px rgba(255,210,0,0.4), 0 10px 22px rgba(0,0,0,0.18); }
