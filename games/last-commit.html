@@ -503,21 +503,6 @@
     }
     .lobby-link:hover { background: #dcf2de; }
 
-    /* ---- kakao share ---- */
-    .kakao-share-result-btn {
-      border: none;
-      border-radius: 999px;
-      padding: 12px 22px;
-      font-size: 14px;
-      font-weight: 800;
-      color: #191919;
-      background: #fee500;
-      cursor: pointer;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-    .kakao-share-result-btn:hover { transform: translateY(-2px); }
-    .kakao-share-result-btn.hidden { display: none !important; }
 
     /* ---- overlay ---- */
     .overlay {
@@ -610,21 +595,31 @@
       transition: transform 0.15s ease;
     }
     #overlayActionBtn:hover { transform: translateY(-1px); }
+    #overlayActionBtn.hidden { display: none !important; }
 
-    #overlayLobbyBtn {
-      border: 2px solid #c4d9ed;
-      border-radius: 999px;
-      padding: 12px 28px;
-      font-size: 14px;
-      font-weight: 800;
+
+    /* 이미지 버튼 */
+    .img-btn {
+      background: none;
+      border: none;
+      padding: 0;
       cursor: pointer;
-      color: #304e6f;
-      background: #e8f2fc;
-      font-family: "neodgm", "맑은 고딕", sans-serif;
-      transition: transform 0.15s ease, background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s ease, filter 0.15s ease;
     }
-    #overlayLobbyBtn:hover { background: #dbe9f7; transform: translateY(-1px); }
-    #overlayLobbyBtn.hidden { display: none !important; }
+    .img-btn:hover  { transform: translateY(-2px); filter: brightness(1.06); }
+    .img-btn:active { transform: scale(0.94); filter: brightness(0.95); }
+    .img-btn.hidden { display: none !important; }
+    .img-btn img {
+      height: 72px;
+      width: auto;
+      display: block;
+      pointer-events: none;
+    }
 
     @media (max-width: 700px) {
       .wrap { padding: 14px 10px; }
@@ -632,6 +627,7 @@
       .code-area { padding: 12px 10px; gap: 8px; }
       .mobile-hint { display: block; }
       .kakao-share-result-btn { width: 100%; min-height: 48px; font-size: 14px; }
+      .img-btn img { height: 60px; }
     }
   </style>
 </head>
@@ -715,8 +711,15 @@
       <p id="overlayDesc">3단계로 난이도가 올라갑니다!<br>각 단계마다 30초 안에 10개의 코드를 타이핑하세요.<br>SQL 쿼리는 대소문자 구분 없이 입력 가능!</p>
       <div class="overlay-actions">
         <button type="button" id="overlayActionBtn">코딩 시작!</button>
-        <button type="button" id="overlayLobbyBtn" class="hidden" onclick="goToLobby()">로비로</button>
-        <button type="button" id="kakaoShareResultBtn" class="kakao-share-result-btn hidden" onclick="shareToKakao()">결과 공유하기</button>
+        <button type="button" class="img-btn hidden" id="replayImgBtn">
+          <img src="../assets/images/ui/replay_b.png" alt="다시 하기" />
+        </button>
+        <button type="button" class="img-btn hidden" id="overlayLobbyBtn" onclick="goToLobby()">
+          <img src="../assets/images/ui/loby_b.png" alt="로비로" />
+        </button>
+        <button type="button" class="img-btn hidden" id="kakaoShareResultBtn" onclick="shareToKakao()">
+          <img src="../assets/images/ui/share_b.png" alt="결과 공유하기" />
+        </button>
       </div>
     </div>
   </div>
@@ -945,6 +948,7 @@
     const overlayDesc      = document.getElementById("overlayDesc");
     const overlayActionBtn = document.getElementById("overlayActionBtn");
     const overlayLobbyBtn  = document.getElementById("overlayLobbyBtn");
+    const replayImgBtn     = document.getElementById("replayImgBtn");
     const finalScoreEl     = document.getElementById("finalScore");
     const finalStatsEl     = document.getElementById("finalStats");
 
@@ -1381,6 +1385,9 @@
       finalScoreEl.classList.add("hidden");
       finalStatsEl.classList.add("hidden");
       hideKakaoShareButton();
+      overlayActionBtn.classList.remove("hidden");
+      replayImgBtn.classList.add("hidden");
+      overlayLobbyBtn.classList.add("hidden");
 
       // 스테이지 1 팝업 표시
       gameActive = false;
@@ -1431,7 +1438,8 @@
         ? "모든 코드를 시간 안에 커밋 완료! 완벽한 개발자!"
         : "연습이 더 필요해요... 다시 도전!";
 
-      overlayActionBtn.textContent = "다시 하기";
+      overlayActionBtn.classList.add("hidden");
+      replayImgBtn.classList.remove("hidden");
       overlayLobbyBtn.classList.remove("hidden");
       showKakaoShareButton();
       overlay.classList.add("show");
@@ -1443,6 +1451,7 @@
        오버레이 이벤트
     ═══════════════════════════════════════════ */
     overlayActionBtn.addEventListener("click", () => startCountdown(startGame));
+    replayImgBtn.addEventListener("click", () => startCountdown(startGame));
 
     function startCountdown(callback) {
       overlay.classList.remove('show');

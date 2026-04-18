@@ -417,7 +417,7 @@
       line-height: 1.6;
     }
 
-    .overlay-card button {
+    .overlay-card button:not(.img-btn) {
       border: none;
       border-radius: 999px;
       padding: 12px 28px;
@@ -428,7 +428,7 @@
       transition: transform 0.15s ease;
     }
 
-    .overlay-card button:hover {
+    .overlay-card button:not(.img-btn):hover {
       transform: translateY(-1px);
     }
 
@@ -445,14 +445,31 @@
       flex-wrap: wrap;
     }
 
-    #kakaoShareResultBtn {
-      background: #fee500;
-      color: #191919;
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
-    }
 
-    #kakaoShareResultBtn.hidden {
-      display: none !important;
+    /* 이미지 버튼 */
+    .img-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+    .img-btn:hover  { transform: translateY(-2px); filter: brightness(1.06); }
+    .img-btn:active { transform: scale(0.94); filter: brightness(0.95); }
+    .img-btn.hidden { display: none !important; }
+    .img-btn img {
+      height: 72px;
+      width: auto;
+      display: block;
+      pointer-events: none;
+    }
+    @media (max-width: 700px) {
+      .img-btn img { height: 60px; }
     }
 
     .float-score {
@@ -613,8 +630,14 @@
       </p>
       <div class="overlay-actions">
         <button type="button" id="overlayStart">게임 시작</button>
-        <button type="button" id="kakaoShareResultBtn" class="hidden" onclick="shareToKakao()">
-          결과 공유하기
+        <button type="button" class="img-btn hidden" id="replayImgBtn">
+          <img src="../assets/images/ui/replay_b.png" alt="다시 하기" />
+        </button>
+        <button type="button" class="img-btn hidden" id="overlayLobbyBtn">
+          <img src="../assets/images/ui/loby_b.png" alt="로비로" />
+        </button>
+        <button type="button" class="img-btn hidden" id="kakaoShareResultBtn" onclick="shareToKakao()">
+          <img src="../assets/images/ui/share_b.png" alt="결과 공유하기" />
         </button>
       </div>
     </div>
@@ -674,6 +697,15 @@
     const overlay = document.getElementById("overlay");
     const overlayStart = document.getElementById("overlayStart");
     const kakaoShareResultBtn = document.getElementById("kakaoShareResultBtn");
+    const replayImgBtn = document.getElementById("replayImgBtn");
+    const overlayLobbyBtn = document.getElementById("overlayLobbyBtn");
+
+    function goToLobby() {
+      const school = getLeagueSchool();
+      const q = school ? `&school=${encodeURIComponent(school)}` : "";
+      window.location.href = `../index.html?lobby=1${q}`;
+    }
+    overlayLobbyBtn.addEventListener("click", goToLobby);
     const comboDisplay = document.getElementById("comboDisplay");
     const roundDisplay = document.getElementById("roundDisplay");
     const lobbyBackLink = document.getElementById("lobbyBackLink");
@@ -1053,7 +1085,10 @@
     function startGame() {
       overlay.classList.remove("show");
       hideKakaoShareButton();
+      overlayStart.style.display = "inline-block";
       overlayStart.textContent = "게임 시작";
+      replayImgBtn.classList.add("hidden");
+      overlayLobbyBtn.classList.add("hidden");
       score = 0;
       combo = 0;
       lives = MAX_LIVES;
@@ -1085,7 +1120,9 @@
       overlay.querySelector("h2").textContent = title;
       overlay.querySelector("p").innerHTML =
         `최종 점수 <strong style="color:#c9a227;font-size:22px">${score}</strong>점 (라운드 ${round})<br />${desc}`;
-      overlayStart.textContent = "다시 하기";
+      overlayStart.style.display = "none";
+      replayImgBtn.classList.remove("hidden");
+      overlayLobbyBtn.classList.remove("hidden");
       showKakaoShareButton();
       overlay.classList.add("show");
     }
@@ -1126,6 +1163,7 @@
     document.addEventListener("keydown", handleKeyboardControl);
 
     overlayStart.addEventListener("click", () => startCountdown(startGame));
+    replayImgBtn.addEventListener("click", () => startCountdown(startGame));
 
     function startCountdown(callback) {
       overlay.classList.remove('show');

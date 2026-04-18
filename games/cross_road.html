@@ -388,6 +388,32 @@
     #kakaoShareResultBtn.hidden {
       display: none !important;
     }
+
+    /* 이미지 버튼 */
+    .img-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+    .img-btn:hover  { transform: translateY(-2px); filter: brightness(1.06); }
+    .img-btn:active { transform: scale(0.94); filter: brightness(0.95); }
+    .img-btn.hidden { display: none !important; }
+    .img-btn img {
+      height: 72px;
+      width: auto;
+      display: block;
+      pointer-events: none;
+    }
+    @media (max-width: 700px) {
+      .img-btn img { height: 60px; }
+    }
   </style>
 </head>
 <body>
@@ -402,9 +428,15 @@
       <p id="overlayDesc">차를 피하고, 통나무 위에서 강을 건너 맨 위 줄에 도달하면 점수를 얻습니다.</p>
       <div class="overlay-actions">
         <button id="overlayStartBtn">시작</button>
-        <button id="overlayRestartBtn">다시 시작</button>
-        <button type="button" id="kakaoShareResultBtn" class="hidden" onclick="shareToKakao()">
-          결과 공유하기
+        <button id="overlayRestartBtn" style="display:none;">다시 시작</button>
+        <button type="button" class="img-btn hidden" id="replayImgBtn">
+          <img src="../assets/images/ui/replay_b.png" alt="다시 하기" />
+        </button>
+        <button type="button" class="img-btn hidden" id="overlayLobbyBtn" onclick="goToLobby()">
+          <img src="../assets/images/ui/loby_b.png" alt="로비로" />
+        </button>
+        <button type="button" class="img-btn hidden" id="kakaoShareResultBtn" onclick="shareToKakao()">
+          <img src="../assets/images/ui/share_b.png" alt="결과 공유하기" />
         </button>
       </div>
     </div>
@@ -588,6 +620,13 @@ const overlayTitle   = document.getElementById('overlayTitle');
 const overlayDesc    = document.getElementById('overlayDesc');
 const overlayStartBtn   = document.getElementById('overlayStartBtn');
 const overlayRestartBtn = document.getElementById('overlayRestartBtn');
+const replayImgBtn      = document.getElementById('replayImgBtn');
+const overlayLobbyBtn   = document.getElementById('overlayLobbyBtn');
+
+function goToLobby() {
+  const a = document.getElementById('lobbyBackLink');
+  window.location.href = a ? a.getAttribute('href') : '../index.html?lobby=1';
+}
 
 
 /* --- 격자·타일·맵 행 구성 (행 번호는 위에서 0) --- */
@@ -721,17 +760,23 @@ function showOverlay(title, desc, mode) {
 
   if (mode === 'over') {
     overlayStartBtn.style.display   = 'none';
-    overlayRestartBtn.style.display = 'inline-block';
+    overlayRestartBtn.style.display = 'none';
+    replayImgBtn.classList.remove('hidden');
+    overlayLobbyBtn.classList.remove('hidden');
+    showKakaoShareButton();
   } else if (mode === 'init') {
     overlayStartBtn.style.display   = 'inline-block';
     overlayRestartBtn.style.display = 'none';
+    replayImgBtn.classList.add('hidden');
+    overlayLobbyBtn.classList.add('hidden');
+    hideKakaoShareButton();
   } else {
     overlayStartBtn.style.display   = 'inline-block';
     overlayRestartBtn.style.display = 'inline-block';
+    replayImgBtn.classList.add('hidden');
+    overlayLobbyBtn.classList.add('hidden');
+    hideKakaoShareButton();
   }
-
-  const kBtn = document.getElementById('kakaoShareResultBtn');
-  if (kBtn) kBtn.classList.toggle('hidden', mode !== 'over');
 }
 
 /** 오버레이 닫기 */
@@ -1124,6 +1169,7 @@ canvas.addEventListener('touchend', e => {
 
 overlayStartBtn.addEventListener('click', () => startCountdown(startGame));
 overlayRestartBtn.addEventListener('click', () => { prepareGame(); });
+replayImgBtn.addEventListener('click', () => { prepareGame(); });
 
 const DIFF_LABELS = ['쉬움', '보통', '어려움', '매우 어려움'];
 const DIFF_COLORS = ['#2e7d32', '#1565c0', '#e65100', '#b71c1c'];
