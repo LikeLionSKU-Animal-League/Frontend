@@ -78,10 +78,9 @@
     /* 제목 + 점수·목숨·난이도 */
     .topbar {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
       margin-bottom: 14px;
     }
 
@@ -89,7 +88,7 @@
     .title h1 {
       margin: 0;
       font-size: 26px;
-      color: #304e6f;
+      color: #4a7c4f;
     }
 
     /* 한 줄 설명 */
@@ -102,31 +101,35 @@
     /* 점수·목숨·난이도 박스 묶음 */
     .status {
       display: flex;
-      gap: 10px;
-      flex-shrink: 0;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: 6px;
     }
 
     /* 상태 한 칸 */
     .status-box {
-      min-width: 78px;
-      padding: 8px 12px;
+      flex: 1 1 0;
+      min-width: 0;
+      padding: 6px 8px;
       text-align: center;
-      border-radius: 16px;
+      border-radius: 12px;
       background: linear-gradient(180deg, #ffffff, #f7fff3);
       border: 2px solid #e6f4df;
     }
 
     /* 상태 라벨(작은 글씨) */
     .status-label {
-      font-size: 11px;
+      font-size: 10px;
       color: #7a90a4;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
     }
 
     /* 상태 숫자·텍스트 */
     .status-value {
-      font-size: 22px;
-      font-weight: 800;
+      font-size: 18px;
+      font-weight: 900;
       color: #2e4b69;
     }
 
@@ -455,7 +458,7 @@
       </div>
       <div class="status-box">
         <div class="status-label">목숨</div>
-        <div class="status-value" id="lives">3</div>
+        <div class="status-value" id="lives">❤️❤️❤️</div>
       </div>
       <div class="status-box">
         <div class="status-label">난이도</div>
@@ -1175,10 +1178,15 @@ const DIFF_LABELS = ['쉬움', '보통', '어려움', '매우 어려움'];
 const DIFF_COLORS = ['#2e7d32', '#1565c0', '#e65100', '#b71c1c'];
 const diffEl = document.getElementById('diffText');
 
+function livesToHearts(n) {
+  const clamped = Math.max(0, Math.min(3, n));
+  return '❤️'.repeat(clamped) || '🖤';
+}
+
 /** 점수·목숨·난이도 라벨 갱신 */
 function updateUI() {
   scoreEl.textContent = score;
-  livesEl.textContent = lives;
+  livesEl.textContent = livesToHearts(lives);
   const d = getDifficulty();
   diffEl.textContent  = DIFF_LABELS[d];
   diffEl.style.color  = DIFF_COLORS[d];
