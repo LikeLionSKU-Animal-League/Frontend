@@ -55,6 +55,7 @@
       border-radius: 28px;
       padding: 18px;
       box-shadow: 0 18px 40px rgba(92, 132, 97, 0.18);
+      position: relative;
     }
 
     .lobby-link {
@@ -317,16 +318,16 @@
 
     /* 시작·게임오버 전체 덮개 */
     .overlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
   display: none;
   align-items: center;
   justify-content: center;
-  background: rgba(20, 40, 15, 0.38);
+  background: rgba(20, 40, 15, 0.52);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  z-index: 50;
-  border-radius: 28px;
+  z-index: 100;
+  padding: 20px;
 }
 
     /* 오버레이 안 흰 카드 */
@@ -457,20 +458,6 @@
     </div>
   </div>
 
-  <!-- 시작 / 게임오버 오버레이 -->
-  <div class="overlay" id="overlay">
-    <div class="overlay-card">
-      <h2 id="overlayTitle">게임 준비</h2>
-      <p id="overlayDesc">차를 피하고, 통나무 위에서 강을 건너 맨 위 줄에 도달하면 점수를 얻습니다.</p>
-      <div class="overlay-actions">
-        <button id="overlayStartBtn">시작</button>
-        <button id="overlayRestartBtn">다시 시작</button>
-        <button type="button" id="kakaoShareResultBtn" class="hidden" onclick="shareToKakao()">
-          결과 공유하기
-        </button>
-      </div>
-    </div>
-  </div>
 </div>
 
       <div class="legend">이동: ← ↑ ↓ → 또는 W A S D &nbsp;|&nbsp; 통나무 위에서는 함께 흘러갑니다</div>
