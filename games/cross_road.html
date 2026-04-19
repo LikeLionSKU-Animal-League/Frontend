@@ -713,7 +713,7 @@ function addParticles(wx, wy, n, color) {
 }
 
 /* --- 런타임 상태 --- */
-let player, cars, logs, score, lives, gameStarted, gameOver, dying, animFrameId;
+let player, cars, logs, score, lives, gameStarted, gameOver, dying, scoring, animFrameId;
 let scoreSubmitted = false;
 
 function submitScoreOnce() {
@@ -733,7 +733,7 @@ function prepareGame() {
   shake = { x: 0, y: 0, dur: 0 };
   flash = { a: 0, color: '#fff' };
   score = 0; lives = 3;
-  gameStarted = false; gameOver = false; dying = false;
+  gameStarted = false; gameOver = false; dying = false; scoring = false;
   scoreSubmitted = false;
   updateUI();
   spawnObjects();
@@ -1090,7 +1090,7 @@ function drawPlayer(x, y, size, sx = 1, sy = 1) {
  * @param {number} dr 행 변화 (-1,0,1)
  */
 function movePlayer(dc, dr) {
-  if (!gameStarted || gameOver || dying) return;
+  if (!gameStarted || gameOver || dying || scoring) return;
   const npx = player.px + dc * TILE;
   const nr  = player.row + dr;
   if (npx < 0 || npx >= COLS * TILE) return;
@@ -1101,6 +1101,7 @@ function movePlayer(dc, dr) {
   play(stepSound(nr), 0.4);
 
   if (nr === GOAL_ROW) {
+    scoring = true;
     score += 20;
     updateUI();
     play('goal', 0.8);
@@ -1115,6 +1116,7 @@ function movePlayer(dc, dr) {
         player.px = 5 * TILE; player.row = START_ROW;
         cars = []; logs = [];
         spawnObjects();
+        scoring = false;
         if (!gameOver && gameStarted) msgEl.textContent = '방향키 또는 WASD로 이동하세요!';
       }
     }, 800);
