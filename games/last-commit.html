@@ -676,7 +676,7 @@
         <span>정확도 <strong id="statAccuracy">0%</strong></span>
         <span>CPM <strong id="statCpm">0</strong></span>
       </div>
-      <p id="overlayDesc">3단계로 난이도가 올라갑니다!<br>각 단계마다 30초 안에 10개의 코드를 타이핑하세요.<br>SQL 쿼리는 대소문자 구분 없이 입력 가능!</p>
+      <p id="overlayDesc">10단계로 난이도가 올라갑니다!<br>쉬움(30초) → 중간(60초) → 어려움(90초)<br>각 단계마다 5개의 코드를 타이핑하세요.<br>SQL 쿼리는 대소문자 구분 없이 입력 가능!</p>
       <div class="overlay-actions">
         <button type="button" id="overlayActionBtn">코딩 시작!</button>
         <button type="button" class="img-btn hidden" id="replayImgBtn">
@@ -826,8 +826,11 @@
     /* ═══════════════════════════════════════════
        스니펫 데이터 (3단계)
     ═══════════════════════════════════════════ */
-    const STAGE_TIME = 30;  // 각 스테이지 30초
-    const STAGE_GOAL = 5;   // 각 스테이지 5개
+    // 각 스테이지가 사용할 스니펫 풀 인덱스 (0=쉬움, 1=중간, 2=어려움)
+    const STAGE_POOL  = [0, 0, 0, 1, 1, 1, 2, 2, 2, 2];
+    // 각 스테이지 제한 시간: 쉬움 30초, 중간 40초, 어려움 50초
+    const STAGE_TIMES = [30, 30, 30, 60, 60, 60, 90, 90, 90, 90];
+    const STAGE_GOAL  = 5;   // 각 스테이지 5개
 
     const STAGE_SNIPPETS = [
       // ── Stage 1: 짧은 어노테이션 + 간단 SQL 키워드 ──
@@ -922,7 +925,7 @@
     ═══════════════════════════════════════════ */
     let gameActive = false;
     let timerInterval = null;
-    let timeLeft = STAGE_TIME;
+    let timeLeft = STAGE_TIMES[0];
     let score = 0;
     let totalKeys = 0;
     let correctKeys = 0;
@@ -1018,7 +1021,7 @@
 
     function nextSnippetFromPool() {
       if (snippetIndex >= snippetOrder.length) {
-        snippetOrder = shuffle(STAGE_SNIPPETS[currentStage]);
+        snippetOrder = shuffle(STAGE_SNIPPETS[STAGE_POOL[currentStage]]);
         snippetIndex = 0;
       }
       return snippetOrder[snippetIndex++];
@@ -1152,11 +1155,17 @@
       const acc = snippetTotalKeys > 0 ? snippetCorrectKeys / snippetTotalKeys : 1;
       let pts = Math.round(len * acc);
 
-      // speed bonus
+      // speed bonus — 글자당 소요시간(secPerChar)이 짧을수록 높은 배율
+      // 0.5초/글자 이상이면 보너스 없음(x1), 빠를수록 최대 x2.5
       const elapsed = (performance.now() - snippetStartTime) / 1000;
+      const secPerChar = elapsed / Math.max(len, 1);
+      let speedMultiplier = 1;
       let gotSpeedBonus = false;
-      if (elapsed < len * 0.15) {
-        pts = Math.round(pts * 1.5);
+      if (secPerChar < 0.5) {
+        // 0.5 → x1, 0.1 → x2.5 (선형 보간)
+        speedMultiplier = 1 + (0.5 - secPerChar) / 0.4 * 1.5;
+        speedMultiplier = Math.min(speedMultiplier, 2.5);
+        pts = Math.round(pts * speedMultiplier);
         gotSpeedBonus = true;
       }
 
@@ -1175,7 +1184,11 @@
         comboCount = 0;
       }
 
-      if (gotSpeedBonus) showEncouragement("번개 손!");
+      if (gotSpeedBonus) {
+        if (speedMultiplier >= 2.0) showEncouragement("번개 손!");
+        else if (speedMultiplier >= 1.5) showEncouragement("빠르다!");
+        else showEncouragement("Good Speed!");
+      }
 
       showScorePopup(pts);
       const oldScore = score;
@@ -1192,7 +1205,7 @@
 
       // 스테이지 클리어 체크
       if (stageSnippetCount >= STAGE_GOAL) {
-        if (currentStage >= 2) {
+        if (currentStage >= 9) {
           endGame(true);
           return;
         }
@@ -1214,7 +1227,18 @@
       }
     }
 
-    const STAGE_DESCS = ["어노테이션 & SQL 키워드", "짧은 코드", "중간 길이 코드"];
+    const STAGE_DESCS = [
+      "어노테이션 & SQL 키워드 (쉬움)",
+      "어노테이션 & SQL 키워드 (쉬움)",
+      "어노테이션 & SQL 키워드 (쉬움)",
+      "짧은 코드 (중간)",
+      "짧은 코드 (중간)",
+      "짧은 코드 (중간)",
+      "중간 길이 코드 (어려움)",
+      "중간 길이 코드 (어려움)",
+      "중간 길이 코드 (어려움)",
+      "중간 길이 코드 (어려움)",
+    ];
     const stageOverlay = document.getElementById("stageOverlay");
     const stageNum = document.getElementById("stageNum");
     const stageDesc = document.getElementById("stageDesc");
@@ -1223,13 +1247,13 @@
       currentStage++;
       stageSnippetCount = 0;
       snippetIndex = 0;
-      snippetOrder = shuffle(STAGE_SNIPPETS[currentStage]);
+      snippetOrder = shuffle(STAGE_SNIPPETS[STAGE_POOL[currentStage]]);
       visibleQueue = [];
       warningPlayed = false;
 
       clearInterval(timerInterval);
-      timeLeft = STAGE_TIME;
-      timerEl.textContent = STAGE_TIME;
+      timeLeft = STAGE_TIMES[currentStage];
+      timerEl.textContent = STAGE_TIMES[currentStage];
       timerBarFill.style.height = "100%";
       shell.classList.remove("urgent");
       timerEl.classList.remove("danger");
@@ -1341,7 +1365,7 @@
       timerInterval = setInterval(() => {
         timeLeft--;
         timerEl.textContent = timeLeft;
-        timerBarFill.style.height = (timeLeft / STAGE_TIME * 100) + "%";
+        timerBarFill.style.height = (timeLeft / STAGE_TIMES[currentStage] * 100) + "%";
 
         if (timeLeft <= 10 && !warningPlayed) {
           warningPlayed = true;
@@ -1361,7 +1385,7 @@
        게임 시작 / 종료
     ═══════════════════════════════════════════ */
     function startGame() {
-      timeLeft = STAGE_TIME;
+      timeLeft = STAGE_TIMES[0];
       score = 0;
       totalKeys = 0;
       correctKeys = 0;
@@ -1371,7 +1395,7 @@
       warningPlayed = false;
       currentStage = 0;
       stageSnippetCount = 0;
-      snippetOrder = shuffle(STAGE_SNIPPETS[0]);
+      snippetOrder = shuffle(STAGE_SNIPPETS[STAGE_POOL[0]]);
       visibleQueue = [];
 
       shell.classList.remove("urgent");
@@ -1379,7 +1403,7 @@
       timerEl.classList.remove("danger");
       prevScore = 0;
       prevAccuracy = 100;
-      timerEl.textContent = STAGE_TIME;
+      timerEl.textContent = STAGE_TIMES[0];
       timerBarFill.style.height = "100%";
       timerBarFill.classList.remove("urgent");
 
