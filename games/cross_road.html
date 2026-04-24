@@ -1241,12 +1241,13 @@ function startCountdown(callback) {
     }
     const n = nums[idx];
     const isMobile = window.matchMedia && window.matchMedia('(max-width: 900px)').matches;
-    // 모바일에서 숫자 이미지 여백 차이(특히 3번)를 시각 중앙에 맞추기 위한 보정
-    cdImg.style.setProperty('--cd-shift-x', isMobile && n === 3 ? '-18px' : '0px');
+    // 모바일에서 숫자 이미지 여백 차이를 시각 중앙에 맞추기 위한 보정
+    const mobileShiftMap = { 1: '0px', 2: '0px', 3: '-28px' };
+    cdImg.style.setProperty('--cd-shift-x', isMobile ? mobileShiftMap[n] || '0px' : '0px');
     cdImg.src = '../assets/images/countdown_' + n + '.png';
     cdImg.style.animation = 'none';
     cdImg.offsetHeight;
-    cdImg.style.animation = 'countPop 0.9s ease forwards';
+    cdImg.style.animation = `${isMobile ? 'countPopCentered' : 'countPop'} 0.9s ease forwards`;
     idx++;
     setTimeout(showNext, 1000);
   }
