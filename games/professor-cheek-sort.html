@@ -1064,14 +1064,15 @@
         const gain = isReversePhaseActive()
           ? baseGain * REVERSE_SCORE_MULTIPLIER
           : baseGain;
-        score += Math.round(gain * 0.25);
+        const scoreDelta = Math.max(1, Math.round(gain * 0.25));
+        score += scoreDelta;
         scoreEl.textContent = String(score);
         comboEl.textContent = String(combo);
         updateComboDisplay();
 
         if (frontEl) {
           const r = frontEl.getBoundingClientRect();
-          showFloatScore(r.left + r.width / 2 - 20, r.top, `+${gain}`, "#27ae60");
+          showFloatScore(r.left + r.width / 2 - 20, r.top, `+${scoreDelta}`, "#27ae60");
 
           // 실제 큐는 즉시 갱신하고, 시각 효과는 복제 요소로 처리
           const ghost = frontEl.cloneNode(true);
