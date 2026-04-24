@@ -1272,6 +1272,27 @@ function startCountdown(callback) {
     height: 220px; width: auto;
     animation: countPop 0.9s ease forwards;
   }
+
+  /* 모바일에서는 카운트다운 숫자를 화면 정중앙에 고정 */
+  @media (max-width: 900px) {
+    #countdownOverlay.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px)
+        env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+    }
+
+    #countdownImg {
+      position: static;
+      top: auto;
+      left: auto;
+      height: min(44vw, 220px);
+      max-height: 220px;
+      width: auto;
+      transform-origin: center center;
+    }
+  }
 </style>
 <div id="countdownOverlay"><img id="countdownImg" src="" alt="" /></div>
 </body>
