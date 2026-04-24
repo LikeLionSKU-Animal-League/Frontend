@@ -268,20 +268,35 @@
       -webkit-backdrop-filter: blur(2px);
     }
 
-    /* 태블릿 이하에서 패드 표시(캔버스 아래로 분리) */
+    /* 태블릿 이하에서 패드 표시 */
     @media (max-width: 900px) {
-      .game-wrap {
-        display: flex;
-        flex-direction: column;
-      }
-
       .dpad {
         display: flex;
-        position: static;
-        margin-top: 10px;
-        justify-content: center;
-        align-items: center;
-        pointer-events: auto;
+        left: calc(0px + env(safe-area-inset-left, 0px));
+        bottom: calc(0px + env(safe-area-inset-bottom, 0px));
+        justify-content: flex-start;
+        align-items: flex-end;
+        pointer-events: none;
+      }
+
+      /* 모바일 오버레이를 매우 투명하게 조정 */
+      .dpad-grid {
+        background: rgba(255, 255, 255, 0.015);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(1px);
+        -webkit-backdrop-filter: blur(1px);
+      }
+
+      .dpad-btn {
+        background: rgba(240, 246, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        color: rgba(40, 45, 56, 0.58);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.03);
+      }
+
+      .dpad-btn:active {
+        background: rgba(236, 243, 252, 0.22);
+        border-color: rgba(255, 255, 255, 0.36);
       }
     }
 
@@ -486,20 +501,20 @@
       <div class="game-wrap">
   <div id="game">
     <canvas id="gameCanvas" width="480" height="560"></canvas>
-  </div>
 
-  <!-- 터치용 방향키 -->
-  <div class="dpad" id="crossDpad" aria-label="이동 조작">
-    <div class="dpad-grid">
-      <div class="dpad-empty"></div>
-      <button type="button" class="dpad-btn" id="btnUp">▲</button>
-      <div class="dpad-empty"></div>
-      <button type="button" class="dpad-btn" id="btnLeft">◀</button>
-      <div class="dpad-empty"></div>
-      <button type="button" class="dpad-btn" id="btnRight">▶</button>
-      <div class="dpad-empty"></div>
-      <button type="button" class="dpad-btn" id="btnDown">▼</button>
-      <div class="dpad-empty"></div>
+    <!-- 터치용 방향키 -->
+    <div class="dpad" id="crossDpad" aria-label="이동 조작">
+      <div class="dpad-grid">
+        <div class="dpad-empty"></div>
+        <button type="button" class="dpad-btn" id="btnUp">▲</button>
+        <div class="dpad-empty"></div>
+        <button type="button" class="dpad-btn" id="btnLeft">◀</button>
+        <div class="dpad-empty"></div>
+        <button type="button" class="dpad-btn" id="btnRight">▶</button>
+        <div class="dpad-empty"></div>
+        <button type="button" class="dpad-btn" id="btnDown">▼</button>
+        <div class="dpad-empty"></div>
+      </div>
     </div>
   </div>
 
