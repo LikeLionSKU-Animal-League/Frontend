@@ -940,6 +940,7 @@
     let snippetTotalKeys = 0;
     let snippetStartTime = 0;
     let warningPlayed = false;
+    let tenXShown = false;
     let currentStage = 0;
     let stageSnippetCount = 0;
 
@@ -1183,6 +1184,10 @@
         pts = Math.round(pts * speedMultiplier);
       }
 
+      if (timeLeft > 0 && timeLeft <= 5) {
+        pts = Math.round(pts * 10);
+      }
+
       // combo bonus
       if (acc === 1) {
         comboCount++;
@@ -1257,6 +1262,7 @@
       snippetOrder = shuffle(STAGE_SNIPPETS[STAGE_POOL[currentStage]]);
       visibleQueue = [];
       warningPlayed = false;
+      tenXShown = false;
 
       clearInterval(timerInterval);
       timeLeft = STAGE_TIMES[currentStage];
@@ -1373,6 +1379,10 @@
         timeLeft--;
         timerEl.textContent = timeLeft;
         timerBarFill.style.height = (timeLeft / STAGE_TIMES[currentStage] * 100) + "%";
+        if (timeLeft <= 5 && timeLeft > 0 && !tenXShown) {
+          tenXShown = true;
+          showEncouragement("점수 10배!");
+        }
 
         if (timeLeft <= 10 && !warningPlayed) {
           warningPlayed = true;
@@ -1400,6 +1410,7 @@
       completedCount = 0;
       snippetIndex = 0;
       warningPlayed = false;
+      tenXShown = false;
       currentStage = 0;
       stageSnippetCount = 0;
       snippetOrder = shuffle(STAGE_SNIPPETS[STAGE_POOL[0]]);

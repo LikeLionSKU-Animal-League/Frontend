@@ -744,6 +744,14 @@ function addParticles(wx, wy, n, color) {
 /* --- 런타임 상태 --- */
 let player, cars, logs, score, lives, gameStarted, gameOver, dying, scoring, animFrameId;
 let scoreSubmitted = false;
+const GAME_TIME_LIMIT = 60;
+let gameTimeLeft = GAME_TIME_LIMIT;
+let gameTimerInterval = null;
+let tenXShown = false;
+
+function isTenXMode() {
+  return gameStarted && !gameOver && gameTimeLeft > 0 && gameTimeLeft <= 5;
+}
 
 function submitScoreOnce() {
   if (scoreSubmitted) return;
@@ -757,11 +765,15 @@ function prepareGame() {
     submitScoreOnce();
   }
   cancelAnimationFrame(animFrameId);
+  clearInterval(gameTimerInterval);
+  gameTimerInterval = null;
   player = { px: 5 * TILE, row: START_ROW, sx: 1, sy: 1, sqTimer: 0, sqTX: 1, sqTY: 1 };
   cars = []; logs = []; particles = [];
   shake = { x: 0, y: 0, dur: 0 };
   flash = { a: 0, color: '#fff' };
   score = 0; lives = 3;
+  gameTimeLeft = GAME_TIME_LIMIT;
+  tenXShown = false;
   gameStarted = false; gameOver = false; dying = false; scoring = false;
   scoreSubmitted = false;
   updateUI();
@@ -775,6 +787,23 @@ function startGame() {
   hideOverlay();
   gameStarted = true;
   msgEl.textContent = '방향키 또는 WASD로 이동하세요!';
+  clearInterval(gameTimerInterval);
+  gameTimerInterval = setInterval(() => {
+    if (!gameStarted || gameOver) return;
+    gameTimeLeft--;
+    if (gameTimeLeft <= 5 && gameTimeLeft > 0 && !tenXShown) {
+      tenXShown = true;
+      msgEl.textContent = '🔥 점수 10배!';
+    }
+    if (gameTimeLeft <= 0) {
+      clearInterval(gameTimerInterval);
+      gameTimerInterval = null;
+      gameOver = true;
+      showOverlay('⏰ 시간 종료', `최종 점수 <strong style="font-size:22px;color:#2e4b69">${score}</strong>점<br />마지막까지 잘 버텼어요!`, 'over');
+      msgEl.textContent = '시간 종료!';
+      submitScoreOnce();
+    }
+  }, 1000);
   cancelAnimationFrame(animFrameId);
   loop();
 }
@@ -994,6 +1023,8 @@ function die(type) {
     setTimeout(() => {
       play('gameover', 0.8);
       gameOver = true;
+      clearInterval(gameTimerInterval);
+      gameTimerInterval = null;
       showOverlay('🎯 게임 오버', `최종 점수 <strong style="font-size:22px;color:#2e4b69">${score}</strong>점<br />다시 도전해 보세요!`, 'over');
       msgEl.textContent = '게임 오버!';
       submitScoreOnce();
@@ -1175,14 +1206,15 @@ function movePlayer(dc, dr) {
 
   if (nr === GOAL_ROW) {
     scoring = true;
-    score += 20;
+    const gain = isTenXMode() ? 200 : 20;
+    score += gain;
     updateUI();
     play('goal', 0.8);
     play('score_up', 0.5);
     addParticles(OX + player.px + TILE / 2, TILE / 2, 35, '#ffe060');
     addParticles(OX + player.px + TILE / 2, TILE / 2, 15, '#ffffff');
     flash.color = '#ffffaa'; flash.a = 0.45;
-    msgEl.textContent = '건넜다! 계속 도전해봐요!';
+    msgEl.textContent = isTenXMode() ? `건넜다! +${gain} (10배)` : '건넜다! 계속 도전해봐요!';
     /* 골인 후 잠시 뒤 시작 줄로, 난이도는 점수에 따라 spawnObjects에서 반영 */
     setTimeout(() => {
       if (!gameOver) {
