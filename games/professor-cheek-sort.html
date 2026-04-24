@@ -481,6 +481,36 @@
       animation: floatUp 0.9s ease forwards;
     }
 
+    .phase-alert {
+      position: absolute;
+      left: 50%;
+      top: 42%;
+      transform: translate(-50%, -50%) scale(0.75);
+      z-index: 30;
+      pointer-events: none;
+      padding: 14px 22px;
+      border-radius: 18px;
+      font-size: clamp(26px, 7vw, 48px);
+      font-weight: 900;
+      text-align: center;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: #fff9d6;
+      text-shadow: 0 4px 14px rgba(0,0,0,0.45);
+      background: linear-gradient(135deg, rgba(239, 92, 52, 0.9), rgba(214, 43, 43, 0.92));
+      border: 3px solid rgba(255, 231, 168, 0.7);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.22);
+      opacity: 0;
+      animation: phaseAlertPop 0.95s ease forwards;
+    }
+
+    @keyframes phaseAlertPop {
+      0%   { transform: translate(-50%, -50%) scale(0.6); opacity: 0; }
+      25%  { transform: translate(-50%, -50%) scale(1.04); opacity: 1; }
+      75%  { transform: translate(-50%, -50%) scale(1.0); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1.08); opacity: 0; }
+    }
+
     @keyframes floatUp {
       from { opacity: 1; transform: translateY(0) scale(1); }
       to { opacity: 0; transform: translateY(-48px) scale(1.1); }
@@ -724,8 +754,15 @@
     let resultSubmitted = false;
     let round = 1;
     let totalDuration = GAME_DURATION_SEC;
+    let reverseAlertShown = false;
+    let reversePhaseActive = false;
+    let reversePhaseTriggered = false;
+    let reversePhaseUsedOnce = false;
     const ROUND_TARGETS = [15, 25]; // 라운드 1→2 목표, 라운드 2→3 목표 (0.25배율 적용)
     const ROUND_BONUS_TIME = 10;
+    const REVERSE_TRIGGER_SEC = 5;
+    const REVERSE_PHASE_SEC = 10;
+    const REVERSE_SCORE_MULTIPLIER = 10;
 
     function getLeagueSchool() {
       try {
@@ -952,6 +989,38 @@
       return 0;
     }
 
+    function isReversePhaseActive() {
+      return playing && reversePhaseActive;
+    }
+
+    function updateRoundDisplay() {
+      if (isReversePhaseActive()) {
+        roundDisplay.textContent = `라운드 ${round} · 🔄 반전 · x${REVERSE_SCORE_MULTIPLIER}`;
+      } else {
+        roundDisplay.textContent = `라운드 ${round}`;
+      }
+    }
+
+    function showReversePhaseAlert() {
+      const alert = document.createElement("div");
+      alert.className = "phase-alert";
+      alert.innerHTML = `좌우<br />반전<br />${REVERSE_SCORE_MULTIPLIER}배`;
+      playfield.appendChild(alert);
+      setTimeout(() => alert.remove(), 980);
+    }
+
+    function startReversePhase() {
+      reversePhaseTriggered = true;
+      reversePhaseActive = true;
+      reversePhaseUsedOnce = true;
+      reverseAlertShown = true;
+      timeLeft = REVERSE_PHASE_SEC;
+      totalDuration = REVERSE_PHASE_SEC;
+      updateTimeBar();
+      updateRoundDisplay();
+      showReversePhaseAlert();
+    }
+
     function updateComboDisplay() {
       if (combo === 0) {
         comboDisplay.classList.add('hidden');
@@ -971,7 +1040,10 @@
 
     /** leftCheek => left, rightCheek => right */
     function resolveInput(input) {
-      const moveDir = input === "leftCheek" ? "left" : "right";
+      const rawMoveDir = input === "leftCheek" ? "left" : "right";
+      const moveDir = isReversePhaseActive()
+        ? (rawMoveDir === "left" ? "right" : "left")
+        : rawMoveDir;
       return moveDir;
     }
 
@@ -988,7 +1060,10 @@
         play('correct', 0.6);
         combo += 1;
         if (combo % 5 === 0) play('combo', 0.5);
-        const gain = 1 + getComboBonus(combo);
+        const baseGain = 1 + getComboBonus(combo);
+        const gain = isReversePhaseActive()
+          ? baseGain * REVERSE_SCORE_MULTIPLIER
+          : baseGain;
         score += Math.round(gain * 0.25);
         scoreEl.textContent = String(score);
         comboEl.textContent = String(combo);
@@ -1038,16 +1113,23 @@
         combo = 0;
         comboEl.textContent = "0";
         updateComboDisplay();
-        lives = Math.max(0, lives - 1);
-        lifeEl.textContent = livesToHearts(lives);
+        if (!isReversePhaseActive()) {
+          lives = Math.max(0, lives - 1);
+          lifeEl.textContent = livesToHearts(lives);
+        }
         if (frontEl) {
           frontEl.classList.remove("shake");
           void frontEl.offsetWidth;
           frontEl.classList.add("shake");
         }
         const r = (frontEl && frontEl.getBoundingClientRect()) || { left: 0, top: 0, width: 0 };
-        showFloatScore(r.left + r.width / 2 - 10, r.top, "미스!", "#c0392b");
-        if (lives <= 0) {
+        showFloatScore(
+          r.left + r.width / 2 - 18,
+          r.top,
+          isReversePhaseActive() ? "반전 미스!" : "미스!",
+          "#c0392b"
+        );
+        if (!isReversePhaseActive() && lives <= 0) {
           endGame("게임 오버!", "목숨을 모두 잃었습니다. 다시 도전해 보세요.");
         }
       }
@@ -1057,16 +1139,26 @@
       if (!playing) return;
       timeLeft -= 1;
       updateTimeBar();
+      if (!reversePhaseUsedOnce && !reversePhaseTriggered && timeLeft <= REVERSE_TRIGGER_SEC) {
+        startReversePhase();
+        return;
+      }
+      updateRoundDisplay();
       if (timeLeft <= 0) {
+        reversePhaseActive = false;
+        reverseAlertShown = false;
         if (round <= ROUND_TARGETS.length) {
           const target = ROUND_TARGETS[round - 1];
           if (score >= target) {
             round += 1;
             timeLeft = ROUND_BONUS_TIME;
             totalDuration = ROUND_BONUS_TIME;
+            reversePhaseTriggered = false;
+            reversePhaseActive = false;
+            reverseAlertShown = false;
             lives = MAX_LIVES;
             lifeEl.textContent = livesToHearts(lives);
-            roundDisplay.textContent = `라운드 ${round}`;
+            updateRoundDisplay();
             updateTimeBar();
           } else {
             endGame("라운드 실패!", `${target}점에 도달하지 못했습니다. (현재 ${score}점)`);
@@ -1095,10 +1187,14 @@
       round = 1;
       totalDuration = GAME_DURATION_SEC;
       timeLeft = GAME_DURATION_SEC;
+      reversePhaseTriggered = false;
+      reversePhaseActive = false;
+      reversePhaseUsedOnce = false;
+      reverseAlertShown = false;
       resultSubmitted = false;
       scoreEl.textContent = "0";
       comboEl.textContent = "0";
-      roundDisplay.textContent = "라운드 1";
+      updateRoundDisplay();
       updateComboDisplay();
       lifeEl.textContent = livesToHearts(lives);
       updateTimeBar();

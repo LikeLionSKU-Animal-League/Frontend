@@ -855,11 +855,14 @@ function spawnObjects() {
     const side  = dir > 0 ? 'left' : 'right';
     for (let c = 0; c < count; c++) {
       const n = Math.floor(Math.random() * 9) + 1;
+      const isBeginner = Math.random() < 0.22;
       cars.push({
-        row, dir, speed: spd,
+        row, dir,
+        speed: isBeginner ? spd * 0.45 : spd,
         x: (c * COLS / count) * TILE,
         w: TILE * 1.5,
         imgKey: `car${n}_${side}`,
+        isBeginner,
       });
     }
   });
@@ -876,10 +879,18 @@ function spawnObjects() {
 /* --- 메인 루프 (requestAnimationFrame) --- */
 let lastTime = 0;
 function loop(ts = 0) {
-  const dt = Math.min((ts - lastTime) / 1000, 0.1);
-  lastTime = ts;
-  update(dt);
-  draw();
+  try {
+    const dt = Math.min((ts - lastTime) / 1000, 0.1);
+    lastTime = ts;
+    update(dt);
+    draw();
+  } catch (err) {
+    // 일시적인 렌더/리소스 오류가 나도 게임 루프가 멈추지 않도록 보호
+    console.error('[cross_road] frame error:', err);
+    if (!gameOver) {
+      msgEl.textContent = '일시적인 오류를 복구 중입니다...';
+    }
+  }
   if (!gameOver) animFrameId = requestAnimationFrame(loop);
 }
 
@@ -1055,7 +1066,40 @@ function draw() {
   cars.forEach(car => {
     const img = IMGS[car.imgKey];
     const fallbackImg = IMGS[car.dir > 0 ? 'car1_left' : 'car1_right'];
-    ctx.drawImage(img || fallbackImg, OX + car.x, car.row * TILE, car.w, TILE);
+    const drawX = OX + car.x;
+    const drawY = car.row * TILE;
+    const carSprite = img || fallbackImg;
+    if (carSprite) {
+      ctx.drawImage(carSprite, drawX, drawY, car.w, TILE);
+    } else {
+      // 이미지 로딩 타이밍 이슈가 있어도 루프가 멈추지 않게 안전 폴백 렌더
+      ctx.fillStyle = '#b84848';
+      ctx.fillRect(drawX, drawY + 5, car.w, TILE - 10);
+      ctx.fillStyle = '#f5d46d';
+      ctx.fillRect(drawX + 4, drawY + 10, Math.max(10, car.w * 0.22), TILE - 20);
+    }
+
+    if (car.isBeginner) {
+      ctx.save();
+      ctx.fillStyle = '#ffe266';
+      ctx.strokeStyle = '#6b4b1b';
+      ctx.lineWidth = 1.2;
+      const tx = drawX + car.w * 0.18;
+      const ty = drawY + TILE * 0.16;
+      ctx.beginPath();
+      ctx.moveTo(tx, ty + 9);
+      ctx.lineTo(tx + 9, ty);
+      ctx.lineTo(tx + 18, ty + 9);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#5a3b12';
+      ctx.font = 'bold 7px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('초', tx + 9, ty + 6.2);
+      ctx.restore();
+    }
   });
 
   particles.forEach(p => {
