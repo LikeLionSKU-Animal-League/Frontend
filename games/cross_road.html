@@ -190,6 +190,32 @@
       height: auto;
     }
 
+    .tenx-alert {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.72);
+      z-index: 30;
+      pointer-events: none;
+      padding: 14px 20px;
+      border-radius: 16px;
+      font-size: clamp(24px, 6.4vw, 44px);
+      font-weight: 900;
+      color: #fff7d6;
+      text-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+      background: linear-gradient(135deg, rgba(247, 150, 35, 0.92), rgba(221, 86, 34, 0.94));
+      border: 3px solid rgba(255, 236, 170, 0.76);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+      animation: tenXPop 1.05s ease forwards;
+    }
+
+    @keyframes tenXPop {
+      0%   { transform: translate(-50%, -50%) scale(0.58); opacity: 0; }
+      22%  { transform: translate(-50%, -50%) scale(1.04); opacity: 1; }
+      78%  { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1.08); opacity: 0; }
+    }
+
     /* 조작법 안내 */
     .legend {
       margin-top: 10px;
@@ -643,6 +669,7 @@ function shareToKakao() {
 /* --- Canvas·UI 참조 --- */
 const canvas  = document.getElementById('gameCanvas');
 const ctx     = canvas.getContext('2d');
+const gameEl  = document.getElementById('game');
 const scoreEl = document.getElementById('score');
 const livesEl = document.getElementById('lives');
 const msgEl   = document.getElementById('message');
@@ -753,6 +780,17 @@ function isTenXMode() {
   return gameStarted && !gameOver && gameTimeLeft > 0 && gameTimeLeft <= 5;
 }
 
+function showTenXCenterAlert() {
+  if (!gameEl) return;
+  const old = gameEl.querySelector('.tenx-alert');
+  if (old) old.remove();
+  const alert = document.createElement('div');
+  alert.className = 'tenx-alert';
+  alert.textContent = '점수 10배!';
+  gameEl.appendChild(alert);
+  setTimeout(() => alert.remove(), 1100);
+}
+
 function submitScoreOnce() {
   if (scoreSubmitted) return;
   submitScoreToLeague('cross-road', score);
@@ -794,6 +832,7 @@ function startGame() {
     if (gameTimeLeft <= 5 && gameTimeLeft > 0 && !tenXShown) {
       tenXShown = true;
       msgEl.textContent = '🔥 점수 10배!';
+      showTenXCenterAlert();
     }
     if (gameTimeLeft <= 0) {
       clearInterval(gameTimerInterval);

@@ -151,6 +151,32 @@
       text-shadow: 0 0 12px rgba(255, 123, 123, 0.5);
     }
 
+    .tenx-alert {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.72);
+      z-index: 35;
+      pointer-events: none;
+      padding: 14px 22px;
+      border-radius: 16px;
+      font-size: clamp(26px, 6.2vw, 46px);
+      font-weight: 900;
+      color: #fff7d6;
+      text-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+      background: linear-gradient(135deg, rgba(247, 150, 35, 0.92), rgba(221, 86, 34, 0.94));
+      border: 3px solid rgba(255, 236, 170, 0.76);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+      animation: tenXPop 1.05s ease forwards;
+    }
+
+    @keyframes tenXPop {
+      0%   { transform: translate(-50%, -50%) scale(0.58); opacity: 0; }
+      22%  { transform: translate(-50%, -50%) scale(1.04); opacity: 1; }
+      78%  { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1.08); opacity: 0; }
+    }
+
     /* ---- stage transition ---- */
     .stage-overlay {
       position: absolute;
@@ -999,6 +1025,16 @@
       el.addEventListener("animationend", () => el.remove());
     }
 
+    function showTenXCenterAlert() {
+      const old = gameArea.querySelector(".tenx-alert");
+      if (old) old.remove();
+      const el = document.createElement("div");
+      el.className = "tenx-alert";
+      el.textContent = "점수 10배!";
+      gameArea.appendChild(el);
+      setTimeout(() => el.remove(), 1100);
+    }
+
     function animateCountUp(el, target, suffix, duration, delay) {
       setTimeout(() => {
         const start = performance.now();
@@ -1381,7 +1417,7 @@
         timerBarFill.style.height = (timeLeft / STAGE_TIMES[currentStage] * 100) + "%";
         if (timeLeft <= 5 && timeLeft > 0 && !tenXShown) {
           tenXShown = true;
-          showEncouragement("점수 10배!");
+          showTenXCenterAlert();
         }
 
         if (timeLeft <= 10 && !warningPlayed) {

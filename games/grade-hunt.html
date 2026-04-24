@@ -418,6 +418,32 @@
 
     .hit-effect.big { font-size: 20px; }
 
+    .tenx-alert {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.7);
+      z-index: 40;
+      pointer-events: none;
+      padding: 16px 24px;
+      border-radius: 18px;
+      font-size: clamp(26px, 7vw, 48px);
+      font-weight: 900;
+      color: #fff6d6;
+      text-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+      background: linear-gradient(135deg, rgba(247, 148, 29, 0.92), rgba(223, 83, 32, 0.94));
+      border: 3px solid rgba(255, 236, 170, 0.78);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.22);
+      animation: tenXPop 1.05s ease forwards;
+    }
+
+    @keyframes tenXPop {
+      0%   { transform: translate(-50%, -50%) scale(0.58); opacity: 0; }
+      22%  { transform: translate(-50%, -50%) scale(1.04); opacity: 1; }
+      78%  { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1.08); opacity: 0; }
+    }
+
     .guide {
       position: relative;
       z-index: 1;
@@ -854,6 +880,7 @@
     let bomberDropInterval = null;
     let bomberEndTimeout = null;
     let tenXShown = false;
+    let tenXActive = false;
 
     const scoreEl          = document.getElementById("score");
     const comboEl          = document.getElementById("combo");
@@ -907,7 +934,17 @@
     }
 
     function isTenXMode() {
-      return isPlaying && time > 0 && time <= 5;
+      return isPlaying && tenXActive;
+    }
+
+    function showTenXCenterAlert() {
+      const old = gameArea.querySelector(".tenx-alert");
+      if (old) old.remove();
+      const alert = document.createElement("div");
+      alert.className = "tenx-alert";
+      alert.textContent = "점수 10배!";
+      gameArea.appendChild(alert);
+      setTimeout(() => alert.remove(), 1100);
     }
 
     function stopFBomberPhase() {
@@ -974,7 +1011,9 @@
       if (!isPlaying || bomberPhaseTriggered) return;
       bomberPhaseTriggered = true;
       isFBomberPhaseActive = true;
-      resultEl.textContent = "🎁 A+ 보너스 라운드! A+를 누를 때마다 점수가 올라요!";
+      resultEl.textContent = isTenXMode()
+        ? "🎁 A+ 보너스 라운드! 점수 10배 적용 중!"
+        : "🎁 A+ 보너스 라운드! A+를 누를 때마다 점수가 올라요!";
 
       const bomber = document.createElement("div");
       bomber.id = "fBomber";
@@ -993,7 +1032,9 @@
         bomberDropInterval = null;
         isFBomberPhaseActive = false;
         if (isPlaying) {
-          resultEl.textContent = "A+ 보너스 라운드 종료! 마지막까지 점수를 올리세요!";
+          resultEl.textContent = isTenXMode()
+            ? "A+ 보너스 라운드 종료! 점수 10배는 계속 유지됩니다!"
+            : "A+ 보너스 라운드 종료! 마지막까지 점수를 올리세요!";
         }
       }, 2200);
     }
@@ -1021,6 +1062,7 @@
       score = 0; combo = 0; time = 15;
       isPlaying = true;
       tenXShown = false;
+      tenXActive = false;
 
       Array.from(gameArea.children).forEach(el => { if (!el.id) el.remove(); });
       resetUI();
@@ -1038,7 +1080,9 @@
         timeEl.textContent = time;
         if (time <= 5 && time > 0 && !tenXShown) {
           tenXShown = true;
+          tenXActive = true;
           resultEl.textContent = "🔥 점수 10배!";
+          showTenXCenterAlert();
         }
         if (time <= 4 && !bomberPhaseTriggered) startFBomberPhase();
         if (time <= 0) endGame();
