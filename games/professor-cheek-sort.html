@@ -1178,10 +1178,15 @@
           callback();
           return;
         }
-        cdImg.src = '../assets/images/countdown_' + nums[idx] + '.png';
+        const n = nums[idx];
+        const isMobile = window.matchMedia && window.matchMedia('(max-width: 900px)').matches;
+        const mobileShiftMap = { 1: '0px', 2: '0px', 3: '0px' };
+        cdImg.style.setProperty('--cd-shift-x', isMobile ? mobileShiftMap[n] || '0px' : '0px');
+        cdImg.src = '../assets/images/countdown_' + n + '.png';
         cdImg.style.animation = 'none';
         cdImg.offsetHeight;
-        cdImg.style.animation = 'countPop 0.9s ease forwards';
+        const mobileAnim = n === 3 ? 'countPopCenteredThree' : 'countPopCentered';
+        cdImg.style.animation = `${isMobile ? mobileAnim : 'countPop'} 0.9s ease forwards`;
         idx++;
         setTimeout(showNext, 1000);
       }
@@ -1206,6 +1211,18 @@
       80%  { transform: translate(-50%, -50%) scale(1.0);  opacity: 1; }
       100% { transform: translate(-50%, -50%) scale(0.8);  opacity: 0; }
     }
+    @keyframes countPopCentered {
+      0%   { transform: translateX(var(--cd-shift-x, 0px)) scale(0.5); opacity: 0; }
+      30%  { transform: translateX(var(--cd-shift-x, 0px)) scale(1.0); opacity: 1; }
+      80%  { transform: translateX(var(--cd-shift-x, 0px)) scale(1.0); opacity: 1; }
+      100% { transform: translateX(var(--cd-shift-x, 0px)) scale(0.8); opacity: 0; }
+    }
+    @keyframes countPopCenteredThree {
+      0%   { transform: translateX(14px) scale(0.44); opacity: 0; }
+      30%  { transform: translateX(14px) scale(0.88); opacity: 1; }
+      80%  { transform: translateX(14px) scale(0.88); opacity: 1; }
+      100% { transform: translateX(14px) scale(0.70); opacity: 0; }
+    }
     #countdownOverlay {
       display: none;
       position: fixed;
@@ -1220,6 +1237,25 @@
       top: 50%; left: 50%;
       height: 220px; width: auto;
       animation: countPop 0.9s ease forwards;
+    }
+    @media (max-width: 900px) {
+      #countdownOverlay.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px)
+          env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+      }
+      #countdownImg {
+        position: static;
+        top: auto;
+        left: auto;
+        height: min(44vw, 220px);
+        max-height: 220px;
+        width: auto;
+        transform-origin: center center;
+        animation-name: countPopCentered;
+      }
     }
   </style>
 </body>
